@@ -1,0 +1,3354 @@
+---
+{"dg-publish":true,"permalink":"/common-ports/"}
+---
+
+```
+r                        0/tcp  # Reserved<BR>
+tcpmux                   1/tcp  # TCP Port Service Multiplexer    One of original portmappers. SGI/IRIX is still using it, thus scans for it are probable attempts to locate IRIX targets. A &quot;HELP&quot; request to it returns Irix host's service listings.    
+compressnet              2/tcp  # Management Utility<BR>
+compressnet              3/tcp  # Compression Process<BR>
+rje                      5/tcp  # Remote Job Entry<BR>
+echo                     7/tcp  # Echo<BR><br> Used to trouble-shoot remote TCP/IP stacks (telnet to remote echo port, then type ... all keystrokes will echo back if target stack is working thru app layer. <BR> <br> DOS Threat: Attackers use it to relay flooding data. If relayed to a network broadcast, entire subnet can flood. To a syslog-loghost, logs can flood. Returns it to whatever you forged as your source socket. Any data sent can flood, but looping data output ports (eg: chargen, time, daytime) create deadly streaming floods. <BR> <br> Disable on all hosts; enable only for brief trouble-shooting. <BR> 
+discard                  9/tcp  # Discard<BR><br> Port equiv to /dev/null. Reads pkts, then discards them. Allows knowledge the host is alive and processing pkts. Used while trouble-shooting local stack's transmit ability (telnet to discard on remote host, knowing all transmitted keystrokes will just be discarded ... no worry of corrupting host processes). <BR> <br> No threat, but block on hosts and perimeter network devices as general rule. <BR> 
+systat                   11/tcp  # Active Users<BR><br> Provides very useful info to attackers (host's usernames, login times, origination hosts, etc.). <BR> <br> Disable this port on all hosts. <BR> 
+daytime                  13/tcp  # Daytime<BR><br> Returns the time of day in machine language; can return OS version. Provides host time, which can be useful in timing attacks. Also creates a DOS threat when its output is looped echo port (7). <BR> <br> Disable this port on all hosts. <BR> 
+netstat                  15/tcp  # Now Unassigned (was netstat)<BR><br> Netstat was similar to systat and is still active on some operating systems. Provides remote attackers info about the host and network (socket status, route tables, arp table, multicast group members, per- protocol stat's, interfaces status, etc.). <BR> <br> Disable this port on all hosts. <BR> 
+qotd                     17/tcp  # Quote of the Day (QOTD)<BR><br> Used to receive remote QOTDs. Used for social engineering attacks, where users receive fake instructions to verify passwords , etc. <BR> <br> Disable this port on all hosts. <BR> 
+msp                      18/tcp  # Message Send Protocol<BR>
+chargen                  19/tcp  # Character Generator<BR><br> Used to trouble-shoot TCP/IP stacks. Generates random characters at a high rate. <BR> <br> DOS Threat: Attackers will loop it to the echo port, creating a very effective host and subnet DOS. <BR> <br> Disable this port on all hosts, enable only for brief trouble-shooting tests.
+ftp-data                 20/tcp  # Default FTP Data Transfer Port<BR><br> Is FTP service's default data transfer port; required inbound if internal users are allowed access to external FTP sites, yet open port poses a threat (hole for network mapping, etc). Modern firewalls solve this by keeping it closed until a valid FTP session exists, then only opening it between those hosts. <BR> <br> Control via a stateful-tracking firewall, do not simply open at perimeter. <BR> 
+ftp-control              21/tcp  # FTP Control Port<BR><br> Is FTP service control port. Firewall rules focus on this port, then open port 20 only when required for a data transfer. <BR> Security Concerns with FTP: <BR> - Cleartext, re-usable passwords <BR> - Portal for user account grinding <BR> - FTP Bounce, where attacker uses ftp's "port" command to redirect the FTP transfer to a port &amp; IP other than default port 20 on the FTP server. Attacks can include "bouncing" internal network scans, email forging/flooding, etc. <BR> <br> CERT Advisories: CA-97.16, CA-99.13 <BR> <br> Disable port on non-FTP servers. <BR> <br> Open at perimeter only with static route to internal FTP server(s). <BR> 
+ssh                      22/tcp  # SSH Remote Login Protocol<BR>
+telnet                   23/tcp  # Telnet<BR><br> Standard for remote host admin. <BR> Security Concerns of Telnet: <BR> - Cleartext, re-usable passwords <BR> - Portal for user account grinding <BR> <br> CERT Advisories: CA-89.03, CA-95.14 <BR> <br> Replace with SSH on critical hosts. <BR> 
+smtp/smtp                25/tcp  # Simple Mail Transfer<BR><br> Used by mail servers to receive inbound email. <BR> Security Concerns: Email servers are complex engines, often run as root, and required open at most network perimeters. Thus are popular for attackers and new DOS or intrusion hacks always being found. <BR> <br> Disable on non-mail server hosts. <BR> <br> Open at perimeter only with static route to internal mail server. <BR> , smtp<br><br>simple mail transfer<br>
+nsw-fe                   27/tcp  # NSW User System FE<BR>
+msg-icp                  29/tcp  # MSG ICP<BR>
+msg-auth                 31/tcp  # MSG Authentication<BR>
+dsp                      33/tcp  # Display Support Protocol<BR>
+printer-any/priv-print     35/tcp  # Any Private Printer Server<BR>, priv-print<br><br>any private printer server<br>
+time                     37/tcp  # Time<BR><br> Provides remote timing stat's of internal processing events. <BR> Security Concerns: Gives remote attacker info on host's internal processing load. Can identify critical processing times, plus output can be looped to echo port (7) and create a DOS threat to the subnet. <BR> <br> Disable this port on all hosts. <BR> 
+rap                      38/tcp  # Route Access Protocol<BR>
+rlp                      39/tcp  # Resource Location Protocol<BR>
+graphics                 41/tcp  # Graphics<BR>
+nameserver               42/tcp  # Host Name Server<BR><br> Obsolete nameserver (originally DARPA's trivial name server, replaced by DNS). Is currently used by Microsoft hosts for WINS server for NetBIOS name resolves. May also be still found on some older Unix systems. <BR> <br> Disable on all non-MS-WINS hosts. <BR> 
+nicname                  43/tcp  # Whois<BR><br> Is the whois service, used to provide domain-level info. Sites today rarely run whois servers, is mostly just used now by Internic. Somewhat similar in function to "finger" and can suffer from same data-driven attacks. <BR> <br> Disable this port on all hosts. <BR> 
+mpm-flags                44/tcp  # MPM FLAGS Protocol<BR>
+mpm                      45/tcp  # Message Processing Module [recv]<BR>
+mpm-snd                  46/tcp  # MPM [default send]<BR>
+ni-ftp                   47/tcp  # NI FTP<BR>
+auditd                   48/tcp  # Digital Audit Daemon<BR>
+tacacs                   49/tcp  # Login Host Protocol (TACACS)<BR><br> Auth protocol for older terminal server logins. <BR> Security Concerns: Passwords are transmitted in cleartext <BR> <br> Previously known as bbn-login. <BR> <br> Disable this port on all hosts. <BR> 
+re-mail-ck               50/tcp  # Remote Mail Checking Protocol<BR>
+la-maint                 51/tcp  # IMP Logical Address Maintenance<BR>
+xns-time                 52/tcp  # XNS Time Protocol<BR>
+domain                   53/tcp  # Domain Name Server (DNS)<BR><br> DNS servers offer different services on TCP and UDP. TCP is used for "zone transfers" of full name record databases, while UDP is used for individual lookups. <BR> Security Concerns: <BR> - Zone Transfers give away entire network maps; high value to attackers <BR> - DNS (BIND) is a popular target, since DNS servers must exist, must be reachable, and exploits usually result DOS or root <BR> <br> Keep BIND version/patches current (refer to www.isca.org). <BR> <br> Use "split-DNS
+xns-ch                   54/tcp  # XNS Clearinghouse<BR>
+isi-gl                   55/tcp  # ISI Graphics Language<BR>
+xns-auth                 56/tcp  # XNS Authentication<BR>
+terminal-any             57/tcp  # Any Private Terminal Access<BR>
+xns-mail                 58/tcp  # XNS Mail<BR>
+dialout-any/priv-file     59/tcp  # Any Private File Service<BR>, priv-file<br><br>any private file service<br>
+ni-mail                  61/tcp  # NI MAIL<BR>
+acas                     62/tcp  # ACA Services<BR>
+whois++                  63/tcp  # whois++<BR>
+covia                    64/tcp  # Communications Integrator (CI)<BR>
+tacacs-ds                65/tcp  # TACACS-Database Service<BR>
+sql--net/sql*net         66/tcp  # Oracle SQL<br>NET<BR><br> Used for Oracle DB access. <BR> Security Concerns: Auth scheme can be either Oracle or Unix username &amp; password combo, but both passed cleartext by default. <BR> <br> Oracle's security options: <BR> - Can encrypt the re-usable password <BR> - Can upgrade to one-time-passwords <BR> - Can enable VPN for remote access <BR> <br> Block this port at network's perimeter; use only VPN-encrypted data transfers across perimeter. <BR> , sql*net<br><br>oracle sql*net<br>
+bootps                   67/tcp  # Bootstrap Protocol Server<BR><br> Listening port on bootp &amp; DHCP servers. Clients broadcast to it for boot or network parameters. <BR> Security Concern: Can probe NIS domain name, plus a valued DOS target. <BR> 
+bootpc                   68/tcp  # Bootstrap Protocol Client<BR><br> Listening port on bootp &amp; DHCP clients. Servers respond to it with boot or network parameters. <BR> 
+tftp                     69/tcp  # Trivial File Transfer<BR><br> Non-auth ftp service, used primarily by diskless clients to pull boot files. <BR> Security Concerns: Remote attackers can download server files without auth. Can extend to sensitive files (eg: passwd file) if server is poorly configured. Since file transfer is cleartext, all boot info passed to clients is vulnerable. For routers, this can include passwords. <BR> <br> Disable on host unless TFTP server. <BR> 
+gopher                   70/tcp  # <br> Older search engine server. Used little today, but still installed with MS's IIS.<BR><br> Disable on host unless TFTP server. <BR> 
+netrjs-1                 71/tcp  # Remote Job Service<BR>
+netrjs-2                 72/tcp  # Remote Job Service<BR>
+netrjs-3                 73/tcp  # Remote Job Service<BR>
+netrjs-4                 74/tcp  # Remote Job Service<BR>
+deos                     76/tcp  # Distributed External Object Store<BR>
+rje-service-any          77/tcp  # Any Private RJE Service<BR>
+vettcp                   78/tcp  # vettcp<BR>
+finger                   79/tcp  # Finger<BR><br> <BR> Security Concerns: <BR> - Provides key host info to attacker <BR> - Fingered host can be DOS'd if hit with a recursive finger script till its memory and swap space fill. <BR> - Fingering clients can be DOS'd if they finger a maliciously configured host (returns data overload, causing client to beep continually, etc.). <BR> - If fingering clients allow programmable keys, a maliciously configured host can return a finger response that maps a key to "rm -rf /<br>". <BR> <br> Disable on all host unless finger service is stubbed to only provide scripted data response (eg: system admin contact info, etc.). <BR> 
+http                     80/tcp  # 'HTTP    Standard web server port.   '
+SIPS                     5061/tcp  # SIP over TLS/SSL
+hosts2-ns                81/tcp  # HOSTS2 Name Server<BR>
+xfer                     82/tcp  # XFER Utility<BR>
+mit-ml-dev               83/tcp  # MIT ML Device<BR>
+ctf                      84/tcp  # Common Trace Facility<BR>
+mit-ml-dev               85/tcp  # MIT ML Device<BR>
+mfcobol                  86/tcp  # Micro Focus Cobol<BR>
+link/link                87/tcp  # Any Private Terminal Link<BR><br> Popular attack target. Consider any connection attempts to it as an attack signature. <BR> , link<br><br>any private terminal link, ttylink<br>
+kerberos                 88/tcp  # Kerberos<BR>
+su-mit-tg                89/tcp  # SU/MIT Telnet Gateway<BR>
+dnsix/pointcast          90/tcp  # DNSIX Securit Attribute Token Map<BR>, PointCast<BR>
+mit-dov                  91/tcp  # MIT Dover Spooler<BR>
+npp                      92/tcp  # Network Printing Protocol<BR>
+dcp                      93/tcp  # Device Control Protocol<BR>
+objcall                  94/tcp  # Tivoli Object Dispatcher<BR>
+supdup                   95/tcp  # SUPDUP<BR><br> Somewhat similar to telnet, designed for remote job entry. Is rarely used anymore, but remains a popular intruder target. Consider any connection attempts to it as an attack signature. <BR> 
+dixie                    96/tcp  # DIXIE Protocol Specification<BR>
+swift-rvf                97/tcp  # Swift Remote Virtural File Protocol<BR>
+tacnews/linux-conf       98/tcp  # TAC News<BR>, Linux Console Manager<BR>
+metagram                 99/tcp  # Metagram Relay<BR>
+newacct                  100/tcp  # 
+hostname                 101/tcp  # NIC Host Name Server<BR>
+iso-tsap/X.500           102/tcp  # ISO-TSAP Class 0<BR>, X.500 Directory Service<BR><br> Used to distribute user names, user info, and public keys. <BR> Security Concerns: Depending on vendor implementation, probes can reveal valuable user info for follow-on attacks. On poorly configured servers, attackers can replace public keys for data capture or DOS purpose. <BR> 
+X.400/gppitnp            103/tcp  # X.400 Mail Messaging<BR><br> Both ports are used with X.400 Email std., but not widely used. No known vul's, but would similar to data-driven attacks common to smtp, plus poss. direct attacks such as with sendmail. <BR> <br> Always static route inbound mail to a protected, hardened email server. <BR> , Genesis Point-to-Point Trans Net<BR>
+acr-nema                 104/tcp  # ACR-NEMA Digital Imag. &amp; Comm. 300<BR>
+csnet-ns/cso             105/tcp  # Mailbox Name Nameserver<BR>, CCSO name server protocol<BR>
+3com-tsmux/poppassd      106/tcp  # 3COM-TSMUX<BR>, POP poppassd
+rtelnet                  107/tcp  # Remote Telnet Service<BR>
+snagas                   108/tcp  # SNA Gateway Access Server<BR>
+pop2                     109/tcp  # Post Office Protocol - Version 2<BR><br> Older POP email protocol. Replaced by POP3 (110). <BR> 
+pop3                     110/tcp  # Post Office Protocol - Version 3<BR><br> Most widely used client email protocol. Used by mail clients to collect mail off server. <BR> Security Concerns: <BR> - Re-usable cleartext password <BR> - No auditing of connections &amp; attempts, thus subject to grinding <BR> - Some POP3 server versions have had buffer overflow problems <BR> <br> CERT Advisories: CA-97.09 <BR> 
+sunrpc                   111/tcp  # Sun's RPC Portmapper<BR><br> Used to map non-registered rpc service ports on most Unix systems (Irix uses port 1). <BR> Security Concerns: <BR> - Provides rpc port map w/o auth <BR> - Has no filtering or logging <BR> - Attacker rpcinfo probes quickly find your Unix hosts <BR> - Solaris hosts open a second port above 32770. Attackers will scan for and use it, knowing net devices won't watch &amp; log this like 111 traffic. <BR> <br> Enhance your portmapper to get ACL filtering and logging: <BR> - BSD: Install "portmap wrapper" <BR> - System V &amp; Solaris: Install Venema's "rpcbind replacement" <BR> <br> Both require libwrap.a from a compiled TCP Wrapper program. <BR> <br> Shut down portmapper on any hosts not requiring rpc's. <BR> <br> Ensure blocked at all net perimeters <BR> 
+mcidas                   112/tcp  # McIDAS Data Transmission Protocol<BR>
+ident/auth               113/tcp  # Ident<BR><br> Some versions vulnerable to root-level intrusion! Check! <BR> , Authentication Service<BR><br> Used by hosts to acquire info on users engaged in connections (eg: it sends socket info to remote hosts, who then passes back user info - generally data from the /etc/passwd file). Can be used to probe remote passwd file for usernames. <BR> <br> Allows you to see what account is running a particular service (eg: ident of a service can tell you if its run by root, etc.). <BR> 
+audionews                114/tcp  # Audio News Multicast<BR>
+sftp                     115/tcp  # Simple File Transfer Protocol<BR><br>Not<br> Secure FTP (ftps), which operates on ports 990 &amp;989. <BR> 
+ansanotify               116/tcp  # ANSA REX Notify<BR>
+uucp-path                117/tcp  # UUCP Path Service<BR>
+sqlserv                  118/tcp  # SQL Services<BR>
+nntp                     119/tcp  # Network News Transfer Protocol<BR><br> Usenet server feeds (uucp can be used for this too). <BR> <br> If used, config nntp server with ACL to control client access. <BR> <br> If config'd to allow non-admins to create new newsgroups, host is vulnerable to command meta-character attacks (eg: ";"). <BR> <br> nntp messages are simple ascii -- susceptable to capture, modification, &amp; forgery. <BR> <br> If an nntp server is not hosted at site, ensure it is blocked at firewall. If a server exists and firewall hole is required, proxy server in the DMZ and disable the automated group creation feature. Note that nntp servers can be established in a split-server mode similar to DNS. <BR> <br> For outbound nntp to external nntp servers (eg: Internet Usenet), primary threat is download and execution of malicious code. <BR> 
+cfdptkt                  120/tcp  # CFDPTKT<BR>
+erpc                     121/tcp  # Encore Expedited Remote Pro.Call<BR>
+smakynet                 122/tcp  # SMAKYNET<BR>
+ntp                      123/tcp  # Network Time Protocol<BR><br> Provides time synch between computers and network systems. Assists in database mgmt, auth schemes, and audit/logging accuracy. <BR> Security Concerns: It provides both info and an avenue of attack for intruders. Info gathered can include: system uptime, time since reset, time server pkt, I/O, &amp; memory statistics, and ntp peer list. Further, if a host is susceptible to time altering via ntp, an attacker can: <BR> 1) Run replay attacks, using captured OTP and Kerberos tickets before they expire. <BR> 2) Stop security-related cron jobs from running or cause them to run at incorrect times. <BR> 3) Make system and audit logs unreliable, since time is alterable. <BR> 
+ansatrader               124/tcp  # ANSA REX Trader<BR>
+locus-map                125/tcp  # Locus PC-Interface Net Map Server<BR>
+nxedit/unitary           126/tcp  # NXEdit<BR>, Unisys Unitary Login<BR>
+locus-con                127/tcp  # Locus PC-Interface Conn Server<BR>
+gss-xlicen               128/tcp  # GSS X License Verification<BR>
+pwdgen                   129/tcp  # Password Generator Protocol<BR>
+cisco-fna                130/tcp  # cisco FNATIVE<BR>
+cisco-tna                131/tcp  # cisco TNATIVE<BR>
+cisco-sys                132/tcp  # cisco SYSMAINT<BR>
+statsrv                  133/tcp  # Statistics Service<BR>
+ingres-net               134/tcp  # INGRES-NET Service<BR>
+loc-srv/epmap            135/tcp  # Location Service<BR><br> A principle rqmt for NetBIOS services on MS hosts (Win9x/ME/NT/Win2000). TCP 135 is used for authentication, MS's DHCP Mgr, DNS admin, WINS Mgr, Exchange admin, MS RPCs, and most MS client/server apps. <br>Security Concerns: Key target in auth &amp; DOS attacks. Block at all perimeters; NIC-filter on public-exposed MS hosts., DCE endpoint resolution<br> Common on Unix hosts for certain x-displays, remote perfmon, etc.<BR> 
+profile                  136/tcp  # PROFILE Naming System<BR>
+netbios-ns               137/tcp  # netbios-ns<br><br>netbios name service<br>
+netbios-dgm              138/tcp  # NETBIOS Datagram Service<BR><br> A principle rqmt for NetBIOS services on MS hosts (Win9x/ME/NT/Win2000). UDP 137 is used for browsing, directory replication, logon sequence, netlogon, pass-thru validation, printing support, trusts, and WinNT Secure Channel.<BR> Security Concerns: Key target in auth &amp; DOS attacks. Block at all perimeters; NIC-filter on public-exposed MS hosts.
+netbios-ssn/netbios-ssn     139/tcp  # <br> A principle rqmt for NetBIOS services on MS hosts (Win9x/ME/NT/Win2000). TCP 139 is used for directory replication, event viewer, file sharing, logon sequence, pass-thru validation, performance monitoring, printing, registry editor, server manager, trusts, user manager, WinNT Diagnostics, and WinNT Secure Channel.<br>Security Concerns: Key target in auth &amp; DOS attacks, plus sniffer capture of sensitive data transfers. Block at all perimeters; NIC-filter on public-exposed MS hosts., netbios-ssn<br><br>netbios session service<br>
+emfis-data               140/tcp  # EMFIS Data Service<BR>
+emfis-cntl               141/tcp  # EMFIS Control Service<BR>
+bl-idm                   142/tcp  # Britton-Lee IDM<BR>
+imap2                    143/tcp  # Internet Message Access Protocol v2<BR><br> Widely used client email protocol. Used by mail clients to collect mail off server. A superset of POP3, with enhancements. <BR> Security Concerns: <BR> - Re-usable cleartext password <BR> - No auditing of connections/attempts, thus subject to grinding <BR> - Some IMAP server versions have buffer overflow problems <BR> <br> CERT Advisories: CA-98.09, CA-97.09. <BR> <br> IMAP v3 uses port 220. <BR> 
+news/uma                 144/tcp  # NeWS<BR><br> Obsolete windowing system; has known vulnerabilities. Should be no reason to be enabled on any host or network perimeter. <BR> , Universal Management Architecture<BR>
+uaac                     145/tcp  # UAAC Protocol<BR>
+iso-tp0                  146/tcp  # ISO-IP0<BR>
+iso-ip                   147/tcp  # ISO-IP<BR>
+cronus/jargon            148/tcp  # CRONUS-SUPPORT<BR>, Jargon<BR>
+aed-512                  149/tcp  # AED 512 Emulation Service<BR>
+sql-net                  150/tcp  # SQL-NET<BR>
+hems                     151/tcp  # HEMS<BR>
+bftp                     152/tcp  # Background File Transfer Program<BR>
+sgmp                     153/tcp  # SGMP<BR>
+netsc-prod               154/tcp  # NETSC<BR>
+netsc-dev                155/tcp  # NETSC<BR>
+sqlsrv                   156/tcp  # SQL Service<BR>
+knet-cmp                 157/tcp  # KNET/VM Command/Message Protocol<BR>
+pcmail-srv               158/tcp  # PCMail Server<BR>
+nss-routing              159/tcp  # NSS-Routing<BR>
+sgmp-traps               160/tcp  # SGMP-Traps<BR>
+                         /tcp  # 
+                         /tcp  # 
+cmip-man                 163/tcp  # CMIP/TCP Manager<BR>
+cmip-agent               164/tcp  # CMIP/TCP Agent<BR>
+xns-courier              165/tcp  # Xerox<BR>
+s-net                    166/tcp  # Sirius Systems<BR>
+namp                     167/tcp  # NAMP<BR>
+rsvd                     168/tcp  # RSVD<BR>
+send                     169/tcp  # SEND<BR>
+print-srv                170/tcp  # Network PostScript<BR>
+multiplex                171/tcp  # Network Innovations Multiplex<BR>
+cl/1                     172/tcp  # Network Innovations CL/1<BR>
+xyplex-mux               173/tcp  # Xyplex<BR>
+mailq                    174/tcp  # MAILQ<BR>
+vmnet                    175/tcp  # VMNET<BR>
+genrad-mux               176/tcp  # GENRAD-MUX<BR>
+xdmcp                    177/tcp  # X Display Manager Control (X11 Logon)<BR><br> Used by X-Display Manager for logins. Localhost's CDE needs xdmcp open, it accesses the xdmcp daemon via tcp connection call to itself. <BR> Security Concerns: Vulnerable to sniffing, spoofing, and session hijacking. If needed open to support localhost CDE, wrap it! <BR> 
+nextstep                 178/tcp  # NextStep Window Server<BR><br> Auth protocol used by the NEXTSTEP Windows Server, of which few remain in existence. It is unlikely to be required on the network and should be blocked. <BR> 
+bgp                      179/tcp  # Border Gateway Protocol<BR><br> One of the several route protocols in use. <BR> 
+ris                      180/tcp  # Intergraph<BR>
+unify                    181/tcp  # Unify<BR>
+audit                    182/tcp  # Unisys Audit SITP<BR>
+ocbinder                 183/tcp  # OCBinder<BR>
+ocserver                 184/tcp  # OCServer<BR>
+remote-kis               185/tcp  # Remote-KIS<BR>
+kis                      186/tcp  # KIS Protocol<BR>
+aci                      187/tcp  # Application Communication Interface<BR>
+mumps                    188/tcp  # Plus Five's MUMPS<BR>
+qft                      189/tcp  # Queued File Transport<BR>
+gacp                     190/tcp  # Gateway Access Control Protocol<BR>
+prospero                 191/tcp  # Prospero Directory Service<BR>
+osu-nms                  192/tcp  # OSU Network Monitoring System<BR>
+srmp                     193/tcp  # Spider Remote Monitoring Protocol<BR>
+irc                      194/tcp  # Internet Relay Chat Protocol<BR>
+dn6-nlm-aud              195/tcp  # DNSIX Network Level Module Audit<BR>
+dn6-smm-red              196/tcp  # DNSIX Session Mgt Module Audit Redir<BR>
+dls                      197/tcp  # Directory Location Service<BR>
+dls-mon                  198/tcp  # Directory Location Service Monitor<BR>
+smux                     199/tcp  # SMUX (SNMP Unix Multiplexer)<BR>
+src                      200/tcp  # IBM System Resource Controller<BR>
+at-rtmp                  201/tcp  # AppleTalk Routing Maintenance<BR>
+at-nbp                   202/tcp  # AppleTalk Name Binding<BR>
+at-3                     203/tcp  # AppleTalk Unused<BR>
+at-echo                  204/tcp  # AppleTalk Echo<BR>
+at-5                     205/tcp  # AppleTalk Unused<BR>
+at-zis                   206/tcp  # AppleTalk Zone Info<BR>
+at-7                     207/tcp  # AppleTalk Unused<BR>
+at-8                     208/tcp  # AppleTalk Unused<BR>
+qmtp                     209/tcp  # Quick Mail Transfer Protocol<BR>
+wais/z39.50              210/tcp  # Wide Area Info Service (WAIS)<BR><br> Old, once popular as a database indexing and search tool. Being replaced by web structures and web-based search engines. <BR> Security Concerns: <BR> - Access control was only source IP based, thus vulnerable to spoofing <BR> - Would allow unchecked files to be retrieved and run, opening dangers to malicious code being downloaded to client <BR> , ANSI Z39.50<BR>
+914c/g                   211/tcp  # Texas Instruments 914C/G-Terminal<BR>
+anet                     212/tcp  # ATEXSSTR<BR>
+ipx                      213/tcp  # IPX<BR>
+vmpwscs                  214/tcp  # VM PWSCS<BR>
+softpc                   215/tcp  # Insignia Solutions<BR>
+CAIlic                   216/tcp  # Computer Associates Int'l License Server<BR>
+dbase                    217/tcp  # dBASE Unix<BR>
+mpp                      218/tcp  # Netix Message Posting Protocol<BR>
+uarps                    219/tcp  # Unisys ARPs<BR>
+imap3                    220/tcp  # Interactive Mail Access Protocol v3<BR>
+fln-spx                  221/tcp  # Berkeley rlogind with SPX auth<BR>
+rsh-spx                  222/tcp  # Berkeley rshd with SPX auth<BR>
+cdc                      223/tcp  # Certificate Distribution Center<BR>
+masqdialer               224/tcp  # Masqdialer<BR>
+#direct/direct           242/tcp  # Now Unassigned (Was "Direct")<BR>, direct<br><br>direct<br>
+sur-meas                 243/tcp  # Survey Measurement<BR>
+#dayna/inbusiness        244/tcp  # Now Unassigned (Was "Dayna")<BR>, InBusiness<BR>
+link                     245/tcp  # LINK<BR>
+dsp3270                  246/tcp  # Display Systems Protocol<BR>
+subntbcst_tftp           247/tcp  # SUBNTBCST_TFTP<BR>
+bhfhs                    248/tcp  # bhfhs<BR>
+fw1-mgmt/rap             256/tcp  # Firewall-1 Mgmt Console (CheckPoint)<BR><br> FW-1's Mgmt Console port. Functions include: <BR> - CA/DH key exchange for FWZ &amp; SKIP VPN crypto schemes <BR> - SecuRemote connection to pull net topology &amp; crypto keys (v40, changed to tcp 254 in v4.1). <BR> - Mgmt Console connection to managed firewalls &amp; policies <BR> - Fail-over FW-1 heartbeat cks (pkt tx every 50ms) <BR> <br> FW-1 Ports: tcp 256, tcp/udp 259, udp 500, tcp 900 <BR> , RAP<BR>
+set                      257/tcp  # Secure Electronic Transaction<BR>
+yak-chat                 258/tcp  # Yak Winsock Personal Chat<BR>
+fw1-auth/esro-gen        259/tcp  # Firewall-1 Auth (CheckPoint)<BR><br> FW-1's user &amp; client auth port. Remote clients telnet to this on perimeter firewall and auth to access internal resources (encryption an option). Services via this telnet include internal FTP, HTTP/HTTPS servers, plus relay to other internal hosts via add'l telnets/rlogins. <BR> <br> FW-1 Ports: tcp 256, tcp/udp 259, udp 500, tcp 900 <BR> , Efficient Short Remote Operations<BR>
+openport                 260/tcp  # Openport<BR>
+nsiiops                  261/tcp  # IIOP Name Service over TLS/SSL<BR>
+arcisdms                 262/tcp  # Arcisdms<BR>
+hdap                     263/tcp  # HDAP<BR>
+bgmp                     264/tcp  # BGMP<BR>
+x-bone-ctl               265/tcp  # X-Bone CTL<BR>
+http-mgmt                280/tcp  # http-mgmt<BR>
+personal-link            281/tcp  # Personal Link<BR>
+cableport-ax             282/tcp  # Cable Port A/X<BR>
+rescap                   283/tcp  # rescap<BR>
+corerjd                  284/tcp  # corerjd<BR>
+novastorbakcup           308/tcp  # Novastor Backup<BR>
+entrusttime              309/tcp  # EntrustTime<BR>
+bhmds                    310/tcp  # bhmds<BR>
+asip-webadmin            311/tcp  # AppleShare IP WebAdmin<BR>
+vslmp                    312/tcp  # VSLMP<BR>
+magenta-logic            313/tcp  # Magenta Logic<BR>
+opalis-robot             314/tcp  # Opalis Robot<BR>
+dpsi                     315/tcp  # DPSI<BR>
+decauth                  316/tcp  # decAuth<BR>
+zannet                   317/tcp  # Zannet<BR>
+pkix-timestamp           318/tcp  # PKIX TimeStamp<BR>
+ptp-event                319/tcp  # PTP Event<BR>
+ptp-general              320/tcp  # PTP General<BR>
+pip                      321/tcp  # PIP<BR>
+rtsps                    322/tcp  # RTSPS<BR>
+texar                    333/tcp  # Texar Security Port<BR>
+pdap                     344/tcp  # Prospero Data Access Protocol<BR>
+pawserv                  345/tcp  # Perf Analysis Workbench<BR>
+zserv                    346/tcp  # Zebra server<BR>
+fatserv                  347/tcp  # Fatmen Server<BR>
+csi-sgwp                 348/tcp  # Cabletron Management Protocol<BR>
+mftp                     349/tcp  # mftp<BR>
+matip-type-a             350/tcp  # MATIP Type A<BR>
+matip-type-b/bhoetty     351/tcp  # MATIP Type B<BR>, bhoetty<BR>
+bhoedap4/dtag-ste-sb     352/tcp  # bhoedap4<BR>, DTAG<BR>
+ndsauth                  353/tcp  # NDSAUTH<BR>
+bh611                    354/tcp  # bh611<BR>
+date-asn/datex-asn       355/tcp  # DATEX-ASN<BR>, datex-asn<br><br>datex-asn<br>
+cloanto-net-1            356/tcp  # Cloanto Net 1<BR>
+bhevent                  357/tcp  # bhevent<BR>
+shrinkwrap               358/tcp  # Shrinkwrap<BR>
+tenebris_nts             359/tcp  # Tenebris Network Trace Service<BR>
+scoi2odialog             360/tcp  # scoi2odialog<BR>
+semantix                 361/tcp  # Semantix<BR>
+srssend                  362/tcp  # SRS Send<BR>
+rsvp_tunnel              363/tcp  # RSVP Tunnel<BR>
+aurora-cmgr              364/tcp  # Aurora CMGR<BR>
+dtk                      365/tcp  # Deception Tool Kit<BR><br> Deception Tool Kit (DTK), a honeypot kit available at http://all.net/dtk/. On this port DTK advertises itself as a honeypot. Concept is that it will be spotted in scans and attackers will realize the net has defenses and move on. To attackers "not in the know
+odmr                     366/tcp  # ODMR<BR>
+mortgageware             367/tcp  # MortgageWare<BR>
+qbikgdp                  368/tcp  # QbikGDP<BR>
+rpc2portmap              369/tcp  # rpc2portmap<BR>
+codaauth2                370/tcp  # codaauth2<BR>
+clearcase                371/tcp  # Clearcase<BR>
+ulistproc                372/tcp  # Unix Listserv<BR>
+legent-1                 373/tcp  # Legent Corporation<BR>
+legent-2                 374/tcp  # Legent Corporation<BR>
+hassle                   375/tcp  # Hassle<BR>
+nip                      376/tcp  # Amiga Envoy Network Inquiry Proto<BR>
+tnETOS                   377/tcp  # NEC Corporation<BR>
+dsETOS                   378/tcp  # NEC Corporation<BR>
+is99c                    379/tcp  # TIA/EIA/IS-99 modem client<BR>
+is99s                    380/tcp  # TIA/EIA/IS-99 modem server<BR>
+hp-collector             381/tcp  # HP Performance Data Collector<BR>
+hp-managed-node          382/tcp  # HP Performance Data Managed Node<BR><br> Host port for centralized performance monitor access. <BR> 
+hp-alarm-mgr             383/tcp  # HP Performance Data Alarm Manager<BR>
+arns                     384/tcp  # A Remote Network Server System<BR>
+ibm-app                  385/tcp  # IBM Application<BR>
+asa                      386/tcp  # ASA Message Router Object Def.<BR>
+aurp                     387/tcp  # Appletalk Update-Based Routing Pro.<BR>
+unidata-ldm              388/tcp  # Unidata LDM Version 4<BR>
+ldap                     389/tcp  # Lightweight Directory Access Protocol<BR><br> LDAP server's port, an adaptation of x.500 dir std. Through it, LDAP clients access central dir to retrieve, add, and modify info. Examples: <BR> - Database for PKI systems <BR> - Address book for mail &amp; personnel progs <BR> - Internet Directory Service that tracks users of collaborative apps (chat, video, audio, etc.). Would track who is on-line, their IP, and data about user.<br> Used by Win2000 Active Directory<br> SSL version at TCP 636<BR> Security Concerns: Valuable source of user info used in attacks; excellent target for DOS attack. <BR> 
+uis                      390/tcp  # UIS<BR>
+synotics-relay           391/tcp  # SynOptics SNMP Relay Port<BR>
+synotics-broker          392/tcp  # SynOptics Port Broker Port<BR>
+dis                      393/tcp  # Data Interpretation System<BR>
+embl-ndt                 394/tcp  # EMBL Nucleic Data Transfer<BR>
+netcp                    395/tcp  # NETscout Control Protocol<BR>
+netware-ip               396/tcp  # Novell Netware over IP<BR>
+mptn                     397/tcp  # Multi Protocol Trans. Net.<BR>
+kryptolan                398/tcp  # Kryptolan<BR>
+iso-tsap-c2              399/tcp  # ISO Transport Class-2 Non-Ctrl over TCP<BR>
+work-sol                 400/tcp  # Workstation Solutions<BR>
+ups                      401/tcp  # Uninterruptible Power Supply<BR>
+genie                    402/tcp  # Genie Protocol<BR>
+decap                    403/tcp  # decap<BR>
+nced                     404/tcp  # nced<BR>
+ncld                     405/tcp  # ncld<BR>
+imsp                     406/tcp  # Interactive Mail Support Protocol<BR>
+timbuktu                 407/tcp  # Timbuktu<BR>
+prm-sm                   408/tcp  # Prospero Resource Manager - Sys. Mgr<BR>
+prm-nm                   409/tcp  # Prospero Resource Manager - Node Mgr<BR>
+decladebug               410/tcp  # DECLadebug Remote Debug Protocol<BR>
+rmt                      411/tcp  # Remote MT Protocol<BR>
+synoptics-trap           412/tcp  # Trap Convention Port<BR>
+smsp                     413/tcp  # SMSP<BR>
+infoseek                 414/tcp  # InfoSeek<BR>
+bnet                     415/tcp  # BNet<BR>
+silverplatter            416/tcp  # SilverPlatter<BR>
+onmux                    417/tcp  # Onmux<BR>
+hyper-g                  418/tcp  # Hyper-G<BR>
+ariel1                   419/tcp  # Ariel<BR>
+smpte                    420/tcp  # SMPTE<BR>
+wrapper-backdoor/ariel2     421/tcp  # Intruder Backdoor vis TCP Wrappers<BR><br> Primary web site for TCP Wrapper distro was compromised in Jan 99 and wrapper software was trojanized. Was caught almost immediately, but some downloads occurred. Installing it open a backdoor on tcp port 421. Hosts with open tcp port 421 and wrappers should be investigated. <BR> , Ariel<BR>
+ariel3                   422/tcp  # Ariel<BR>
+opc-job-start            423/tcp  # IBM Operations Planning and Control Start<BR>
+opc-job-track            424/tcp  # IBM Operations Planning and Control Track<BR>
+icad-el                  425/tcp  # ICAD<BR>
+smartsdp                 426/tcp  # smartsdp<BR>
+svrloc                   427/tcp  # Server Location<BR><br> Open on Win95 hosts (only open default port). Useful for finding Win95 hosts. No know "direct attack" vulnerabilities. <BR> 
+ocs_cmu                  428/tcp  # OCS_CMU<BR>
+ocs_amu                  429/tcp  # OCS_AMU<BR>
+utmpsd                   430/tcp  # UTMPSD<BR>
+utmpcd                   431/tcp  # UTMPCD<BR>
+iasd                     432/tcp  # IASD<BR>
+nnsp                     433/tcp  # NNSP<BR>
+mobileip-agent           434/tcp  # MobileIP-Agent<BR>
+mobilip-mn               435/tcp  # MobilIP-MN<BR>
+dna-cml                  436/tcp  # DNA-CML<BR>
+comscm                   437/tcp  # comscm<BR>
+dsfgw                    438/tcp  # dsfgw<BR>
+dasp                     439/tcp  # dasp<BR>
+sgcp                     440/tcp  # sgcp<BR>
+decvms-sysmgt            441/tcp  # decvms-sysmgt<BR>
+cvc_hostd                442/tcp  # cvc_hostd<BR>
+https                    443/tcp  # HTTP over TLS/SSL  
+snpp                     444/tcp  # Simple Network Paging Protocol<BR>
+microsoft-ds             445/tcp  # Microsoft Direct Host<BR> 
+ddm-rdb                  446/tcp  # DDM-RDB<BR>
+ddm-dfm                  447/tcp  # DDM-RFM<BR>
+ddm-ssl                  448/tcp  # DDM-SSL<BR><br> Also known as "ddm-byte" <BR> 
+as-servermap             449/tcp  # AS Server Mapper<BR>
+tserver                  450/tcp  # TServer<BR>
+sfs-smp-net              451/tcp  # Cray Network Semaphore server<BR>
+sfs-config               452/tcp  # Cray SFS config server<BR>
+creativeserver           453/tcp  # CreativeServer<BR>
+contentserver            454/tcp  # ContentServer<BR>
+creativepartnr           455/tcp  # CreativePartnr<BR>
+macon-tcp                456/tcp  # macon-tcp<BR>
+scohelp                  457/tcp  # scohelp<BR>
+appleqtc                 458/tcp  # apple quick time<BR>
+ampr-rcmd                459/tcp  # ampr-rcmd<BR>
+skronk                   460/tcp  # skronk<BR>
+datasurfsrv              461/tcp  # DataRampSrv<BR>
+datasurfsrvsec           462/tcp  # DataRampSrvSec<BR>
+alpes                    463/tcp  # alpes<BR>
+kpasswd                  464/tcp  # kpasswd<BR>
+smtps                    465/tcp  # SMTP over TLS/SSL (was ssmtp)<BR>
+digital-vrc              466/tcp  # digital-vrc<BR>
+mylex-mapd               467/tcp  # mylex-mapd<BR>
+photuris                 468/tcp  # proturis<BR>
+rcp                      469/tcp  # Radio Control Protocol<BR>
+scx-proxy                470/tcp  # scx-proxy<BR>
+mondex                   471/tcp  # Mondex<BR>
+ljk-login                472/tcp  # ljk-login<BR>
+hybrid-pop               473/tcp  # hybrid-pop<BR>
+tn-tl-w1                 474/tcp  # tn-tl-w1<BR>
+tcpnethaspsrv            475/tcp  # tcpnethaspsrv<BR>
+tn-tl-fd1                476/tcp  # tn-tl-fd1<BR>
+ss7ns                    477/tcp  # ss7ns<BR>
+spsc                     478/tcp  # spsc<BR>
+iafserver                479/tcp  # iafserver<BR>
+iafdbase                 480/tcp  # iafdbase<BR>
+ph                       481/tcp  # Ph service<BR>
+bgs-nsi                  482/tcp  # bgs-nsi<BR>
+ulpnet                   483/tcp  # ulpnet<BR>
+integra-sme              484/tcp  # Integra Software Mgmt Environment<BR>
+powerburst               485/tcp  # Air Soft Power Burst<BR>
+avian                    486/tcp  # avian<BR>
+saft                     487/tcp  # saft<BR>
+gss-http                 488/tcp  # gss-http<BR>
+nest-protocol            489/tcp  # nest-protocol<BR>
+micom-pfs                490/tcp  # micom-pfs<BR>
+go-login                 491/tcp  # go-login<BR>
+ticf-1                   492/tcp  # Transport Independent Convergence, FNA<BR>
+ticf-2                   493/tcp  # Transport Independent Convergence, FNA<BR>
+pov-ray                  494/tcp  # POV-Ray<BR>
+intecourier              495/tcp  # intecourier<BR>
+pim-rp-disc              496/tcp  # PIM-RP-DISC<BR>
+dantz                    497/tcp  # dantz<BR>
+siam                     498/tcp  # siam<BR>
+iso-ill                  499/tcp  # ISO ILL Protocol<BR>
+                         /tcp  # 
+stmf                     501/tcp  # STMF<BR>
+asa-appl-proto           502/tcp  # ASA Application Protocol<BR>
+intrinsa                 503/tcp  # Intrinsa<BR>
+citadel                  504/tcp  # citadel<BR>
+mailbox-lm               505/tcp  # Mailbox License Manager<BR>
+ohimsrv                  506/tcp  # ohimsrv<BR>
+crs                      507/tcp  # crs<BR>
+xvttp                    508/tcp  # xvttp<BR>
+snare                    509/tcp  # snare<BR>
+fcp                      510/tcp  # FirstClass Protocol<BR>
+mynet/passgo             511/tcp  # mynet-as<BR>, PassGo<BR>
+nt-printer-client/exec     512/tcp  # NT v4 Printer Client Source Ports<BR><br> NT v4 client uses random source port in 512-1023 range. Older NT v3x was limited to 721-731 port range, which restricted to ten the number of consecutive print jobs a client could initiate. <BR> , Remote Execution<BR><br> Allows remote execution of commands without logon. <BR> Security Concerns: <BR> - Susceptable to trust attacks <BR> - Usernames &amp; passwords are cleartext and reusable <BR> - Returns "Login incorrect" on incorrect usernames; allows username guessing. <BR> - Returns "Password incorrect" on incorrect password for valid username; allows scripted dictionary grinding. <BR> <br> As with all BSD "r" commands, client uses a random source port below 1023; causes rule headaches. <BR> 
+login                    513/tcp  # Remote Login<BR><br> Remote term service that operates via telnet process, but with automatic auth performed based on trust. If no trust, will prompt for username/password logon similar to telnet. <BR> Security Concerns: <BR> - Susceptable to trust attacks <BR> - Usernames &amp; passwords are cleartext and reusable <BR> <br> As with all BSD "r" commands, client uses a random source port below 1023; causes rule headaches. <BR> <br> CERT Advisories: CA-97.06 <BR> 
+shell                    514/tcp  # Remote Shell<BR><br> Provides shell connections from remote hosts. <BR> Security Concerns: <BR> - Susceptable to trust attacks <BR> - Usernames &amp; passwords are cleartext and reusable <BR> - Returns "Login incorrect" on incorrect usernames; allows username guessing. <BR> - Returns "Password incorrect" on incorrect password for valid username; allows scripted dictionary grinding. <BR> <br> As with all BSD "r" commands, client uses a random source port below 1023; causes rule headaches. <BR> 
+printer                  515/tcp  # lp &amp; lpr spooler<BR><br> Service port accepting remote print jobs. <BR> Security Concerns: <BR> - Susceptable to trust attacks <BR> - Usernames &amp; passwords are cleartext and reusable <BR> - Vul to assortment of printer service attacks (version dependent) <BR> <br> As with all BSD "r" commands, client uses a random source port below 1023; causes rule headaches. <BR> 
+videotex                 516/tcp  # videotex<BR>
+                         /tcp  # 
+ntalk                    518/tcp  # ntalk<br><br>(talkd)<br>
+utime                    519/tcp  # unixtime<BR>
+efs                      520/tcp  # Extended file name server<BR>
+ripng                    521/tcp  # ripng<BR>
+ulp                      522/tcp  # User Locator Service<BR><br> Used by collaborative apps to track/locate active users (eg: NetMeeting). <BR> Security Concerns: Provides valuable user info for user-level attacks. Do not allow across untrusted nets without encryption. <BR> 
+ibm-db2                  523/tcp  # IBM-DB2<BR>
+ncp                      524/tcp  # NCP<BR>
+timed                    525/tcp  # Time Server<BR>
+tempo                    526/tcp  # NewDate<BR>
+stx                      527/tcp  # Stock IXChange<BR>
+custix                   528/tcp  # Customer IXChange<BR>
+irc-serv                 529/tcp  # IRC-SERV<BR>
+courier                  530/tcp  # rpc<BR>
+conference               531/tcp  # Chat<BR>
+netnews                  532/tcp  # ReadNews<BR>
+netwall                  533/tcp  # For emergency broadcasts<BR>
+mm-admin                 534/tcp  # MegaMedia Admin<BR>
+iiop                     535/tcp  # iiop<BR>
+opalis-rdv               536/tcp  # opalis-rdv<BR>
+nmsp                     537/tcp  # Networked Media Streaming Protocol<BR>
+gdomap                   538/tcp  # gdomap<BR>
+apertus-ldp              539/tcp  # Apertus Tech Load Determination<BR>
+uucp                     540/tcp  # Unix to Unix Copy<BR><br> Original Unix copy service, becoming obsolete. Is still used to some remote sites where periodic connection &amp; download of spooled data files is the normal comm. <BR> Security Concern: Usernames &amp; passwords are cleartext and reusable. <BR> 
+uucp-rlogin              541/tcp  # uucp-rlogin<BR>
+commerce                 542/tcp  # commerce<BR>
+klogin                   543/tcp  # klogin<BR>
+kshell                   544/tcp  # krcmd<BR>
+appleqtcsrvr             545/tcp  # appleqtcsrvr<BR>
+dhcpv6-client            546/tcp  # DHCPv6 Client<BR>
+dhcpv6-server            547/tcp  # DHCPv6 Server<BR>
+afpovertcp               548/tcp  # AFP over TCP<BR>
+idfp                     549/tcp  # IDFP<BR>
+new-rwho                 550/tcp  # new-who<BR>
+cybercash                551/tcp  # cybercash<BR>
+deviceshare              552/tcp  # deviceshare<BR>
+pirp                     553/tcp  # pirp<BR>
+rtsp                     554/tcp  # Real Time Stream Control Protocol<BR>
+dsf                      555/tcp  # dsf<BR>
+remotefs                 556/tcp  # rfs server<BR>
+openvms-sysipc           557/tcp  # openvms-sysipc<BR>
+sdnskmp                  558/tcp  # SDNSKMP<BR>
+teedtap                  559/tcp  # TEEDTAP<BR>
+rmonitor                 560/tcp  # rmonitord<BR>
+monitor                  561/tcp  # monitor<BR>
+chshell                  562/tcp  # chcmd<BR>
+nntps                    563/tcp  # NNTP over TLS/SSL<BR><br> Was formerly snntp, snews <BR> 
+9pfs                     564/tcp  # Plan 9 file service<BR>
+whoami                   565/tcp  # whoami<BR>
+streettalk               566/tcp  # streettalk<BR>
+banyan-rpc               567/tcp  # banyan-rpc<BR>
+ms-shuttle               568/tcp  # microsoft shuttle<BR>
+ms-rome                  569/tcp  # microsoft rome<BR>
+meter                    570/tcp  # demon<BR>
+meter                    571/tcp  # udemon<BR>
+sonar                    572/tcp  # sonar<BR>
+banyan-vip               573/tcp  # banyan-vip<BR>
+ftp-agent                574/tcp  # FTP Software Agent System<BR>
+vemmi                    575/tcp  # VEMMI<BR>
+ipcd                     576/tcp  # ipcd<BR>
+vnas                     577/tcp  # vnas<BR>
+ipdd                     578/tcp  # ipdd<BR>
+decbsrv                  579/tcp  # decbsrv<BR>
+sntp-heartbeat           580/tcp  # SNTP HEARTBEAT<BR>
+bdp                      581/tcp  # Bundle Discovery Protocol<BR>
+scc-security             582/tcp  # SCC Security<BR>
+philips-vc               583/tcp  # Philips Video-Conferencing<BR>
+keyserver                584/tcp  # Key Server<BR>
+imap4-ssl                585/tcp  # IMAP4+SSL<BR>
+password-chg             586/tcp  # Password Change<BR>
+submission               587/tcp  # Submission<BR>
+cal                      588/tcp  # CAL<BR>
+eyelink                  589/tcp  # EyeLink<BR>
+tns-cml                  590/tcp  # TNS CML<BR>
+http-alt                 591/tcp  # FileMaker, Inc. - HTTP Alternative<BR>
+eudora-set               592/tcp  # Eudora Set<BR>
+http-rpc-epmap           593/tcp  # HTTP RPC Ep Map<BR><br> Enabled on NT servers running SNA RPC. <BR> 
+tpip                     594/tcp  # TPIP<BR>
+cab-protocol             595/tcp  # CAB Protocol<BR>
+smsd                     596/tcp  # SMSD<BR>
+ptcnameservice           597/tcp  # PTC Name Service<BR>
+sco-websrvmg3/sco-websrvrmg3     598/tcp  # SCO Web Server Manager 3<BR>, sco-websrvrmg3<br><br>sco web server manager 3<br>
+acp                      599/tcp  # Aeolon Core Protocol<BR>
+ipcserver                600/tcp  # Sun IPC server<BR>
+urm                      606/tcp  # Cray Unified Resource Manager<BR>
+nqs                      607/tcp  # nqs<BR>
+sift-uft                 608/tcp  # Sender-Initiated/Unsolicited File Tx<BR>
+npmp-trap                609/tcp  # npmp-trap<BR>
+npmp-local               610/tcp  # npmp-local<BR>
+npmp-gui                 611/tcp  # npmp-gui<BR>
+hmmp-ind                 612/tcp  # HMMP Indication<BR>
+hmmp-op                  613/tcp  # HMMP Operation<BR>
+sshell                   614/tcp  # SSLshell<BR>
+sco-inetmgr              615/tcp  # SCO Internet Configuration Manager<BR>
+sco-sysmgr               616/tcp  # SCO System Administration Server<BR>
+sco-dtmgr                617/tcp  # SCO Desktop Administration Server<BR>
+dei-icda                 618/tcp  # DEI-ICDA<BR>
+digital-evm              619/tcp  # Digital EVM<BR>
+sco-websrvrmgr           620/tcp  # SCO WebServer Manager<BR>
+escp-ip                  621/tcp  # ESCP<BR>
+collaborator             622/tcp  # Collaborator<BR>
+aux_bus_shunt            623/tcp  # Aux Bus Shunt<BR>
+cryptoadmin              624/tcp  # Crypto Admin<BR>
+dec_dlm                  625/tcp  # DEC DLM<BR>
+asia                     626/tcp  # ASIA<BR>
+passgo-tivoli            627/tcp  # PassGo Tivoli<BR>
+qmqp                     628/tcp  # QMQP<BR>
+3com-amp3                629/tcp  # 3Com AMP3<BR>
+rda                      630/tcp  # RDA<BR>
+ipp                      631/tcp  # Internet Printing Protocol<BR> 
+bmpp                     632/tcp  # bmpp<BR>
+servstat                 633/tcp  # Service Status update (Sterling Software)<BR>
+ginad                    634/tcp  # ginad<BR>
+linux-mountd/rlzdbase     635/tcp  # Linux mountd port<BR><br> Linux mountd rpc port, supports NFS-type services. <BR> Security Concerns: Popular attack target on Linux hosts, sue to buffer overflow vul on some Linux versions. <BR> , RLZ DBase<BR>
+ldaps                    636/tcp  # LDAP using TLS/SSL (was sldap)<BR>
+lanserver                637/tcp  # lanserver<BR>
+mcns-sec                 638/tcp  # mcns-sec<BR>
+msdp                     639/tcp  # MSDP<BR>
+entrust-sps              640/tcp  # Entrust-SPS<BR>
+repcmd                   641/tcp  # RepCmd<BR>
+esro-emsdp               642/tcp  # ESRO-EMSDP v1.3<BR>
+sanity                   643/tcp  # SANity<BR>
+dwr                      644/tcp  # dwr<BR>
+pssc                     645/tcp  # PCCS<BR>
+ldp                      646/tcp  # 
+rrp                      648/tcp  # Registry Registrar Protocol (RRP)<BR>
+aminet                   649/tcp  # Aminet<BR>
+obex                     650/tcp  # OBEX<BR>
+ieee-mms                 651/tcp  # IEEE MMS<BR>
+udir-dtcp/udlr-dtcp      652/tcp  # UDLR_DTCP<BR>, udlr-dtcp<br><br>udlr_dtcp<br>
+repscmd                  653/tcp  # RepCmd<BR>
+aodv                     654/tcp  # AODV<BR>
+tinc                     655/tcp  # TINC<BR>
+spmp                     656/tcp  # SPMP<BR>
+rmc                      657/tcp  # RMC<BR>
+tenfold                  658/tcp  # TenFold<BR>
+url-rendezvous           659/tcp  # URL Rendezvous<BR>
+mac-srvr-admin           660/tcp  # MacOS<BR>
+hap                      661/tcp  # HAP<BR>
+pftp                     662/tcp  # PFTP<BR>
+purenoise                663/tcp  # PureNoise<BR>
+secure-aux-bus           664/tcp  # Secure Aux Bus<BR>
+sun-dr                   665/tcp  # Sun DR<BR>
+mdqs/doom                666/tcp  # MDQS<BR>, doom Id Software<BR><br> Might get shot!! &lt;Grin Seriously, root-level exploit exists thru Doom on some Unix hosts (Linux confirmed). <BR> 
+disclose                 667/tcp  # Campaign Contribution Disclosures<BR>
+mecomm                   668/tcp  # MeComm<BR>
+meregister               669/tcp  # MeRegister<BR>
+vacdsm-sws               670/tcp  # VACDSM-SWS<BR>
+vacdsm-app               671/tcp  # VACDSM-APP<BR>
+vpps-qua                 672/tcp  # VPPS-QUA<BR>
+cimplex                  673/tcp  # CIMPLEX<BR>
+acap                     674/tcp  # ACAP<BR>
+dctp                     675/tcp  # DCTP<BR>
+vpps-via                 676/tcp  # VPPS Via<BR>
+vpp                      677/tcp  # Virtual Presence Protocol<BR>
+ggf-ncp                  678/tcp  # GNU Generation Foundation NCP<BR>
+mrm                      679/tcp  # MRM<BR>
+entrust-aaas             680/tcp  # Entrust-aaas<BR>
+entrust-aams             681/tcp  # Entrust-aams<BR>
+xfr                      682/tcp  # XFR<BR>
+corba-iiop               683/tcp  # CORBA IIOP<BR>
+corba-iiop-ssl           684/tcp  # CORBA IIOP SSL<BR>
+mdc-portmapper           685/tcp  # MDC Port Mapper<BR>
+hcp-wismar               686/tcp  # Hardware Control Protocol Wismar<BR>
+asipregistry             687/tcp  # asipregistry<BR>
+realm-rusd               688/tcp  # REALM-RUSD<BR>
+nmap                     689/tcp  # NMAP<BR>
+vatp                     690/tcp  # VATP<BR>
+msexch-routing           691/tcp  # MS Exchange Routing<BR>
+hyperwave-isp            692/tcp  # Hyperwave-ISP<BR>
+connedp/connendp         693/tcp  # connendp<BR>, connendp<br><br>connendp<br>
+ha-cluster               694/tcp  # ha-cluster<BR>
+elcsd                    704/tcp  # errlog copy/server daemon<BR>
+agentx                   705/tcp  # AgentX<BR>
+borland-dsj              707/tcp  # Borland DSJ<BR>
+entrust-kmsh             709/tcp  # Entrust Key Mgmt Service Handler<BR>
+entrust-ash              710/tcp  # Entrust Admin Service Handler<BR>
+cisco-tdp                711/tcp  # Cisco TDP<BR>
+nt                       721/tcp  # Windows NT v3.5x Printer Ports<BR><br> Print jobs from NT v3.5x hosts are sourced from tcp 721-731, sequentially. Changed under NT v4.0, the lpd client now uses random source port between 512 and 1023. Was changed to provide higher consecutive print volume. <BR> 
+netviewdm1               729/tcp  # IBM NetView DM/6000 Server/Client<BR>
+netviewdm2               730/tcp  # IBM NetView DM/6000 send/tcp<BR>
+netviewdm3               731/tcp  # IBM NetView DM/6000 receive/tcp<BR>
+netgw                    741/tcp  # netGW<BR>
+netrcs                   742/tcp  # Network based Rev. Cont. Sys.<BR>
+flexlm                   744/tcp  # Flexible License Manager<BR>
+fujitsu-dev              747/tcp  # Fujitsu Device Control<BR>
+ris-cm                   748/tcp  # Russell Info Sci Calendar Manager<BR>
+kerberos-adm             749/tcp  # kerberos administration<BR>
+rfile                    750/tcp  # rfile<BR>
+pump                     751/tcp  # Pump<BR>
+qrh                      752/tcp  # qrh<BR>
+rrh                      753/tcp  # rrh<BR>
+tell                     754/tcp  # send<BR>
+nlogin                   758/tcp  # nlogin<BR>
+con                      759/tcp  # con<BR>
+ns                       760/tcp  # ns<BR>
+rxe                      761/tcp  # rxe<BR>
+quotad                   762/tcp  # quotad<BR>
+cycleserv                763/tcp  # cycleserv<BR>
+omserv                   764/tcp  # omserv<BR>
+webster                  765/tcp  # webster<BR>
+phonebook                767/tcp  # phone<BR>
+vid                      769/tcp  # vid<BR>
+cadlock                  770/tcp  # cadlock<BR>
+rtip                     771/tcp  # rtip<BR>
+cycleserv2               772/tcp  # cycleserv2<BR>
+submit                   773/tcp  # submit<BR>
+rpasswd                  774/tcp  # rpasswd<BR>
+entomb/sms_db            775/tcp  # entomb<BR>, Microsoft NT SMS Database<BR>
+wpages                   776/tcp  # wpages<BR>
+multiling-http/sms_update     777/tcp  # Multiling HTTP<BR>, Microsoft NT SMS Update<BR>
+wpgs                     780/tcp  # wpgs<BR>
+concert                  786/tcp  # Concert<BR>
+qsc                      787/tcp  # QSC<BR>
+off-explorer/mdbs_daemon     800/tcp  # Office Explorer<BR>Security Concerns: Allows remote viewing of a user's web cache. Traversal bug also allows viewing of files outside cache using "GET......" style commands. <BR> , mdbs_daemon<BR>
+device                   801/tcp  # device<BR>
+fcp-tcp                  810/tcp  # FCP<BR>
+itm-mcell-s              828/tcp  # itm-mcell-s<BR>
+pkix-3-ca-ra             829/tcp  # PKIX-3 CA/RA<BR>
+rsync                    873/tcp  # rsync<BR>
+iclcnet-locate           886/tcp  # ICL coNETion locate server<BR>
+iclcnet_svinfo           887/tcp  # ICL coNETion server info<BR>
+accessbuilder/cddbp      888/tcp  # AccessBuilder<BR>, CD Database Protocol<BR>
+fw-1_http/omginitialrefs     900/tcp  # Firewall-1 Web Access Port (CheckPoint)<BR><br> FW-1's remote user access/auth port via browser (http). Is alternative to telnet to FW's tcp 259. Via browser connection, user can auth and use all permitted web resources of the internal network. <BR> <br> FW-1 Ports: tcp 256, tcp/udp 259, udp 500, tcp 900 <BR> , OMG Initial Refs<BR>
+smpnamers                901/tcp  # SMPNAMERES<BR>
+ideaform-chat/ideafarm-chat     902/tcp  # IdeaFarm-Chat<BR>, ideafarm-chat<br><br>ideafarm-chat<br>
+ideaform-catch/ideafarm-catch     903/tcp  # IdeaFarm-Catch<BR>, ideafarm-catch<br><br>ideafarm-catch<br>
+xact-backup              911/tcp  # xact-backup<BR>
+ftps-data                989/tcp  # Secure FTP Data Port (TLS/SSL)<BR>
+ftps                     990/tcp  # Secure FTP Control Port (TLS/SSL)<BR>
+nas                      991/tcp  # Netnews Administration System<BR>
+telnets                  992/tcp  # telnet protocol over TLS/SSL<BR>
+imaps                    993/tcp  # imap4 protocol over TLS/SSL<BR>
+ircs                     994/tcp  # irc protocol over TLS/SSL<BR>
+pop3s                    995/tcp  # Secured POP3 (TLS/SSL) [was spop3]<BR><br> SSL-encrypted POP3 service for encrypted mail transfer. Also used by mail servers such as NT's Exchange Server for user auth. <BR> 
+vsinet                   996/tcp  # vsinet<BR>
+maitrd                   997/tcp  # maitrd<BR>
+busboy                   998/tcp  # busboy<BR>
+garcon/puprouter         999/tcp  # garcon<BR>, puprouter<BR>
+cadlock2                 1000/tcp  # Cadlock-2<BR>
+surf                     1010/tcp  # Surf<BR>
+--Buffer--               1023/tcp  # Unused Buffer Ports<BR>
+blackjack/listener       1025/tcp  # Network Blackjack<BR>, System V R3 listener; used by uucp<BR>
+iad1                     1030/tcp  # BBN IAD<BR>
+iad2/inetinfo            1031/tcp  # BBN IAD<BR>, NT's Inetinfo<BR>
+iad3                     1032/tcp  # BBN IAD<BR>
+neod1                    1047/tcp  # Sun's NEO Object Request Broker<BR>
+neod2                    1048/tcp  # Sun's NEO Object Request Broker<BR>
+backdoor-port            1049/tcp  # Reported Backdoor<BR><br> Reported to have appeared on Linux hosts as a hacked backdoor, along with tcp 65534 (both open on same host). Little else known. <BR> 
+nim                      1058/tcp  # nim<BR>
+nimreg                   1059/tcp  # nimreg<BR>
+instl_boots              1067/tcp  # Instal Bootstrap Protocol Server<BR>
+instl_bootc              1068/tcp  # Instal Bootstrap Protocol Client<BR>
+socks                    1080/tcp  # SOCKS<BR><br> SOCKS port, used to support outbound tcp services (FTP, HTTP, etc.). Vulnerable similar to FTP Bounce, in that attacker can connect to this port and "bounce" out to another internal host. Done to either reach a protected internal host or mask true source of attack. <BR> <br> Listen for connection attempts to this port -- good sign of port scans, SOCKS-probes, or bounce attacks. <BR> <br> Also a means to access restricted resources. Example: Bouncing off a MILNET gateway SOCKS port allows attacker to access web sites, etc. that were restricted only to .mil domain hosts. <BR> 
+ansoft-lm-1              1083/tcp  # Anasoft License Manager<BR>
+ansoft-lm-2              1084/tcp  # Anasoft License Manager<BR>
+webobjects               1085/tcp  # Web Objects<BR>
+sunclustermgr            1097/tcp  # Sun Cluster Manager<BR>
+rmiactivation            1098/tcp  # RMI Activation<BR>
+rmiregistry              1099/tcp  # RMI Registry<BR>
+kpop                     1109/tcp  # Pop with Kerberos<BR>
+nfsd-status              1110/tcp  # NFSD cluster status info<BR>
+lmsocialserver           1111/tcp  # LM Social Server<BR>
+mini-sql                 1114/tcp  # Mini SQL<BR>
+murray                   1123/tcp  # Murray<BR>
+nfa                      1155/tcp  # Network File Access<BR>
+health-polling           1161/tcp  # Health Polling<BR>
+health-trap              1162/tcp  # Health Trap<BR>
+                         /tcp  # 
+mc-client                1180/tcp  # Millicent Client Proxy<BR>
+scol                     1200/tcp  # SCOL<BR>
+caiccipc                 1202/tcp  # caiccipc<BR>
+lupa                     1212/tcp  # lupa<BR>
+scanstat-1               1215/tcp  # scanSTAT 1.0<BR>
+nerv                     1222/tcp  # SNI R&amp;D network<BR>
+search-agent             1234/tcp  # Infoseek Search Agent<BR>
+vosiac                   1235/tcp  # Vosiac<BR><br> Audio/video protocol based on Video Datagram Protocol (VDP). Also uses udp 61801-61821. <BR> 
+nmsd                     1239/tcp  # NMSD<BR>
+subsevel-infection       1243/tcp  # SubSevel Infection Port<BR><br> One of the known SubSeven tcp control ports. Others include tcp 6711, 6712, 6713, 6776. Default is tcp 27374. <BR> 
+hermes                   1248/tcp  # hermes<BR>
+h323hostcallsc           1300/tcp  # H.323 Host Call Secure<BR>
+husky                    1310/tcp  # Husky<BR>
+rxmon                    1311/tcp  # RxMon<BR>
+sti-envision             1312/tcp  # STI Envision<BR>
+bmc_patroldb/dynamo-db     1313/tcp  # BMC_Patrol Database<BR>, Dynamo Database<BR><br> Test Dynamo app's database port. Used on Dynamo server for testing (provides "some" db for the Dynamo app to test functionality with upon initial install. Used when a live db is unavailable or undesirable for test. <BR> 
+pdps                     1314/tcp  # Photoscript Distributed Print System<BR>
+panja-axbnet             1320/tcp  # Panja-AXBNET<BR>
+pip                      1321/tcp  # 
+digital-notary           1335/tcp  # Digital Notary Protocol<BR>
+VMOTelnet                1342/tcp  # VMODEM telnet redirect<BR>
+vpjp                     1345/tcp  # VPJP<BR>
+alta-ana-lm              1346/tcp  # Alta Analytics License Manager<BR>
+bbn-mmc                  1347/tcp  # Multimedia conferencing<BR>
+bbn-mmx                  1348/tcp  # Multimedia conferencing<BR>
+sbook                    1349/tcp  # Registration Network Protocol<BR>
+editbench                1350/tcp  # Registration Network Protocol<BR>
+equationbuilder          1351/tcp  # Digital Tool Works (MIT)<BR>
+lotusnote                1352/tcp  # Lotus Notes<BR><br> Lotus Notes provides a range of services on tcp 1352, including email (others include replication to DRA-mirrored systems, app client/server calls, etc). Vulnerable to much of same attacks poss. on tcp 25, including data disclosure, modification, and forgery, plus DOS flooding. <BR> 
+relief                   1353/tcp  # Relief Consulting<BR>
+rightbrain               1354/tcp  # RightBrain Software<BR>
+cuillamartin             1356/tcp  # CuillaMartin Company<BR>
+pegboard                 1357/tcp  # Electronic PegBoard<BR>
+connlcli                 1358/tcp  # CONNLCLI<BR>
+ftsrv                    1359/tcp  # FTSRV<BR>
+mimer                    1360/tcp  # MIMER<BR>
+linx                     1361/tcp  # LinX<BR>
+timeflies                1362/tcp  # TimeFlies<BR>
+ndm-requester            1363/tcp  # Network DataMover Requester<BR>
+ndm-server               1364/tcp  # Network DataMover Server<BR>
+adapt-sna                1365/tcp  # Network Software Associates<BR>
+netware-csp              1366/tcp  # Novell NetWare Comm Service Platform<BR>
+dcs                      1367/tcp  # DCS<BR>
+screencast               1368/tcp  # ScreenCast<BR>
+gv-us                    1369/tcp  # GlobalView to Unix Shell<BR>
+us-gv                    1370/tcp  # Unix Shell to GlobalView<BR>
+fc-cli                   1371/tcp  # Fujitsu Config Protocol<BR>
+fc-ser                   1372/tcp  # Fujitsu Config Protocol<BR>
+chromagrafx              1373/tcp  # Chromagrafx<BR>
+molly                    1374/tcp  # EPI Software Systems<BR>
+bytex                    1375/tcp  # Bytex<BR>
+ibm-pps                  1376/tcp  # IBM Person to Person Software<BR>
+cichlid                  1377/tcp  # Cichlid License Manager<BR>
+elan                     1378/tcp  # Elan License Manager<BR>
+dbreporter               1379/tcp  # Integrity Solutions<BR>
+telesis-licman           1380/tcp  # Telesis Network License Manager<BR>
+apple-licman             1381/tcp  # Apple Network License Manager<BR>
+udt_os                   1382/tcp  # udt_os<BR>
+gwha                     1383/tcp  # GW Hannaway Network License Manager<BR>
+os-licman                1384/tcp  # Objective Solutions License Manager<BR>
+atex_elmd                1385/tcp  # Atex Publishing License Manager<BR>
+checksum                 1386/tcp  # CheckSum License Manager<BR>
+cadsi-lm                 1387/tcp  # CAD Software Inc LM<BR>
+objective-dbc            1388/tcp  # Objective Solutions DataBase Cache<BR>
+iclpv-dm                 1389/tcp  # Document Manager<BR>
+iclpv-sc                 1390/tcp  # Storage Controller<BR>
+iclpv-sas                1391/tcp  # Storage Access Server<BR>
+iclpv-pm                 1392/tcp  # Print Manager<BR>
+iclpv-nls                1393/tcp  # Network Log Server<BR>
+iclpv-nlc                1394/tcp  # Network Log Client<BR>
+iclpv-wsm                1395/tcp  # PC Workstation Manager software<BR>
+dvl-activemail           1396/tcp  # DVL Active Mail<BR>
+audio-activmail          1397/tcp  # Audio Active Mail<BR>
+video-activmail          1398/tcp  # Video Active Mail<BR>
+cadkey-licman            1399/tcp  # Cadkey License Manager<BR>
+cadkey-tablet            1400/tcp  # Cadkey Tablet Daemon<BR>
+goldleaf-licman          1401/tcp  # Goldleaf License Manager<BR>
+prm-sm-np                1402/tcp  # Prospero Resource Manager<BR>
+prm-nm-np                1403/tcp  # Prospero Resource Manager<BR>
+igi-lm                   1404/tcp  # Infinite Graphics License Manager<BR>
+ibm-res                  1405/tcp  # IBM Remote Execution Starter<BR>
+netlabs-lm               1406/tcp  # NetLabs License Manager<BR>
+dbsa-lm                  1407/tcp  # DBSA License Manager<BR>
+sophia-lm                1408/tcp  # Sophia License Manager<BR>
+here-lm                  1409/tcp  # Here License Manager<BR>
+hiq                      1410/tcp  # HiQ License Manager<BR>
+af                       1411/tcp  # AudioFile<BR>
+innosys                  1412/tcp  # InnoSys<BR>
+innosys-acl              1413/tcp  # Innosys-ACL<BR>
+ibm-mqseries             1414/tcp  # IBM MQSeries<BR>
+dbstar                   1415/tcp  # DBStar<BR>
+novell-lu6.2             1416/tcp  # Novell LU6.2<BR>
+timbuktu-srv1            1417/tcp  # Timbuktu Service 1 Port<BR>
+timbuktu-srv2            1418/tcp  # Timbuktu Service 2 Port<BR>
+timbuktu-srv3            1419/tcp  # Timbuktu Service 3 Port<BR>
+timbuktu-srv4            1420/tcp  # Timbuktu Service 4 Port<BR>
+gandalf-lm               1421/tcp  # Gandalf License Manager<BR>
+autodesk-lm              1422/tcp  # Autodesk License Manager<BR>
+essbase                  1423/tcp  # Essbase Arbor Software<BR>
+hybrid                   1424/tcp  # Hybrid Encryption Protocol<BR>
+zion-lm                  1425/tcp  # Zion Software License Manager<BR>
+sais                     1426/tcp  # Satellite-data Acquisition System 1<BR>
+mloadd                   1427/tcp  # mloadd monitoring tool<BR>
+informatik-lm            1428/tcp  # Informatik License Manager<BR>
+nms                      1429/tcp  # Hypercom NMS<BR>
+tpdu                     1430/tcp  # Hypercom TPDU<BR>
+rgtp                     1431/tcp  # Reverse Gossip Transport<BR>
+blueberry-lm             1432/tcp  # Blueberry Software License Manager<BR>
+ms-sql-s                 1433/tcp  # Microsoft SQL Server<BR><br> Also known as "TDS" for "Tabular Data Stream" DB-library, used by Microsoft's SQL server. <BR> 
+ms-sql-m                 1434/tcp  # Microsoft SQL Monitor<BR>
+ibm-cics                 1435/tcp  # IBM CICS<BR>
+saism                    1436/tcp  # Satellite-data Acquisition System 2<BR>
+tabula                   1437/tcp  # Tabula<BR>
+eicon-server             1438/tcp  # Eicon Security Agent/Server<BR>
+eicon-x25                1439/tcp  # Eicon X25/SNA Gateway<BR>
+eicon-slp                1440/tcp  # Eicon Service Location Protocol<BR>
+cadis-1                  1441/tcp  # Cadis License Management<BR>
+cadis-2                  1442/tcp  # Cadis License Management<BR>
+ies-lm                   1443/tcp  # Integrated Engineering Software<BR>
+marcam-lm                1444/tcp  # Marcam License Management<BR>
+proxima-lm               1445/tcp  # Proxima License Manager<BR>
+ora-lm                   1446/tcp  # Optical Research Associates LM<BR>
+apri-lm                  1447/tcp  # Applied Parallel Research LM<BR>
+oc-lm                    1448/tcp  # OpenConnect License Manager<BR>
+peport                   1449/tcp  # PEport<BR>
+dwf                      1450/tcp  # Tandem Distrib Workbench Facility<BR>
+infoman                  1451/tcp  # IBM Info Management<BR>
+gtegsc-lm                1452/tcp  # GTE Government Systems LM<BR>
+genie-lm                 1453/tcp  # Genie License Manager<BR>
+interhdl_elmd            1454/tcp  # interHDL License Manager<BR>
+esl-lm                   1455/tcp  # ESL License Manager<BR>
+dca                      1456/tcp  # DCA<BR>
+valisys-lm               1457/tcp  # Valisys License Manager<BR>
+nrcabq-lm                1458/tcp  # Nichols Research Corp.<BR>
+proshare1                1459/tcp  # Proshare Notebook Application<BR>
+proshare2                1460/tcp  # Proshare Notebook Application<BR>
+ibm_wrless_lan           1461/tcp  # IBM Wireless LAN<BR>
+world-lm                 1462/tcp  # World License Manager<BR>
+nucleus                  1463/tcp  # Nucleus<BR>
+msl_lmd                  1464/tcp  # MSL License Manager<BR>
+pipes                    1465/tcp  # Pipes Platform<BR>
+oceansoft-lm             1466/tcp  # Ocean Software License Manager<BR>
+csdmbase                 1467/tcp  # CSDMBASE<BR>
+csdm                     1468/tcp  # CSDM<BR>
+aal-lm                   1469/tcp  # Active Analysis Limited LM<BR>
+uaiact                   1470/tcp  # Universal Analytics<BR>
+csdmbase                 1471/tcp  # csdmbase<BR>
+csdm                     1472/tcp  # csdm<BR>
+openmath                 1473/tcp  # OpenMath<BR>
+telefinder               1474/tcp  # Telefinder<BR>
+taligent-lm              1475/tcp  # Taligent License Manager<BR>
+clvm-cfg                 1476/tcp  # clvm-cfg<BR>
+ms-sna-server            1477/tcp  # ms-sna-server<BR>
+ms-sna-base              1478/tcp  # ms-sna-base<BR>
+dberegister              1479/tcp  # dberegister<BR>
+pacerforum               1480/tcp  # PacerForum<BR>
+airs                     1481/tcp  # AIRS<BR>
+miteksys-lm              1482/tcp  # Miteksys License Manager<BR>
+afs                      1483/tcp  # AFS License Manager<BR>
+confluent                1484/tcp  # Confluent License Manager<BR>
+lansource                1485/tcp  # LANSource<BR>
+nms_topo_serv            1486/tcp  # nms_topo_serv<BR>
+localinfosrvr            1487/tcp  # LocalInfoSrvr<BR>
+docstor                  1488/tcp  # DocStor<BR>
+dmdocbroker              1489/tcp  # dmdocbroker<BR>
+vocaltec/insitu-conf     1490/tcp  # VocalTec Internet Phone<BR><br> Video-Teleconferencing. Also uses tcp 6670 &amp; 25793, tcp/udp 22555. <BR> , insitu-conf<BR>
+anynetgateway            1491/tcp  # Anynet Gateway<BR>
+stone-design-1           1492/tcp  # Stone Design 1<BR>
+netmap_lm                1493/tcp  # Netmap License Manager<BR>
+ica/winframe             1494/tcp  # ICA<BR>, WinFrame remote LAN service<br> Used on MS hosts for ICA Citrix Client<BR> 
+cvc                      1495/tcp  # CVC<BR>
+liberty-lm               1496/tcp  # Liberty License Manager<BR>
+rfx-lm                   1497/tcp  # RFX License Manager<BR>
+watcom-sql/sybase-sqlany     1498/tcp  # Watcom SQL<BR>, Sybase SQL Any<BR>
+fhc                      1499/tcp  # Federico Heinz Consultora<BR>
+vlsi-lm                  1500/tcp  # VLSI License Manager<BR>
+saiscm                   1501/tcp  # Satellite-data Acquisition System 3<BR>
+shivadiscovery           1502/tcp  # Shiva<BR>
+imtc-mcs/netmeeting      1503/tcp  # Databeam T-120<BR><br> Used by multimedia collaborative apps such as NetMeeting to establish and control a collaborative session. <BR> , Microsoft NetMeeting<BR>
+evb-elm                  1504/tcp  # EVB Software Engineering License Mgr<BR>
+funkproxy                1505/tcp  # Funk Software, Inc.<BR>
+utcd                     1506/tcp  # Universal Time daemon (utcd)<BR>
+symplex                  1507/tcp  # symplex<BR>
+diagmond                 1508/tcp  # Diagnostic Monitor<BR>
+robcad-lm                1509/tcp  # Robcad License Manager<BR>
+mvx-lm                   1510/tcp  # Midland Valley Exploration LM<BR>
+3l-l1                    1511/tcp  # 3l-l1<BR>
+wins                     1512/tcp  # Windows Internet Name Service (WINS)<BR><br> Was reserved by Microsoft for WINS, however WINS actually uses old ARPAnet Naming Service port (tcp 42). <BR> 
+fujitsu-dtc              1513/tcp  # Fujitsu Systems Bus. of America, Inc<BR>
+fujitsu-dtcns            1514/tcp  # Fujitsu Systems Business of America, Inc<BR>
+ifor-protocol            1515/tcp  # ifor-protocol<BR>
+vpad                     1516/tcp  # Virtual Places Audio data<BR>
+vpac                     1517/tcp  # Virtual Places Audio control<BR>
+vpvd                     1518/tcp  # Virtual Places Video data<BR>
+vpvc                     1519/tcp  # Virtual Places Video control<BR>
+atm-zip-office           1520/tcp  # ATM Zip Office<BR>
+ncube-lm/sqlnet          1521/tcp  # nCube License Manager<BR>, SQLnet<BR>
+ricardo-lm               1522/tcp  # Ricardo North America LM<BR>
+sqlnet2/cichild-lm       1523/tcp  # SQLnet2<BR><br> Oracle connection thru firewall. <BR> , cichild<BR>
+ingreslock               1524/tcp  # ingres<BR><br> Popular tcp port for backdoor (eg: Trinoo relay slave). Watch for connection attempts to it at perimeter and within network. <BR> 
+orasrv/prospero-np       1525/tcp  # Oracle<BR>, Prospero Directory Service non-priv<BR>
+pdap-np/sqlnet           1526/tcp  # Prospero Data Access Prot non-priv<BR>, SQLnet<BR>
+tlisrv                   1527/tcp  # Oracle<BR>
+mciautoreg               1528/tcp  # micautoreg<BR>
+coauthor                 1529/tcp  # Oracle<BR>
+rap-service              1530/tcp  # rap-service<BR>
+rap-listen               1531/tcp  # rap-listen<BR>
+miroconnect              1532/tcp  # miroconnect<BR>
+virtual-places           1533/tcp  # Virtual Places Software<BR>
+micromuse-lm             1534/tcp  # Micromuse License Manager<BR>
+ampr-info                1535/tcp  # ampr-info<BR>
+ampr-inter               1536/tcp  # ampr-inter<BR>
+sdsc-lm                  1537/tcp  # isi-lm<BR>
+3ds-lm                   1538/tcp  # 3ds-lm<BR>
+intellistor-lm           1539/tcp  # Intellistor License Manager<BR>
+rds                      1540/tcp  # rds<BR>
+rds2                     1541/tcp  # rds2<BR>
+gridgen-elmd             1542/tcp  # gridgen-elmd<BR>
+simba-cs                 1543/tcp  # simba-cs<BR>
+aspeclmd                 1544/tcp  # aspeclmd<BR>
+vistium-share            1545/tcp  # vistium-share<BR>
+abbaccuray               1546/tcp  # abbaccuray<BR>
+laplink                  1547/tcp  # laplink<BR>
+axon-lm                  1548/tcp  # Axon License Manager<BR>
+shivahose                1549/tcp  # Shiva Hose<BR>
+3m-image-lm              1550/tcp  # Image Storage LM, 3M Inc<BR>
+hecmtl-db                1551/tcp  # HECMTL-DB<BR>
+pciarray                 1552/tcp  # pciarray<BR>
+sna-cs                   1553/tcp  # sna-cs<BR>
+caci-lm                  1554/tcp  # CACI Products Company LM<BR>
+livelan                  1555/tcp  # livelan<BR>
+ashwin                   1556/tcp  # AshWin CI Tecnologies<BR>
+arbortext-lm             1557/tcp  # ArborText License Manager<BR>
+xingmpeg                 1558/tcp  # xingmpeg<BR>
+web2host                 1559/tcp  # web2host<BR>
+asci-val                 1560/tcp  # asci-val<BR>
+facilityview             1561/tcp  # facilityview<BR>
+pconnectmgr              1562/tcp  # pconnectmgr<BR>
+cadabra-lm               1563/tcp  # Cadabra License Manager<BR>
+pay-per-view             1564/tcp  # Pay-Per-View<BR>
+winddlb                  1565/tcp  # WinDD<BR>
+corelvideo               1566/tcp  # CORELVIDEO<BR>
+jlicelmd                 1567/tcp  # jlicelmd<BR>
+tsspmap                  1568/tcp  # tsspmap<BR>
+ets                      1569/tcp  # ets<BR>
+orbixd                   1570/tcp  # orbixd<BR>
+rdb-dbs-disp             1571/tcp  # Oracle Remote Data Base<BR>
+chip-lm                  1572/tcp  # Chipcom License Manager<BR>
+itscomm-ns               1573/tcp  # itscomm-ns<BR>
+mvel-lm                  1574/tcp  # mvel-lm<BR>
+oraclenames              1575/tcp  # oraclenames<BR>
+moldflow-lm              1576/tcp  # moldflow-lm<BR>
+hypercube-lm             1577/tcp  # hypercube-lm<BR>
+jacobus-lm               1578/tcp  # Jacobus License Manager<BR>
+ioc-sea-lm               1579/tcp  # ioc-sea-lm<BR>
+tn-tl-r1                 1580/tcp  # tn-tl-r1<BR>
+mil-2045-47001/vmf-msg-port     1581/tcp  # MIL-2045-47001<BR>, vmf-msg-port<BR>
+msims                    1582/tcp  # MSIMS<BR>
+simbaexpress             1583/tcp  # simbaexpress<BR>
+tn-tl-fd2                1584/tcp  # tn-tl-fd2<BR>
+intv                     1585/tcp  # intv<BR>
+ibm-abtact               1586/tcp  # ibm-abtact<BR>
+pra_elmd                 1587/tcp  # pra_elmd<BR>
+triquest-lm              1588/tcp  # triquest-lm<BR>
+vqp                      1589/tcp  # VQP<BR>
+gemini-lm                1590/tcp  # gemini-lm<BR>
+ncpm-pm                  1591/tcp  # ncpm-pm<BR>
+commonspace              1592/tcp  # commonspace<BR>
+mainsoft-lm              1593/tcp  # mainsoft-lm<BR>
+sixtrak                  1594/tcp  # sixtrak<BR>
+radio                    1595/tcp  # radio<BR>
+radio-sm                 1596/tcp  # radio-sm<BR>
+orbplus-iiop             1597/tcp  # orbplus-iiop<BR>
+picknfs                  1598/tcp  # picknfs<BR>
+simbaservices            1599/tcp  # simbaservices<BR>
+issd                     1600/tcp  # issd<BR>
+aas                      1601/tcp  # aas<BR>
+inspect                  1602/tcp  # inspect<BR>
+picodbc                  1603/tcp  # pickodbc<BR>
+icabrowser               1604/tcp  # icabrowser<BR>
+slp                      1605/tcp  # Salutation Mgr (Salutation Protocol)<BR>
+slm-api                  1606/tcp  # Salutation Manager (SLM-API)<BR>
+stt                      1607/tcp  # stt<BR>
+smart-lm                 1608/tcp  # Smart Corp. License Manager<BR>
+isysg-lm                 1609/tcp  # isysg-lm<BR>
+taurus-wh                1610/tcp  # taurus-wh<BR>
+ill                      1611/tcp  # Inter Library Loan<BR>
+netbill-trans            1612/tcp  # NetBill Transaction Server<BR>
+netbill-keyrep           1613/tcp  # NetBill Key Repository<BR>
+netbill-cred             1614/tcp  # NetBill Credential Server<BR>
+netbill-auth             1615/tcp  # NetBill Authorization Server<BR>
+netbill-prod             1616/tcp  # NetBill Product Server<BR>
+nimrod-agent             1617/tcp  # Nimrod Inter-Agent Communication<BR>
+skytelnet                1618/tcp  # skytelnet<BR>
+xs-openstorage           1619/tcp  # xs-openstorage<BR>
+faxportwinport           1620/tcp  # Faxportwinport<BR>
+softdataphone            1621/tcp  # Softdataphone<BR>
+ontime                   1622/tcp  # OnTime Calendar Services<BR>
+jaleosnd                 1623/tcp  # jaleosnd<BR>
+udp-sr-port              1624/tcp  # udp-sr-port<BR>
+svs-omagent              1625/tcp  # svs-omagent<BR>
+shockwave                1626/tcp  # Shockwave<BR>
+t128-gateway             1627/tcp  # T.128 Gateway<BR>
+longtalk-norm/lontalk-norm     1628/tcp  # LongTalk normal<BR>, lontalk-norm<br><br>lontalk normal<br>
+longtalk-urgnt/lontalk-urgnt     1629/tcp  # LongTalk urgent<BR>, lontalk-urgnt<br><br>lontalk urgent<br>
+oraclenet8cman           1630/tcp  # Oracle Net8 Cman<BR>
+visitview                1631/tcp  # Visit View<BR>
+pammratc                 1632/tcp  # PAMMRATC<BR>
+pammrpc                  1633/tcp  # PAMMRPC<BR>
+loaprobe                 1634/tcp  # EDB Server 1<BR>
+edb-server1              1635/tcp  # EDB Server 1<BR>
+cncp                     1636/tcp  # CableNet Control Protocol<BR>
+cnap                     1637/tcp  # CableNet Admin Protocol<BR>
+cnip                     1638/tcp  # CableNet Info Protocol<BR>
+cert-initiator           1639/tcp  # cert-initiator<BR>
+cert-responder           1640/tcp  # cert-responder<BR>
+invision                 1641/tcp  # InVision<BR>
+isis-am                  1642/tcp  # isis-am<BR>
+isis-ambc                1643/tcp  # isis-ambc<BR>
+saiseh/saiseh            1644/tcp  # Satellite-Data Acquisition System 4<BR>, saiseh<br><br>satellite-data acquisition system 4<br>
+datametrics/radius       1645/tcp  # datametrics<BR>, Radius Authentication Services<BR>
+sa-msg-port              1646/tcp  # sa-msg-port<BR>
+rsap                     1647/tcp  # rsap<BR>
+concurrent-lm            1648/tcp  # concurrent-lm<BR>
+inspect/kermit           1649/tcp  # inspect<BR>, kermit<BR>
+nkd                      1650/tcp  # nkd<BR>
+shiva_confsrvr           1651/tcp  # shiva_confsrvr<BR>
+xnmp                     1652/tcp  # xnmp<BR>
+alphatech-lm             1653/tcp  # alphatech-lm<BR>
+stargatealerts           1654/tcp  # stargatealerts<BR>
+dec-mbadmin              1655/tcp  # dec-mbadmin<BR>
+dec-mbadmin-h            1656/tcp  # dec-mbadmin-h<BR>
+fujitsu-mmpdc            1657/tcp  # fujitsu-mmpdc<BR>
+sixnetudr                1658/tcp  # sixnetudr<BR>
+sg-lm                    1659/tcp  # Silicon Grail License Manager<BR>
+skip-mc-gikreq           1660/tcp  # skip-mc-gikreq<BR>
+netview-aix-1            1661/tcp  # netview-aix-1<BR>
+netview-aix-2            1662/tcp  # netview-aix-2<BR>
+netview-aix-3            1663/tcp  # netview-aix-3<BR>
+netview-aix-4            1664/tcp  # netview-aix-4<BR>
+netview-aix-5            1665/tcp  # netview-aix-5<BR>
+netview-aix-6            1666/tcp  # netview-aix-6<BR>
+netview-aix-7            1667/tcp  # netview-aix-7<BR>
+netview-aix-8            1668/tcp  # netview-aix-8<BR>
+netview-aix-9            1669/tcp  # netview-aix-9<BR>
+netview-aix-10           1670/tcp  # netview-aix-10<BR>
+netview-aix-11           1671/tcp  # netview-aix-11<BR>
+netview-aix-12           1672/tcp  # netview-aix-12<BR>
+proshare-mc-1            1673/tcp  # Intel Proshare Multicast<BR>
+proshare-mc-2            1674/tcp  # Intel Proshare Multicast<BR>
+pdp                      1675/tcp  # Pacific Data Products<BR>
+netcomm1                 1676/tcp  # netcomm1<BR>
+groupwise                1677/tcp  # groupwise<BR>
+prolink                  1678/tcp  # prolink<BR>
+darcorp-lm               1679/tcp  # darcorp-lm<BR>
+microcom-sbp             1680/tcp  # microcom-sbp<BR>
+sd-elmd                  1681/tcp  # sd-elmd<BR>
+lanyon-lantern           1682/tcp  # lanyon-lantern<BR>
+ncpm-hip                 1683/tcp  # ncpm-hip<BR>
+snaresecure              1684/tcp  # SnareSecure<BR>
+n2nremote                1685/tcp  # n2nremote<BR>
+cvmon                    1686/tcp  # cvmon<BR>
+nsjtp-ctrl               1687/tcp  # nsjtp-ctrl<BR>
+nsjtp-data               1688/tcp  # nsjtp-data<BR>
+firefox                  1689/tcp  # firefox<BR>
+ng-umds                  1690/tcp  # ng-umds<BR>
+empire-empuma            1691/tcp  # empire-empuma<BR>
+sstsys-lm                1692/tcp  # sstsys-lm<BR>
+rrirtr                   1693/tcp  # rrirtr<BR>
+rrimwm                   1694/tcp  # rrimwm<BR>
+rrilwm                   1695/tcp  # rrilwm<BR>
+rrifmm                   1696/tcp  # rrifmm<BR>
+rrisat                   1697/tcp  # rrisat<BR>
+rsvp-encap-1             1698/tcp  # RSVP-ENCAPSULATION-1<BR>
+rsvp-encap-2             1699/tcp  # RSVP-ENCAPSULATION-2<BR>
+mps-raft                 1700/tcp  # mps-raft<BR>
+l2f/l2tp                 1701/tcp  # l2f<BR>, Layer Two Tunneling Protocol (L2TP)<BR> <br> L2TP is MS's VPN protocol, replacing PPTP.<BR>
+deskshare                1702/tcp  # Deskshare<BR>
+hb-engine                1703/tcp  # HB Engine<BR>
+bcs-broker               1704/tcp  # BCS Broker<BR>
+slingshot                1705/tcp  # Slingshot<BR>
+jetform                  1706/tcp  # Jetform<BR>
+vdmplay                  1707/tcp  # VDMPlay<BR>
+gat-lmd                  1708/tcp  # gat-lmd<BR>
+centra                   1709/tcp  # Centra<BR>
+impera                   1710/tcp  # Impera<BR>
+pptconference            1711/tcp  # PPT Conference<BR>
+registrar                1712/tcp  # Resource Monitoring Service<BR>
+conferencetalk           1713/tcp  # ConferenceTalk<BR>
+sesi-lm                  1714/tcp  # SESI License Manager<BR>
+houdini-lm               1715/tcp  # Houdini License Manager<BR>
+xmsg                     1716/tcp  # XMSG<BR>
+fj-hdnet                 1717/tcp  # fj-hdnet<BR>
+h323gatedisc             1718/tcp  # H.323 Gatedisc<BR>
+h323gatestat             1719/tcp  # H.323 Gatestat<BR>
+h323hostcall/livelan     1720/tcp  # H.323 Hostcall<BR><br> H.323 call setup protocol used by multimedia collaborative apps such as NetMeeting to establish and control a collaborative session. Session data transfer will use H.323 udp streaming (AKA: RealTime Protocol [RTP]). <BR> , LiveLan (H.323 compliant)<BR>
+caicci                   1721/tcp  # caicci<BR>
+hks-lm                   1722/tcp  # HKS License Manager<BR>
+pptpc                    1723/tcp  # PPTP Control Channel<BR><br> NT's Point-to-Point-Tunneling Protocol, used for VPNs. Noted to be weak, due to non-changing random seed for RC4 streaming algorithm (used user's password for random seed, which does not change for each session). Captured streams could be xor'd against each other to recover the seed (user password). MS has replaced it with L2TP using tcp 1701. <BR> 
+csbphonemaster           1724/tcp  # csbphonemaster<BR>
+iden-ralp/pptp           1725/tcp  # iden-ralp<BR>, PPTP Data Port<BR><br> See comments on pptpc (1723) <BR> 
+iberiagames              1726/tcp  # IBERIAGAMES<BR>
+winddx                   1727/tcp  # winddx<BR>
+telindus                 1728/tcp  # TELINDUS<BR>
+citynl                   1729/tcp  # CityNL License Management<BR>
+roketz                   1730/tcp  # roketz<BR>
+msiccp                   1731/tcp  # MS ICCP (Audio Call Control Protocol)<BR><br> Used to establish and maintain datastream sessions for multimedia collaborative apps such as NetMeeting. Concern is in its random-high selection for datastream udp ports for each session, complicating packet filtering decisions. <BR> 
+proxim                   1732/tcp  # proxim<BR>
+siipat                   1733/tcp  # SIMS - SIIPAT Protocol for Alarms<BR>
+cambertx-lm              1734/tcp  # Camber Corporation License Manager<BR>
+privatechat              1735/tcp  # PrivateChat<BR>
+street-stream            1736/tcp  # Street-Stream<BR>
+ultimad                  1737/tcp  # UltiMad<BR>
+gamegen1                 1738/tcp  # GameGen1<BR>
+webaccess                1739/tcp  # webaccess<BR>
+encore                   1740/tcp  # Encore<BR>
+cisco-net-mgmt           1741/tcp  # Cisco Network Mgmt<BR>
+3Com-nsd                 1742/tcp  # 3Com-nsd<BR>
+cinegrfx-lm              1743/tcp  # Cinema Graphics License Manager<BR>
+ncpm-ft                  1744/tcp  # ncpm-ft<BR>
+remote-winsock           1745/tcp  # Remote-WINSOCK<BR><br> Used as a Winsock control channel between internal clients and site proxy. Example is MS-Proxy, where it establishes Winsock client and proxy connection, exchanges LAT info, etc. <BR> 
+ftrapid-1                1746/tcp  # ftrapid-1<BR>
+ftrapid-2                1747/tcp  # ftrapid-2<BR>
+oracle-em1               1748/tcp  # oracle-em1<BR>
+aspen-services           1749/tcp  # aspen-services<BR>
+sslp                     1750/tcp  # Simple Socket Library's PortMaster<BR>
+swiftnet                 1751/tcp  # SwiftNet<BR>
+lofr-lm                  1752/tcp  # Leap of Faith Research License Manager<BR>
+translogic-lm            1753/tcp  # Translogic License Manager<BR>
+oracle-em2               1754/tcp  # oracle-em2<BR>
+ms-streaming             1755/tcp  # Microsoft NetShow Command Port<BR><br> Server control port. Two conflicting reports on port server sets up as data stream back to client: <BR> - On udp 1755 to the client <BR> - On random udp between 1024-5000 <BR> 
+capfast-lmd              1756/tcp  # capfast-lmd<BR>
+cnhrp                    1757/tcp  # cnhrp<BR>
+tftp-mcast               1758/tcp  # tftp-mcast<BR>
+spss-lm                  1759/tcp  # SPSS License Manager<BR>
+www-ldap-gw              1760/tcp  # www-ldap-gw<BR>
+cft-0                    1761/tcp  # cft-0<BR>
+cft-1                    1762/tcp  # cft-1<BR>
+cft-2                    1763/tcp  # cft-2<BR>
+cft-3                    1764/tcp  # cft-3<BR>
+cft-4                    1765/tcp  # cft-4<BR>
+cft-5                    1766/tcp  # cft-5<BR>
+cft-6                    1767/tcp  # cft-6<BR>
+cft-7                    1768/tcp  # cft-7<BR>
+bmc-net-adm              1769/tcp  # bmc-net-adm<BR>
+bmc-net-svc              1770/tcp  # bmc-net-svc<BR>
+vaultbase                1771/tcp  # vaultbase<BR>
+essweb-gw                1772/tcp  # EssWeb Gateway<BR>
+kmscontrol               1773/tcp  # KMSControl<BR>
+global-dtserv            1774/tcp  # global-dtserv<BR>
+femis                    1776/tcp  # Fed Emergency Mgmt Info System<BR>
+powerguardian            1777/tcp  # PowerGuardian<BR>
+prodigy-internet/prodigy-intrnet     1778/tcp  # prodigy-internet<BR>, prodigy-intrnet<br><br>prodigy-internet<br>
+pharmasoft               1779/tcp  # pharmasoft<BR>
+dpkeyserv                1780/tcp  # DP Key Server<BR>
+answersoft-lm            1781/tcp  # AnswerSoft License Manager<BR>
+hp-hcip                  1782/tcp  # hp-hcip<BR>
+fjris                    1783/tcp  # Fujitsu Remote Install Service<BR>
+finle-lm                 1784/tcp  # Finle License Manager<BR>
+windlm                   1785/tcp  # Wind River Systems License Manager<BR>
+funk-logger              1786/tcp  # funk-logger<BR>
+funk-license             1787/tcp  # funk-license<BR>
+psmond                   1788/tcp  # psmond<BR>
+hello                    1789/tcp  # hello<BR>
+nmsp                     1790/tcp  # Narrative Media Streaming Protocol<BR>
+ea1                      1791/tcp  # EA1<BR>
+ibm-dt-2                 1792/tcp  # ibm-dt-2<BR>
+rsc-robot                1793/tcp  # rsc-robot<BR>
+cera-bcm                 1794/tcp  # cera-bcm<BR>
+dpi-proxy                1795/tcp  # dpi-proxy<BR>
+vocaltec-admin           1796/tcp  # Vocaltec Server Administration<BR>
+uma                      1797/tcp  # UMA<BR>
+etp                      1798/tcp  # Event Transfer Protocol<BR>
+netrisk                  1799/tcp  # NETRISK<BR>
+ansys-lm                 1800/tcp  # ANSYS-License manager<BR>
+msmq                     1801/tcp  # Microsoft Message Que<BR>
+concomp1                 1802/tcp  # ConComp1<BR>
+hp-hcip-gwy              1803/tcp  # HP-HCIP-GWY<BR>
+enl                      1804/tcp  # ENL<BR>
+enl-name                 1805/tcp  # ENL-Name<BR>
+musiconline              1806/tcp  # Musiconline<BR>
+fhsp                     1807/tcp  # Fujitsu Hot Standby Protocol<BR>
+oracle-vp2               1808/tcp  # Oracle-VP2<BR>
+oracle-vp1               1809/tcp  # Oracle-VP1<BR>
+jerand-lm                1810/tcp  # Jerand License Manager<BR>
+scientia-sdb             1811/tcp  # Scientia-SDB<BR>
+radius                   1812/tcp  # RADIUS<BR>
+radius-acct              1813/tcp  # RADIUS Accounting<BR>
+tdp-suite                1814/tcp  # TDP Suite<BR>
+mmpft                    1815/tcp  # MMPFT<BR>
+harp                     1816/tcp  # HARP<BR>
+rkb-oscs                 1817/tcp  # RKB-OSCS<BR>
+etftp                    1818/tcp  # Enhanced TFTP<BR>
+plato-lm                 1819/tcp  # Plato License Manager<BR>
+mcagent                  1820/tcp  # MC Agent<BR>
+donnyworld               1821/tcp  # DonnyWorld<BR>
+es-elmd                  1822/tcp  # es-elmd<BR>
+unisys-lm                1823/tcp  # Unisys Natural Language LM<BR>
+metrics-pas              1824/tcp  # metrics-pas<BR>
+direcpc-video/ardusmu1     1825/tcp  # DirecPC Video<BR>, ARDUS Multicast<BR>
+ardt                     1826/tcp  # ARDT<BR>
+asi                      1827/tcp  # ASI<BR>
+itm-mcell-u              1828/tcp  # itm-mcell-u<BR>
+optika-emedia            1829/tcp  # Opika eMedia<BR>
+net8-cman                1830/tcp  # Oracle Net8 Cman Admin<BR>
+myrtle                   1831/tcp  # Myrtle<BR>
+tht-treasure             1832/tcp  # ThoughtTreasure<BR>
+udpradio                 1833/tcp  # udpradio<br><br>udpradio<br>
+ardusuni                 1834/tcp  # ARDUS Unicast<BR>
+ste-smsc                 1836/tcp  # ste-smsc<BR>
+csoft1                   1837/tcp  # csoft1<BR>
+talnet                   1838/tcp  # TALNET<BR>
+netopia-vo1              1839/tcp  # netopia-vo1<BR>
+netopia-vo2              1840/tcp  # netopia-vo2<BR>
+netopia-vo3              1841/tcp  # netopia-vo3<BR>
+netopia-vo4              1842/tcp  # netopia-vo4<BR>
+netopia-vo5              1843/tcp  # netopia-vo5<BR>
+direcpc-dll              1844/tcp  # DirectPC-DLL<BR>
+gsi                      1850/tcp  # GSI<BR>
+ctcd                     1851/tcp  # ctcd<BR>
+sunscalar-svc            1860/tcp  # SunSCALAR Services<BR>
+lecroy-vicp              1861/tcp  # LeCroy VICP<BR>
+techra-server            1862/tcp  # Techra Server<BR>
+msnp                     1863/tcp  # MSNP<BR>
+paradym-31port           1864/tcp  # Paradym 31 Port<BR>
+entp                     1865/tcp  # ENTP<BR>
+sunscalar-dns            1870/tcp  # SunSCALAR DNS Service<BR>
+canocentral0             1871/tcp  # Cano Central 0<BR>
+canocentral1             1872/tcp  # Cano Central 1<BR>
+fjmpjps                  1873/tcp  # fjmpjps<BR>
+fjswapsnp                1874/tcp  # fjswapsnp<BR>
+ibm-mqseries2            1881/tcp  # IBM MQSeries<BR>
+vista-4gl                1895/tcp  # Vista 4GL<BR>
+mc2studios               1896/tcp  # MC2Studios<BR>
+ssdp                     1900/tcp  # SSDP<BR>
+fjicl-tep-a              1901/tcp  # Fujitsu ICL Terminal Emulator Program A<BR>
+fjicl-tep-b              1902/tcp  # Fujitsu ICL Terminal Emulator Program B<BR>
+linkname                 1903/tcp  # Local Link Name Resolution<BR>
+fjicl-tep-c              1904/tcp  # Fujitsu ICL Terminal Emulator Program C<BR>
+sugp                     1905/tcp  # Secure UP.Link Gateway Protocol<BR>
+tpmd                     1906/tcp  # TPortMapperReq<BR>
+intrastar                1907/tcp  # IntraSTAR<BR>
+dawn                     1908/tcp  # Dawn<BR>
+global-wlink             1909/tcp  # Global World Link<BR>
+ultrabac                 1910/tcp  # ultrabac<BR>
+mtp                      1911/tcp  # Starlight Net Multimedia Tx Protocol<BR>
+rhp-iibp                 1912/tcp  # rhp-iibp<BR>
+armadp                   1913/tcp  # Armadp<BR>
+elm-momentum             1914/tcp  # Elm-Momentum<BR>
+facelink                 1915/tcp  # FACELINK<BR>
+persona                  1916/tcp  # Persoft Persona<BR>
+noagent                  1917/tcp  # NoAgent<BR>
+can-nds                  1918/tcp  # Candle Directory Service - NDS<BR>
+can-dch                  1919/tcp  # Candle Directory Service - DCH<BR>
+can-ferret               1920/tcp  # Candle Directory Service - FERRET<BR>
+noadmin                  1921/tcp  # NoAdmin<BR>
+tapestry                 1922/tcp  # Tapestry<BR>
+spice                    1923/tcp  # SPICE<BR>
+xiip                     1924/tcp  # XIIP<BR>
+driveappserver           1930/tcp  # Drive App Server<BR>
+amdsched                 1931/tcp  # AMD Scheduler<BR>
+close-combat             1944/tcp  # Close Combat<BR>
+dialogic-elmd            1945/tcp  # dialogic-elmd<BR>
+tekpls                   1946/tcp  # tekpls<BR>
+hlserver                 1947/tcp  # HL Server<BR>
+eye2eye                  1948/tcp  # eye2eye<BR>
+ismaeasdaqlive           1949/tcp  # ISMA Easdaq Live<BR>
+ismaeasdaqtest           1950/tcp  # ISMA Easdaq Test<BR>
+bcs-lmserver             1951/tcp  # bcs-lmserver<BR>
+mpnjsc                   1952/tcp  # mpnjsc<BR>
+rapidbase                1953/tcp  # Rapid Base<BR>
+bts-appserver            1961/tcp  # BTS App Server<BR>
+solid-e-engine           1964/tcp  # Solid E Engine<BR>
+tivoli-npm               1965/tcp  # Tivoli NPM<BR>
+slush                    1966/tcp  # Slush<BR>
+sns-quote                1967/tcp  # SNS Quote<BR>
+nfr-flightjacket         1968/tcp  # NFR FlightJacket (New Control Port)<BR><br> Used for mgmt of NFR FlightJacket Intrusion Detection Systems. <BR> <br> NFR Ports: tcp 1968, 2008, 2009 <BR> 
+intersys-cache           1972/tcp  # Cache<BR>
+dlsrap                   1973/tcp  # Data Link Switching Remote Access Protocol<BR>
+drp                      1974/tcp  # DRP<BR>
+banner/tcoflashagent     1975/tcp  # Banner Ad Download<BR><br> Several progs use this port to download banner ads, plus pull some data back up to server (such as what ads were clicked on, etc.). The client piece supporting this is advert.dll. Two progs using this are NetVampire and Go!Zilla. <BR> , TCO Flash Agent<BR>
+tcoregagent              1976/tcp  # TCO Reg Agent<BR>
+tcoaddressbook           1977/tcp  # TCO Address Book<BR>
+unisql                   1978/tcp  # UniSQL<BR>
+unisql-java              1979/tcp  # UniSQL Java<BR>
+shockwave-trojan         1981/tcp  # Backdoor, planted via Shockwave Trojan<BR>Note: This is a backdoor port planted via infected Shockwave software. <BR> 
+bb                       1984/tcp  # BB<BR>
+hsrp/foliocorp           1985/tcp  # Hot Standby Router Protocol<BR>, Folio Remote Server<BR>
+licensedaemon            1986/tcp  # Cisco License Manager<BR>
+tr-rsrb-p1               1987/tcp  # Cisco RSRB Priority 1 port<BR>
+tr-rsrb-p2               1988/tcp  # Cisco RSRB Priority 2 port<BR>
+tr-rsrb-p3/mshnet        1989/tcp  # Cisco RSRB Priority 3 port<BR>, MHSnet system<BR>
+stun-p1                  1990/tcp  # Cisco STUN Priority 1 port<BR>
+stun-p2                  1991/tcp  # Cisco STUN Priority 2 port<BR>
+stun-p3/ipsendmsg        1992/tcp  # Cisco STUN Priority 3 port<BR>, IPsendmsg<BR>
+snmp-tcp-port            1993/tcp  # Cisco SNMP TCP port<BR>
+stun-port                1994/tcp  # Cisco serial tunnel port<BR>
+perf-port                1995/tcp  # Cisco perf port<BR>
+tr-rsrb-port             1996/tcp  # Cisco Remote SRB port<BR>
+gdp-port                 1997/tcp  # Cisco Gateway Discovery Protocol<BR>
+x25-svc-port             1998/tcp  # Cisco X.25 service (XOT)<BR>
+tcp-id-port              1999/tcp  # Cisco identification port<BR>
+callbook/openwin/MikroT Router OS Bandwidth Test Server     2000/tcp  # Callbook<BR>, Sun Openwin<BR><br> Similar to X11, used for remote OpenWindows connections. Vulnerable to spoofing and session hijacking. <BR> , 
+glimpse/wizard           2001/tcp  # Glimpse Server Search Engine<BR>, Curry<BR>
+globe                    2002/tcp  # Globe<BR>
+mailbox                  2004/tcp  # Mailbox<BR>
+berknet                  2005/tcp  # Berknet<BR>
+invokator                2006/tcp  # Invokator<BR>
+dectalk                  2007/tcp  # DecTalk<BR>
+nfr-flightjacket         2008/tcp  # NFR FlightJacket (Old Control Port)<BR><br> Open on NFR FlightJacket IDS agent, for control comms from manager. <BR> <br> NFR Ports: tcp 1968, 2008, 2009 <BR> 
+nfr-flightjacket/news     2009/tcp  # NFR FlightJacket (Old Control Port)<BR><br> Open on NFR FlightJacket IDS Manager, to receive comms from agents. <BR> <br> NFR Ports: tcp 1968, 2008, 2009 <BR> , news<BR>
+search                   2010/tcp  # search<BR>
+raid-cc                  2011/tcp  # RAID-CC<BR>
+ttyinfo                  2012/tcp  # ttyinfo<BR>
+raid-am                  2013/tcp  # RAID-AM<BR>
+troff                    2014/tcp  # troff<BR>
+cypress                  2015/tcp  # cypress<BR>
+bootserver               2016/tcp  # bootserver<BR>
+cypress-stat             2017/tcp  # cypress-stat<BR>
+terminaldb               2018/tcp  # terminaldb<BR>
+whosockami               2019/tcp  # whosockami<BR>
+xinupageserver           2020/tcp  # xinupageserver<BR>
+servexec                 2021/tcp  # servexec<BR>
+down                     2022/tcp  # down<BR>
+xinuexpansion3           2023/tcp  # xinuexpansion3<BR>
+xinuexpansion4           2024/tcp  # xinuexpansion4<BR>
+ellpack                  2025/tcp  # ell pack<BR>
+scrabble                 2026/tcp  # scrabble<BR>
+shadowserver             2027/tcp  # shadow server<BR>
+submitserver             2028/tcp  # submit server<BR>
+device2                  2030/tcp  # device2<BR>
+blackboard               2032/tcp  # blackboard<BR>
+glogger                  2033/tcp  # glogger<BR>
+scoremgr                 2034/tcp  # score manager<BR>
+imsldoc                  2035/tcp  # imsldoc<BR>
+objectmanager            2038/tcp  # object manager<BR>
+lam                      2040/tcp  # lab<BR>
+interbase                2041/tcp  # interbase<BR>
+isis                     2042/tcp  # isis<BR>
+isis-bcast               2043/tcp  # isis-bcast<BR>
+rimsl                    2044/tcp  # rimsl<BR>
+cdfunc                   2045/tcp  # cdfunc<BR>
+sdfunc                   2046/tcp  # sdfunc<BR>
+dls                      2047/tcp  # dls<BR>
+dls-monitor              2048/tcp  # dls-monitor<BR>
+shilp/nfs                2049/tcp  # shilp<BR>, NFS - Sun Microsystems<BR><br> Default port for rpc NFS. <BR> - NFS relies on client host to have already auth'd user (and it assumes there are no rogue hosts or users on network) <BR> - NFS doesn't recheck the client's auth on every request (thus attacker with forged or captured file handle can access exports, even after access perms to original client are terminated [because NFS has no method to cancel a file handle]). <BR> - Intruder bypass the portmapper and directly access tcp 2049, or highport 4045. <BR> <br> CERT Advisory: 95.15. <BR> 
+knetd                    2053/tcp  # Kerberos de-multiplexer<BR>
+rc5des/distrib-netassholes     2064/tcp  # RC5 &amp; DES Cracker; Distributed<BR><br> Port for controlling distributed rc5des password cracking clients. The rc5des prog is a distributed password cracking client package, designed to brute force RC5 and DES encrypted strings using multiple cracking hosts. If port is found open on a host, confirm cracking software presence by locating files: rc5desg.exe, buff-in.rc5, boff-out.rc5 <BR> , distrib-netassholes<br><br>a group of lamers working on a silly closed-source client for solving the rsa cryptographic challenge.  this is the keyblock proxy port.<br>
+dlsrpn                   2065/tcp  # Data Link Switch Read Port Number<BR>
+dlswpn                   2067/tcp  # Data Link Switch Write Port Number<BR>
+lrp                      2090/tcp  # Load Report Protocol<BR>
+prp                      2091/tcp  # PRP<BR>
+descent3                 2092/tcp  # Descent 3<BR>
+nbx-cc                   2093/tcp  # NBX CC<BR>
+nbx-au                   2094/tcp  # NBX AU<BR>
+nbx-ser                  2095/tcp  # NBX SER<BR>
+nbx-dir                  2096/tcp  # NBX DIR<BR>
+jetformpreview           2097/tcp  # Jet Form Preview<BR>
+dialog-port              2098/tcp  # Dialog Port<BR>
+h2250-annex-g            2099/tcp  # H.225.0 Annex G<BR>
+amiganetfs               2100/tcp  # amiganetfs<BR>
+rtcm-sc104               2101/tcp  # rtcm-sc104<BR>
+zephyr-srv               2102/tcp  # Zephyr server<BR>
+zephyr-clt               2103/tcp  # Zephyr serv-hm connection<BR>
+zephyr-hm                2104/tcp  # Zephyr hostmanager<BR>
+eklogin/minipay          2105/tcp  # Kerberos encrypted rlogon<BR>, MiniPay<BR>
+mzap                     2106/tcp  # MZAP<BR>
+bintec-admin             2107/tcp  # BinTec Admin<BR>
+ergolight                2108/tcp  # Ergolight<BR>
+x-bone-api               2165/tcp  # X-Bone API<BR>
+mc-gt-srv                2180/tcp  # Millicent Vendor Gateway Server<BR>
+eforward                 2181/tcp  # eforward<BR>
+ici                      2200/tcp  # ICI<BR>
+ats                      2201/tcp  # Advanced Training System Program<BR>
+imtc-map                 2202/tcp  # Int. Multimedia Teleconf. Cosortium<BR>
+kali                     2213/tcp  # Kali<BR>
+ganymede                 2220/tcp  # Ganymede<BR>
+rockwell-csp1/unreg-ab1     2221/tcp  # Rockwell CSP1<BR>, Allen-Bradley unregistered port<BR>
+rockwell-csp2/unreg-ab2/DirectAdmin     2222/tcp  # Rockwell CSP2<BR>, Allen-Bradley unregistered port<BR>, Direct Admin - http://www.directadmin.com
+rockwell-csp3/inreg-ab3     2223/tcp  # Rockwell CSP3<BR>, Allen-Bradley unregistered port<BR>
+ivs-video                2232/tcp  # IVS Video default<BR>
+infocrypt                2233/tcp  # INFOCRYPT<BR>
+directplay               2234/tcp  # DirectPlay<BR>
+sercomm-wlink            2235/tcp  # Sercomm-WLink<BR>
+nani                     2236/tcp  # Nani<BR>
+optech-port1-lm          2237/tcp  # Optech Port1 License Manager<BR>
+aviva-sna                2238/tcp  # AVIVA SNA SERVER<BR>
+imagequery               2239/tcp  # Image Query<BR>
+recipe                   2240/tcp  # Recipe<BR>
+ivsd                     2241/tcp  # IVS Daemon<BR>
+foliocorp                2242/tcp  # Folio Remote Server<BR>
+magicom                  2243/tcp  # Magicom Protocol<BR>
+nmsserver/ctaccess       2244/tcp  # NMS Server<BR>, Natural MicroSystem CTAccess Server, www.nmscommunications.com
+hao                      2245/tcp  # HaO<BR>
+xmquery                  2279/tcp  # xmquery<BR>
+lnvpoller                2280/tcp  # LNVPOLLER<BR>
+lnvconsole               2281/tcp  # LNVCONSOLE<BR>
+lnvalarm                 2282/tcp  # LNVALARM<BR>
+lnvstatus                2283/tcp  # LNVSTATUS<BR>
+lnvmaps                  2284/tcp  # LNVMAPS<BR>
+lnvmailmon               2285/tcp  # LNVMAILMON<BR>
+nas-metering             2286/tcp  # NAS-Metering<BR>
+dna                      2287/tcp  # DNA<BR>
+netml                    2288/tcp  # NETML<BR>
+konshus-lm               2294/tcp  # Konsus License Manager (FLEX)<BR>
+advant-lm                2295/tcp  # Advant License Manager<BR>
+theta-lm                 2296/tcp  # Theta License Manager (Rainbow)<BR>
+d2k-datamover1           2297/tcp  # D2K DataMover1<BR>
+d2k-datamover2           2298/tcp  # D2K DataMover2<BR>
+pc-telecommute           2299/tcp  # PC Telecommute<BR>
+cvmmon                   2300/tcp  # CVMMON<BR>
+cpq-wbem                 2301/tcp  # Compaq HTTP<BR>
+binderysupport           2302/tcp  # Bindery Support<BR>
+proxy-gateway            2303/tcp  # Proxy Gateway<BR>
+attachmate-uts           2304/tcp  # Attachmate UTS<BR>
+mt-scaleserver           2305/tcp  # MT ScaleServer<BR>
+tappi-boxnet             2306/tcp  # TAPPI BoxNet<BR>
+pehelp                   2307/tcp  # pehelp<BR>
+sdhelp                   2308/tcp  # sdhelp<BR>
+sdserver                 2309/tcp  # SD Server<BR>
+sdclient                 2310/tcp  # SD Client<BR>
+messageserver/messageservice     2311/tcp  # Message Service<BR>, messageservice<br><br>message service<br>
+iapp                     2313/tcp  # IAPP<BR>
+cr-websystems            2314/tcp  # CR WebSystems<BR>
+precise-sft              2315/tcp  # Precise Sft.<BR>
+sent-lm                  2316/tcp  # SENT License Manager<BR>
+attachmate-g32           2317/tcp  # Attachmate G32<BR>
+cadencecontrol           2318/tcp  # Cadence Control<BR>
+infolibria               2319/tcp  # InfoLibria<BR>
+siebel-ns                2320/tcp  # Siebel NS<BR>
+rdlap                    2321/tcp  # RDLAP<BR>
+ofsd                     2322/tcp  # ofsd<BR>
+3d-nfsd                  2323/tcp  # 3d-nfsd<BR>
+cosmocall                2324/tcp  # Cosmocall<BR>
+designspace-lm           2325/tcp  # Design Space License Manager<BR>
+idcp                     2326/tcp  # IDCP<BR>
+xingcsm                  2327/tcp  # xingsm<BR>
+netrix-sftm              2328/tcp  # Netrix SFTM<BR>
+nvd                      2329/tcp  # NVD<BR>
+tscchat                  2330/tcp  # TSCCHAT<BR>
+agentview                2331/tcp  # AGENTVIEW<BR>
+rcc-host                 2332/tcp  # RCC Host<BR>
+snapp                    2333/tcp  # SNAPP<BR>
+ace-client               2334/tcp  # ACE Client Auth<BR>
+ace-proxy                2335/tcp  # ACE Proxy<BR>
+appleugcontrol           2336/tcp  # Apple UG Control<BR>
+ideesr/ideesrv           2337/tcp  # ideesrv<BR>, ideesrv<br><br>ideesrv<br>
+norton-lambert           2338/tcp  # Norton Lambert<BR>
+3com-webview             2339/tcp  # 3com Webview<BR>
+wrs_registry             2340/tcp  # WRS Registry<BR>
+xiostatus                2341/tcp  # CIO Status<BR>
+manage-exec              2342/tcp  # Seagate Manage Exec<BR>
+nati-logos               2343/tcp  # nati logos<BR>
+fcmsys                   2344/tcp  # fcmsys<BR>
+dbm                      2345/tcp  # dbm<BR>
+redstorm_join            2346/tcp  # Game Connection Port<BR>
+redstorm_find            2347/tcp  # Game Announcement and Location<BR>
+redstorm_info            2348/tcp  # Info to query for game status<BR>
+redstorm_diag            2349/tcp  # Diagnostics Port<BR>
+psbserver                2350/tcp  # psbserver<BR>
+psrserver                2351/tcp  # psrserver<BR>
+pslserver                2352/tcp  # pslserver<BR>
+pspserver                2353/tcp  # pspserver<BR>
+psprserver               2354/tcp  # psprserver<BR>
+psdbserver               2355/tcp  # psdbserver<BR>
+gxtelmd                  2356/tcp  # GXT License Management<BR>
+unihub-server            2357/tcp  # UniHub Server<BR>
+futrix                   2358/tcp  # Futrix<BR>
+flukeserver              2359/tcp  # FlukeServer<BR>
+nexstorindltd            2360/tcp  # NexstorIndLtd<BR>
+tl1                      2361/tcp  # TL1<BR>
+digiman                  2362/tcp  # Digiman<BR>
+mediacntrlnfsd           2363/tcp  # Media Central NFSD<BR>
+oi-2000                  2364/tcp  # OI-2000<BR>
+dbref                    2365/tcp  # dbref<BR>
+qip-login                2366/tcp  # qup-login<BR>
+service-ctrl             2367/tcp  # Service Control<BR>
+opentable                2368/tcp  # OpenTable<BR>
+acs2000-dsp              2369/tcp  # ACS2000 DSP<BR>
+l3-hbmon                 2370/tcp  # L3-HBMon<BR>
+compaq-https             2381/tcp  # Compaq HTTPS<BR>
+ms-olap3                 2382/tcp  # MS OLAP 3<BR>
+ms-olap4                 2383/tcp  # MS OLAP 4<BR>
+ovsessionmgr             2389/tcp  # OpenView Session Manager<BR>
+rsmtp                    2390/tcp  # RSMTP<BR>
+3com-net-mgmt            2391/tcp  # 3COM Net Management<BR>
+tacticalauth             2392/tcp  # Tactical Auth<BR>
+ms-olap1                 2393/tcp  # MS OLAP 1<BR>
+ms-olap2                 2394/tcp  # MS OLAP 2<BR>
+lan900_remote            2395/tcp  # LAN900 Remote<BR>
+wusage                   2396/tcp  # Wusage<BR>
+ncl                      2397/tcp  # NCL<BR>
+orbiter                  2398/tcp  # Orbiter<BR>
+fmpro-fdal               2399/tcp  # FileMaker, Inc. - Data Access Layer<BR>
+opequus-server           2400/tcp  # OpEquus Server<BR>
+cvspserver               2401/tcp  # cvspserver<BR>
+taskmaster2000           2402/tcp  # TaskMaster 2000 Server<BR>
+taskmaster2000           2403/tcp  # TaskMaster 2000 Web<BR>
+iec870-5-104             2404/tcp  # IEC870-5-104<BR>
+trc-netpoll              2405/tcp  # TRC Netpoll<BR>
+jediserver               2406/tcp  # JediServer<BR>
+orion                    2407/tcp  # Orion<BR>
+optimanet                2408/tcp  # OptimaNet<BR>
+sns-protocol             2409/tcp  # SNS Protocol<BR>
+vrts-registry            2410/tcp  # VRTS Registry<BR>
+netwave-ap-mgmt          2411/tcp  # Netwave AP Management<BR>
+cdn                      2412/tcp  # CDN<BR>
+orion-rmi-reg            2413/tcp  # orion-rmi-reg<BR>
+interlinua/interlingua     2414/tcp  # Interlingua<BR>, interlingua<br><br>interlingua<br>
+comtest                  2415/tcp  # COMTEST<BR>
+rmtserver                2416/tcp  # RMT Server<BR>
+composit-server          2417/tcp  # Composit Server<BR>
+cas                      2418/tcp  # cas<BR>
+attachmate-s2s           2419/tcp  # Attachmate S2S<BR>
+dslremote-mgmt           2420/tcp  # DSL Remote Management<BR>
+g-talk                   2421/tcp  # G-Talk<BR>
+crmsbits                 2422/tcp  # CRMSBITS<BR>
+rnrp                     2423/tcp  # RNRP<BR>
+kofax-svr                2424/tcp  # LPFAX-SVR<BR>
+fjitsuappmgr             2425/tcp  # Fujitsu App Manager<BR>
+applianttcp              2426/tcp  # Applicant TCP<BR>
+stgcp/mgcp-gateway       2427/tcp  # Simple Telephony Gateway Control Protocol<BR>, Media Gateway Control Protocol Gateway<BR>
+ott                      2428/tcp  # One-way Trip Timer<BR>
+ft-role                  2429/tcp  # FT-ROLE<BR>
+venus                    2430/tcp  # venus<BR>
+venus-se                 2431/tcp  # venus-se<BR>
+codasrv                  2432/tcp  # codasrv<BR>
+codasrv-se               2433/tcp  # cosasrv-se<BR>
+pxc-epmap                2434/tcp  # pxc-epmap<BR>
+optilogic                2435/tcp  # OptiLogic<BR>
+topx                     2436/tcp  # TOP/X<BR>
+unicontrol               2437/tcp  # UniControl<BR>
+msp                      2438/tcp  # MSP<BR>
+sybasedbsynch            2439/tcp  # SybaseDBSynch<BR>
+spearway                 2440/tcp  # Spearway Lockers<BR>
+pvsw-inet                2441/tcp  # pvsw-inet<BR>
+netangel                 2442/tcp  # Netangel<BR>
+powerclientcsf           2443/tcp  # PowerClient Central Storage Facility<BR>
+btpp2sectrans            2444/tcp  # BT PP2 Sectrans<BR>
+dtn1                     2445/tcp  # DTN1<BR>
+bues_service             2446/tcp  # bues_service<BR>
+ovwdb                    2447/tcp  # OpenView NNM daemon<BR>
+hpppssvr                 2448/tcp  # hpppssvr<BR>
+ratl                     2449/tcp  # RATL<BR>
+netadmin                 2450/tcp  # netadmin<BR>
+netchat                  2451/tcp  # netchat<BR>
+snifferclient            2452/tcp  # SnifferClient<BR>
+madge-om                 2453/tcp  # madge-om<BR>
+indx-dds                 2454/tcp  # IndX-DDS<BR>
+wago-io-system           2455/tcp  # WAGO-IO-SYSTEM<BR>
+altav-remmgt             2456/tcp  # altav-remmgt<BR>
+rapido-ip                2457/tcp  # Rapico_IP<BR>
+griffin                  2458/tcp  # griffin<BR>
+community                2459/tcp  # Community<BR>
+ms-theater               2460/tcp  # ms-theater<BR>
+qadmifoper               2461/tcp  # qadmifoper<BR>
+qadmifevent              2462/tcp  # qadmifevent<BR>
+symbios-raid             2463/tcp  # Symbios Raid<BR>
+direcpc-si               2464/tcp  # DirecPC SI<BR>
+lbm                      2465/tcp  # Load Balance Management<BR>
+lbf                      2466/tcp  # Load Balance Forwarding<BR>
+high-criteria            2467/tcp  # High Criteria<BR>
+qip_msgd/qip-msgd        2468/tcp  # qip_msgd<BR>, qip-msgd<br><br>qip_msgd<br>
+mti-tcs-comm             2469/tcp  # MTI-TCS-COMM<BR>
+taskman_port/taskman-port     2470/tcp  # taskman port<BR>, taskman-port<br><br>taskman port<br>
+seaodbc                  2471/tcp  # SeaODBC<BR>
+c3                       2472/tcp  # C3<BR>
+aker-cdp                 2473/tcp  # Aker-cdp<BR>
+vitalanalysis            2474/tcp  # Vital Analysis<BR>
+ace-server               2475/tcp  # ACE Server<BR>
+ace-svr-prop             2476/tcp  # ACE Server Propagation<BR>
+ssm-cvs                  2477/tcp  # SecurSight Certificate Valifation Service<BR>
+ssm-cssps                2478/tcp  # SecurSight Authentication Server (SSL)<BR>
+ssm-els                  2479/tcp  # SecurSight Event Logging Server (SSL)<BR>
+lingwood                 2480/tcp  # Lingwood's Detail<BR>
+giop                     2481/tcp  # Oracle GIOP<BR>
+giop-ssl                 2482/tcp  # Oracle GIOP SSL<BR>
+ttc                      2483/tcp  # Oracle TTC<BR>
+ttc-ssl                  2484/tcp  # Oracle TTC SSL<BR>
+netobjects1              2485/tcp  # NetObjects1<BR>
+netobjects2              2486/tcp  # NetObjects2<BR>
+pns                      2487/tcp  # Policy Notice Service<BR>
+moy-corp                 2488/tcp  # Moy Corporation<BR>
+tsilb                    2489/tcp  # TSILB<BR>
+qip_qdhcp/qip-qdhcp      2490/tcp  # qip_qdhcp<BR>, qip-qdhcp<br><br>qip_qdhcp<br>
+conclave-cpp             2491/tcp  # Conclave CPP<BR>
+groove                   2492/tcp  # GROOVE<BR>
+talarian-mqs             2493/tcp  # Talarian MQS<BR>
+bmc-ar                   2494/tcp  # BMC AR<BR>
+fast-rem-serv            2495/tcp  # Fast Remote Services<BR>
+dirgis                   2496/tcp  # DIRGIS<BR>
+quaddb                   2497/tcp  # Quad DB<BR>
+odn-castraq              2498/tcp  # ODN-CasTraq<BR>
+unicontrol               2499/tcp  # UniControl<BR>
+rtsserv                  2500/tcp  # Resource Tracking System Server<BR>
+rtsclient                2501/tcp  # Resource Tracking System Client<BR>
+kentrox-prot             2502/tcp  # Kentrox Protocol<BR>
+nms-dpnss                2503/tcp  # NMS-DPNSS
+wlbs                     2504/tcp  # SLBS<BR>
+torque-traffic           2505/tcp  # torque-traffic<BR>
+jbroker                  2506/tcp  # jbroker<BR>
+spock                    2507/tcp  # spock<BR>
+jdatastore               2508/tcp  # JDataStore<BR>
+fjmpss                   2509/tcp  # fjmpss<BR>
+fjappmgrbulk             2510/tcp  # fjappmgrbulk<BR>
+metastorm                2511/tcp  # Metastorm<BR>
+citrixima                2512/tcp  # Citrix IMA<BR>
+citrixadmin              2513/tcp  # Citrix Admin<BR>
+facsys-ntp               2514/tcp  # Facsys NTP<BR>
+facsys-router            2515/tcp  # Facsys Router<BR>
+maincontrol              2516/tcp  # Main Control<BR>
+call-sig-trans           2517/tcp  # Call Signalling Transport<BR>
+willy                    2518/tcp  # Willy<BR>
+globmsgsvc               2519/tcp  # globmsgsvc<BR>
+pvsw                     2520/tcp  # pvsw<BR>
+adaptexmgr/adaptecmgr     2521/tcp  # Adaptec Manager<BR>, adaptecmgr<br><br>adaptec manager<br>
+windb                    2522/tcp  # WinDb<BR>
+qke-11c-v3/qke-llc-v3     2523/tcp  # Qke LLC V.3<BR>, qke-llc-v3<br><br>qke llc v.3<br>
+optiwave-1m/optiwave-lm     2524/tcp  # Optiwave License Manager<BR>, optiwave-lm<br><br>optiwave license management<br>
+ms-v-worlds              2525/tcp  # MS V-Worlds<BR>
+ema-sent-lm              2526/tcp  # EMA License Manager<BR>
+iqserver                 2527/tcp  # IQ Server<BR>
+ncr_ccl                  2528/tcp  # NCR CCL<BR>
+utsftp                   2529/tcp  # UTS FTP<BR>
+vrcommerce               2530/tcp  # VR Commerce<BR>
+ito-e-gui                2531/tcp  # ITO-E GUI<BR>
+ovtopmd                  2532/tcp  # OVTOPMD<BR>
+snifferserver            2533/tcp  # SnifferServer<BR>
+combox-web-acc           2534/tcp  # Combox Web Access<BR>
+mdhcp/madcap             2535/tcp  # MDHCP<BR>, madcap<br><br>madcap<br>
+btpp2audctr1             2536/tcp  # btpp2audctrl<BR>
+upgrade                  2537/tcp  # Upgrade Protocol<BR>
+vnwk-prapi               2538/tcp  # vnwk-prapi<BR>
+vsiadmin                 2539/tcp  # VSI Admin<BR>
+lonworks                 2540/tcp  # LonWorks<BR>
+lonworks2                2541/tcp  # LonWorks2<BR>
+davinci                  2542/tcp  # DaVinci<BR>
+reftek                   2543/tcp  # REFTEK<BR>
+novell-zen/novell-zen     2544/tcp  # Novell ZEN<BR>, novell-zen<br><br>novell zen<br>
+sis-emt                  2545/tcp  # sis-emt<BR>
+vytalvaultbrtp           2546/tcp  # vytalvaultbrtp<BR>
+vytalvaultvsmp           2547/tcp  # vytalvaultvsmp<BR>
+vytalvaultpipe           2548/tcp  # vytalvaultpipe<BR>
+ipass                    2549/tcp  # IPASS<BR>
+ads                      2550/tcp  # ADS<BR>
+isg-uda-server           2551/tcp  # ISG UDA Server<BR>
+call-logging             2552/tcp  # Call Logging<BR>
+efidiningport            2553/tcp  # efidiningport<BR>
+vcnet-link-v10           2554/tcp  # Vcnet-Link v10<BR>
+compaq-wcp               2555/tcp  # Compaq WCP<BR>
+nicetec-nmsvc            2556/tcp  # nicetec-nmsvc<BR>
+nicetec-mgmt             2557/tcp  # nicetec-mgmt<BR>
+pclemultimedia           2558/tcp  # PCLE Multi Media<BR>
+lstp                     2559/tcp  # LSTP<BR>
+labrat                   2560/tcp  # labrat<BR>
+mosaixcc                 2561/tcp  # MosaixCC<BR>
+delibo                   2562/tcp  # Delibo<BR>
+cti-redwood              2563/tcp  # CTI Redwood<BR>
+hp-3000-telnet/hp-3000-telnet     2564/tcp  # HP 3000 NS/VT block mode telnet<BR>, hp-3000-telnet<br><br>hp 3000 ns/vt block mode telnet<br>
+coord-svr                2565/tcp  # Coordinator Server<BR>
+pcs-pcw                  2566/tcp  # pcs-pcw<BR>
+clp                      2567/tcp  # Cisco Line Protocol<BR>
+spamtrap                 2568/tcp  # SPAM Trap<BR>
+sonuscallsig             2569/tcp  # Sonus Call Signal<BR>
+hs-port                  2570/tcp  # HS Port<BR>
+cecsvc                   2571/tcp  # CECSVC<BR>
+ibp                      2572/tcp  # IBP<BR>
+trustestablish           2573/tcp  # Trust Establish<BR>
+blockade-bpsp            2574/tcp  # Blockade BPSP<BR>
+hl7                      2575/tcp  # HL7<BR>
+tclprodebugger           2576/tcp  # TCL Pro Debugger<BR>
+scipticslsrvr            2577/tcp  # Scriptics Lsrvr<BR>
+rvs-isdn-dcp             2578/tcp  # RVS ISDN DCP<BR>
+mpfoncl                  2579/tcp  # mpfoncl<BR>
+tributary                2580/tcp  # Tributary<BR>
+argis-te                 2581/tcp  # ARGIS TE<BR>
+argis-ds                 2582/tcp  # ARGIS DS<BR>
+mon                      2583/tcp  # MON<BR>
+cyaserv                  2584/tcp  # cyaserv<BR>
+netx-server              2585/tcp  # NETX Server<BR>
+netx-agent               2586/tcp  # NETX Agent
+masc                     2587/tcp  # MASC<BR>
+privilege                2588/tcp  # Privilege<BR>
+quartus-tcl              2589/tcp  # Quartus TCL<BR>
+idotdist                 2590/tcp  # idotdist<BR>
+maytagshuffle            2591/tcp  # Maytag Shuffle<BR>
+netrek                   2592/tcp  # netrek<BR>
+mns-mail                 2593/tcp  # MNS Mail Notice Service<BR>
+dts                      2594/tcp  # Data Base Server<BR>
+worldfusion1             2595/tcp  # World Fusion 1<BR>
+worldfusion2             2596/tcp  # World Fusion 2<BR>
+homesteadglory           2597/tcp  # Homestead Glory<BR>
+citrixmaclient/citriximaclient     2598/tcp  # Citrix MA Client<BR>, citriximaclient<br><br>citrix ma client<br>
+meridiandata             2599/tcp  # Meridian Data<BR>
+hpstgmgr                 2600/tcp  # HPSTGMGR<BR>
+discp-client             2601/tcp  # discp client<BR>
+discp-server             2602/tcp  # discp server<BR>
+servicemeter             2603/tcp  # Service Meter<BR>
+nsc-ccs                  2604/tcp  # NSC CCS<BR>
+nsc-posa                 2605/tcp  # NSC POSA<BR>
+netmon                   2606/tcp  # Dell Netmon<BR>
+connection               2607/tcp  # Dell Connection<BR>
+wag-service              2608/tcp  # Wag Service<BR>
+system-monitor           2609/tcp  # System Monitor<BR>
+versa-tek                2610/tcp  # VersaTek<BR>
+linonhead/lionhead       2611/tcp  # LIONHEAD<BR>, lionhead<br><br>lionhead<br>
+qpasa-agent              2612/tcp  # Qpasa Agent<BR>
+smntubootstrap           2613/tcp  # SMNTUBootstrap<BR>
+neveroffline             2614/tcp  # Never Offline<BR>
+firepower                2615/tcp  # Firepower<BR>
+appswitch-emp            2616/tcp  # appswitch-emp<BR>
+cmadmin                  2617/tcp  # Clinical Context Managers<BR>
+priority-e-com           2618/tcp  # Priority E-Com<BR>
+bruce                    2619/tcp  # bruce<BR>
+lpsrecommender           2620/tcp  # LPSEecommender<BR>
+miles-apart              2621/tcp  # Miles Apart Jukebox Server<BR>
+metricadbc               2622/tcp  # MetricaDBC<BR>
+lmdp                     2623/tcp  # LMDP<BR>
+aria                     2624/tcp  # Aria<BR>
+blwnkl-port              2625/tcp  # Blwnkl Port<BR>
+gbjd816                  2626/tcp  # gbj816<BR>
+moshebeeri               2627/tcp  # Moshe Beeri<BR>
+dict                     2628/tcp  # DICT<BR>
+sitaraserver             2629/tcp  # Sitara Server<BR>
+sitaramgmt               2630/tcp  # Sitra Management<BR>
+sitaradir                2631/tcp  # Sitra Dir<BR>
+irdg-post                2632/tcp  # Irdg Post<BR>
+interintelli             2633/tcp  # InterIntelli<BR>
+pk-electronics           2634/tcp  # PK Electronics<BR>
+backburner               2635/tcp  # Back Burner<BR>
+solve                    2636/tcp  # Solve<BR>
+imdocsvc                 2637/tcp  # Import Document Service<BR>
+sybaseanywhere           2638/tcp  # Sybase Anywhere<BR>
+aminet                   2639/tcp  # AMInet<BR>
+sai_sentlm               2640/tcp  # Sabbagh Associates License Manager<BR>
+hdl-srv                  2641/tcp  # HDL Server<BR>
+tragic                   2642/tcp  # Tragic<BR>
+gte-samp                 2643/tcp  # GTE-SAMP<BR>
+travsoft-ipx-t           2644/tcp  # Travsoft IPX Tunnel<BR>
+novell-ipx-cmd           2645/tcp  # Novell IPX CMD<BR>
+and-lm                   2646/tcp  # AND License Manager<BR>
+syncserver               2647/tcp  # SyncServer<BR>
+upsnotifyprot            2648/tcp  # Upsnotifyprot<BR>
+vpsipport                2649/tcp  # VPSIPPORT<BR>
+eristwoguns              2650/tcp  # eristwoguns<BR>
+ebinsite                 2651/tcp  # EBInSite<BR>
+interpathpanel           2652/tcp  # InterPathPanel<BR>
+sonus                    2653/tcp  # Sonus<BR>
+corel_vncadmin           2654/tcp  # Corel VNC Admin<BR>
+unglue                   2655/tcp  # Unix Nt Glue<BR>
+kana                     2656/tcp  # Kana<BR>
+sns-dispatcher           2657/tcp  # SNS Dispatcher<BR>
+sns-admin                2658/tcp  # SNS Admin<BR>
+sns-query                2659/tcp  # SNS Query<BR>
+gcmonitor                2660/tcp  # GC Monitor<BR>
+olhost                   2661/tcp  # OLHOST<BR>
+bintec-capi              2662/tcp  # BinTec-CAPI<BR>
+bintec-tapi              2663/tcp  # BinTec-TAPI<BR>
+command-mq-gm            2664/tcp  # Command MQ GM<BR>
+command-mq-pm            2665/tcp  # Command MQ PM<BR>
+extensis                 2666/tcp  # Extensis<BR>
+alarm-clock-s            2667/tcp  # Alarm Clock Server<BR>
+alarm-clock-c            2668/tcp  # Alarm Clock Client<BR>
+toad                     2669/tcp  # TOAD<BR>
+tve-announce             2670/tcp  # TVE Announce<BR>
+newlixreg                2671/tcp  # newlixreg<BR>
+nhserver                 2672/tcp  # nhserver<BR>
+firstcall42              2673/tcp  # First Call 42<BR>
+ewnn                     2674/tcp  # ewnn<BR>
+ttc-etap                 2675/tcp  # TTC ETAP<BR>
+simslink                 2676/tcp  # SIMSLink<BR>
+gadgetgate1way           2677/tcp  # Gadget Gate 1 Way<BR>
+gadgetgate2way           2678/tcp  # Gadget Gate 2 Way<BR>
+syncserverssl            2679/tcp  # Sync Server SSL<BR>
+pxc-sapxom               2680/tcp  # pxc-sapxom<BR>
+mpnjsomb                 2681/tcp  # mpnjsomb<BR>
+srsp                     2682/tcp  # SRSP<BR>
+ncdloadbalance           2683/tcp  # NCDLoadBalance<BR>
+mpnjsosv                 2684/tcp  # mpnjsosv<BR>
+mpnjsoc1/mpnjsocl        2685/tcp  # mpnjsoc1<BR>, mpnjsocl<br><br>mpnjsocl<br>
+mpnjsomg                 2686/tcp  # mpnjsomg<BR>
+pq-lic-mgmt              2687/tcp  # pq-lic-mgmt<BR>
+md-cg-http               2688/tcp  # md-cf-http<BR>
+fastlynx                 2689/tcp  # FastLynx<BR>
+hp-nnm-data              2690/tcp  # HP NNM Embedded Database<BR>
+itinternet               2691/tcp  # IT Internet<BR>
+admins-lms               2692/tcp  # Admins LMS<BR>
+berarc-http/belarc-http     2693/tcp  # belarc-http<BR>, belarc-http<br><br>belarc-http<br>
+pwrsevent                2694/tcp  # pwrsevent<BR>
+vspread                  2695/tcp  # VSPREAD<BR>
+unifyadmin               2696/tcp  # Unify Admin<BR>
+oce-snmp-trap            2697/tcp  # Oce SNMP Trap Port<BR>
+mck-ivpip                2698/tcp  # MCK-IVPIP<BR>
+csoft-plusclnt           2699/tcp  # Csoft Plus Client<BR>
+tqdata                   2700/tcp  # tqdata<BR>
+sms-rcinfo               2701/tcp  # SMS RCINFO<BR>
+sms-xfer                 2702/tcp  # SMS XFER<BR>
+sms-chat                 2703/tcp  # SMS CHAT<BR>
+sms-remctrl              2704/tcp  # SMS REMCTRL<BR>
+sds-admin                2705/tcp  # SDS Admin<BR>
+ncdmirroring             2706/tcp  # NCD Mirroring<BR>
+emcsymapiport            2707/tcp  # EMCSYMAPIPORT<BR>
+banyan-net               2708/tcp  # Banyan-Net<BR>
+supermon                 2709/tcp  # Supermon<BR>
+sso-service              2710/tcp  # SSO Service<BR>
+sso-control              2711/tcp  # SSO Control<BR>
+aocp                     2712/tcp  # Axapta Object Comm Protocol<BR>
+raven1                   2713/tcp  # Raven-1<BR>
+raven2/raven2            2714/tcp  # Raven-2<BR>, raven2<br><br>raven2<br>
+hpstgmgr2                2715/tcp  # HPSTGMGR-2<BR>
+inova-ip-disco           2716/tcp  # Inova IP Disco<BR>
+pn-requester             2717/tcp  # PN REQUESTER<BR>
+pn-requester2            2718/tcp  # PN REQUESTER 2<BR>
+scan-change              2719/tcp  # Scan &amp; Change<BR>
+wkars                    2720/tcp  # wkars<BR>
+smart-diagnose           2721/tcp  # Smart Diagnose<BR>
+proactivesrvr            2722/tcp  # Proactive Server<BR>
+watchdognt               2723/tcp  # WatchDog NT<BR>
+qotps                    2724/tcp  # qotps<BR>
+msolap-ptp2              2725/tcp  # MSOLAP PTP2<BR>
+tams                     2726/tcp  # TAMS<BR>
+mgcp-callagent           2727/tcp  # Media Gateway Control Protocol Call Agent<BR>
+sqdr                     2728/tcp  # SQDR<BR>
+tcim-control             2729/tcp  # TCIM Control<BR>
+nec-raidplus             2730/tcp  # NEC RaidPlus<BR>
+netdragon-msngr          2731/tcp  # NetDragon Messanger<BR>
+g5m                      2732/tcp  # G5M<BR>
+signet-ctf               2733/tcp  # Signet CTF<BR>
+ccs-software             2734/tcp  # CCS Software<BR>
+monitorconsole           2735/tcp  # Monitor Console<BR>
+radwiz-nms-srv           2736/tcp  # RADWIZ NMS SRV<BR>
+srp-feedback             2737/tcp  # SRP Feedback<BR>
+ndl-tcp-ois-gw           2738/tcp  # NDL TCP-OSI Gateway<BR>
+tn-timing                2739/tcp  # TN Timing<BR>
+alarm                    2740/tcp  # Alarm<BR>
+tsb                      2741/tcp  # TSB<BR>
+tsb2                     2742/tcp  # TSB2<BR>
+murx                     2743/tcp  # murx<BR>
+honyaku                  2744/tcp  # honyaku<BR>
+urbisnet                 2745/tcp  # URBISNET<BR>
+cpudpencap               2746/tcp  # CPUDPENCAP<BR>
+fjippol-swrly            2747/tcp  # fjippol-swrly<BR>
+fjippol-polsrv/fjippol-polsvr     2748/tcp  # fjippol-polsrv<BR>, fjippol-polsvr<br><br><br>
+fjippol-cnsl             2749/tcp  # fjippol-cnsl<BR>
+fjippol-port1            2750/tcp  # fjippol-port1<BR>
+fjippol-port2            2751/tcp  # fjippol-port2<BR>
+rsisysaccess             2752/tcp  # RSISYS ACCESS<BR>
+de-spot                  2753/tcp  # de-spot<BR>
+apollo-cc                2754/tcp  # APOLLO CC<BR>
+expresspay               2755/tcp  # Express Pay<BR>
+simplement-tie           2756/tcp  # simplement-tie<BR>
+cnrp                     2757/tcp  # CNRP<BR>
+apollo-status            2758/tcp  # APOLLO Status<BR>
+apollo-GMS               2759/tcp  # APOLLO GMS<BR>
+sabams                   2760/tcp  # Saba MS<BR>
+dicom-iscl               2761/tcp  # DICOM ISCL<BR>
+dicom-tls                2762/tcp  # DICOM TLS<BR>
+desktop-dna              2763/tcp  # Desktop DNA<BR>
+data-insurance           2764/tcp  # Data Insurance<BR>
+gip-audup/qip-audup      2765/tcp  # qip-audup<BR>, qip-audup<br><br>qip-audup<br>
+listen/compaq-scp        2766/tcp  # listen<BR><br> Similar to port 1025/listener, but with higher security concerns. <BR> , Compaq SCP<BR>
+uadtc                    2767/tcp  # UADTC<BR>
+uacs                     2768/tcp  # UACS<BR>
+singlept-mvs             2769/tcp  # Single Point MVS<BR>
+veronica                 2770/tcp  # Veronica<BR>
+vergencecm               2771/tcp  # Vergence CM<BR>
+auris                    2772/tcp  # auris<BR>
+pcbakcup1                2773/tcp  # PC Backup 1<BR>
+pcbakcup2                2774/tcp  # PC Backup 2<BR>
+smpp                     2775/tcp  # SMPP<BR>
+ridgeway1                2776/tcp  # Ridgeway Systems &amp; Software<BR>
+ridgeway2                2777/tcp  # Ridgeway Systems &amp; Software<BR>
+gwen-sonya               2778/tcp  # Gwen-Sonya<BR>
+lbc-sync                 2779/tcp  # LBC Sync<BR>
+lbc-control              2780/tcp  # LBC Control<BR>
+whosells                 2781/tcp  # whosells<BR>
+everydayrc               2782/tcp  # everydayrc<BR>
+aises                    2783/tcp  # AISES<BR>
+www-dev                  2784/tcp  # world wide web - development<BR>
+aic-np                   2785/tcp  # aic-np<BR>
+aic-oncrpc               2786/tcp  # aic-oncrpc - Destiny MCD database<BR>
+piccolo                  2787/tcp  # piccolo - Cornerstone Software<BR>
+fryeserv                 2788/tcp  # NetWare NLM - Seagate Software<BR>
+media-agent              2789/tcp  # Media Agent<BR>
+plgproxy                 2790/tcp  # PLG Proxy<BR>
+mtport-regist            2791/tcp  # MT Port Registrator<BR>
+f5-globalsite            2792/tcp  # f5-globalsite<BR>
+initlsmsad               2793/tcp  # initlsmsad<BR>
+aaftp                    2794/tcp  # aaftp<BR>
+livestats                2795/tcp  # LiveStats<BR>
+ac-tech                  2796/tcp  # ac-tech<BR>
+esp-encap                2797/tcp  # esp-encap<BR>
+tmesis-upshot            2798/tcp  # TMESIS-UPShot tcp/udp<BR>
+icon-discover            2799/tcp  # ICON Discover<BR>
+acc-raid                 2800/tcp  # ACC RAID<BR>
+igcp                     2801/tcp  # IGCP<BR>
+veritas-tcp1             2802/tcp  # Veritas TCP1<BR>
+btprjctrl                2803/tcp  # btprjctrl<BR>
+telexis-vtu              2804/tcp  # Telexis VTU<BR>
+wta-wsp-s                2805/tcp  # WTA WSP-S<BR>
+cspuni                   2806/tcp  # cspuni<BR>
+cspmulti                 2807/tcp  # cspmulti<BR>
+j-lan-p                  2808/tcp  # J-LAN-P<BR>
+corbaloc                 2809/tcp  # CORBA LOC<BR>
+netsteward               2810/tcp  # Active Net Steward<BR>
+gsiftp                   2811/tcp  # GSI FTP<BR>
+atmtcp                   2812/tcp  # atmtcp<BR>
+llm-pass                 2813/tcp  # llm-pass<BR>
+llm-csv                  2814/tcp  # llm-csv<BR>
+lbc-measure              2815/tcp  # LBC Measurement<BR>
+lbc-watchdog             2816/tcp  # LBC Watchdog<BR>
+nmsigport                2817/tcp  # NMSig Port<BR>
+rmlnk                    2818/tcp  # rmlnk<BR>
+fc-faultnotify           2819/tcp  # FC Fault Notification<BR>
+univision                2820/tcp  # UniVision<BR>
+vml-dms                  2821/tcp  # vml-dms<BR>
+ka0wuc                   2822/tcp  # ka0wuc<BR>
+cqg-netlan               2823/tcp  # CQG Net/LAN<BR>
+slc-systemlog            2826/tcp  # slc systemlog<BR>
+slc-strlrloops/slc-ctrlrloops     2827/tcp  # slc ctrlrloops<BR>, slc-ctrlrloops<br><br>slc ctrlrloops<br>
+itm-lm                   2828/tcp  # ITM License Manager<BR>
+silkp1                   2829/tcp  # sildp1<BR>
+silkp2                   2830/tcp  # sildp2<BR>
+silkp3                   2831/tcp  # sildp3<BR>
+silkp4                   2832/tcp  # sildp4<BR>
+glishd                   2833/tcp  # glishd<BR>
+evtp                     2834/tcp  # EVTP<BR>
+evtp-data                2835/tcp  # EVTP-Data<BR>
+catalyst                 2836/tcp  # catalyst<BR>
+repliweb                 2837/tcp  # Repliweb<BR>
+starbot                  2838/tcp  # Starbot<BR>
+nmsigport                2839/tcp  # NMSigPort<BR>
+13-exprt/l3-exprt        2840/tcp  # 13-exprt<BR>, l3-exprt<br><br>l3-exprt<br>
+13-ranger/l3-ranger      2841/tcp  # 13-ranger<BR>, l3-ranger<br><br>l3-ranger<br>
+13-hawk/l3-hawk          2842/tcp  # 13-hawk<BR>, l3-hawk<br><br>l3-hawk<br>
+pdnet                    2843/tcp  # PDnet<BR>
+bpcp-poll                2844/tcp  # BPCP POLL<BR>
+bpcp-trap                2845/tcp  # BPCP TRAP<BR>
+aimpp-hello              2846/tcp  # AIMPP Hello<BR>
+aimpp-port-req           2847/tcp  # AIMPP Port Req<BR>
+amt-blc-port             2848/tcp  # AMT-BLC-PORT<BR>
+fxp                      2849/tcp  # FXP<BR>
+metaconsole              2850/tcp  # MetaConsole<BR>
+webemshttp               2851/tcp  # webemshttp<BR>
+bears-01                 2852/tcp  # bears-01<BR>
+ispipes                  2853/tcp  # ISPipes<BR>
+infomover                2854/tcp  # InfoMover<BR>
+cesdinv                  2856/tcp  # cesdinv<BR>
+simctlp                  2857/tcp  # SimCtIP<BR>
+ecnp                     2858/tcp  # ECNP<BR>
+activememory             2859/tcp  # Active Memory<BR>
+dialpad-voice1           2860/tcp  # Dialpad Voice 1<BR>
+dialpad-voice2           2861/tcp  # Dialpad Voice 2<BR>
+ttg-protocol             2862/tcp  # TTG Protocol<BR>
+sonardata                2863/tcp  # Sonar Data<BR>
+astromed-main            2864/tcp  # main 5001 cmd<BR>
+pit-vpn                  2865/tcp  # pit-vpn<BR>
+lwlistener               2866/tcp  # lwlistener<BR>
+esps-portal              2867/tcp  # esps-portal<BR>
+npep-messaging           2868/tcp  # NPEP Messaging<BR>
+icslap                   2869/tcp  # ICSLAP<BR>
+daishi                   2870/tcp  # daishi<BR>
+msi-selectplay           2871/tcp  # MSI Select Play<BR>
+contract                 2872/tcp  # CONTRACT<BR>
+paspar2-zoomin           2873/tcp  # PASPAR2 ZoomIn<BR>
+dxmessagebase1           2874/tcp  # dxmessagebase1<BR>
+dxmessagebase2           2875/tcp  # dxmessagebase2<BR>
+sps-tunnel               2876/tcp  # SPS Tunnel<BR>
+bluelance                2877/tcp  # BLUELANCE<BR>
+aap                      2878/tcp  # AAP<BR>
+ucentric-ds              2879/tcp  # ucentric-ds<BR>
+synapse                  2880/tcp  # synapse<BR>
+ndsp                     2881/tcp  # NDSP<BR>
+ndtp                     2882/tcp  # NDTP<BR>
+ndnp                     2883/tcp  # NDNP<BR>
+flashmsg                 2884/tcp  # Flash Msg<BR>
+topflow                  2885/tcp  # TopFlow<BR>
+responselogic            2886/tcp  # RESPONSELOGIC<BR>
+aironetddp               2887/tcp  # aironet<BR>
+spcsdlobby               2888/tcp  # SPCSDLOBBY<BR>
+rsom                     2889/tcp  # RSOM<BR>
+cspclmulti               2890/tcp  # CSPCLMULTI<BR>
+cinegrfx-elmd            2891/tcp  # CINEGRFX-ELMD License Manager<BR>
+snifferdata              2892/tcp  # SNIFFERDATA<BR>
+vseconnector             2893/tcp  # VSECONNECTOR<BR>
+abacus-remote            2894/tcp  # ABACUS-REMOTE<BR>
+natuslink                2895/tcp  # NATUS LINK<BR>
+ecovisiong6-1            2896/tcp  # ECOVISIONG6-1<BR>
+citrix-rtmp              2897/tcp  # Citrix RTMP<BR>
+appliance-cfg            2898/tcp  # APPLIANCE-CFG<BR>
+powergemplus             2899/tcp  # POWERGEMPLUS<BR>
+quicksuite               2900/tcp  # QUICKSUITE<BR>
+allstorcns               2901/tcp  # ALLSTORNCNS<BR>
+netaspi                  2902/tcp  # NET ASPI<BR>
+suitcase                 2903/tcp  # SUITCASE<BR>
+m2ua                     2904/tcp  # M2UA<BR>
+m3ua                     2905/tcp  # M3UA<BR>
+caller9                  2906/tcp  # CALLER9<BR>
+webmethods-b2b           2907/tcp  # Web Methods Business-to-Business<BR>
+mao                      2908/tcp  # mao<BR>
+funk-dialout             2909/tcp  # Funk Dialout<BR>
+tdaccess                 2910/tcp  # TDAccess<BR>
+blockade                 2911/tcp  # Blockade<BR>
+epiconl/epicon           2912/tcp  # Epicon<BR>, epicon<br><br>epicon<br>
+boosterware              2913/tcp  # Booster Ware<BR>
+gamelobby                2914/tcp  # Game Lobby<BR>
+tksocket                 2915/tcp  # TK Socket<BR>
+elvin_server             2916/tcp  # Elvin Server<BR>
+elvin_client             2917/tcp  # Elvin Client<BR>
+kastenchasepad           2918/tcp  # Kasten Chase Pad<BR>
+roboer                   2919/tcp  # ROBOER<BR>
+roboeda                  2920/tcp  # ROBOEDA<BR>
+cesdcdman                2921/tcp  # CESD Contents Delivery Management<BR>
+cesdcdtrn                2922/tcp  # CESD Contents Delivery Data Transfer<BR>
+wta-wsp-wtp-s            2923/tcp  # WTA-WSP-WTP-S<BR>
+precise-vip              2924/tcp  # PRECISE-VIP<BR>
+frp                      2925/tcp  # Firewall Redundancy Protocol<BR>
+mobile-file-dl           2926/tcp  # MOBILE-FILE-DL<BR>
+unimobilectrl            2927/tcp  # UNIMOBILECTRL<BR>
+redstone-cpss            2928/tcp  # REDSTONE-CPSS<BR>
+panja-webadmin           2929/tcp  # Panja Web Admin<BR>
+panja-weblinx            2930/tcp  # Panja Web Linx<BR>
+circle-x                 2931/tcp  # Circle-X<BR>
+incp                     2932/tcp  # INCP<BR>
+4-tieropmgw              2933/tcp  # 4-Tief OPM CW<BR>
+4-tieropmcli             2934/tcp  # 4-Tier OPM CLI<BR>
+qtp                      2935/tcp  # QTP<BR>
+otpatch                  2936/tcp  # OTPatch<BR>
+pnaconsult-lm            2937/tcp  # PNA Consult License Manager<BR>
+sm-pas-1                 2938/tcp  # SM-PAS-1<BR>
+sm-pas-2                 2939/tcp  # SM-PAS-2<BR>
+sm-pas-3                 2940/tcp  # SM-PAS-3<BR>
+sm-pas-4                 2941/tcp  # SM-PAS-4<BR>
+sm-pas-5                 2942/tcp  # SM-PAS-5<BR>
+ttnrepository            2943/tcp  # TTN Repository<BR>
+megaco-h248              2944/tcp  # Megaco H248<BR>
+h248-binary              2945/tcp  # H248 Binary<BR>
+fjsvmpor                 2946/tcp  # FJSVmpor<BR>
+gpsd                     2947/tcp  # GPSD<BR>
+wap-push                 2948/tcp  # WAP PUSH<BR>
+wap-pushsecure           2949/tcp  # WAP PUSH SECURE<BR>
+esip                     2950/tcp  # ESIP<BR>
+ottp                     2951/tcp  # OTTP<BR>
+mpfwsas                  2952/tcp  # MPFWSAS<BR>
+ovalarmsrv               2953/tcp  # OV Alarm Server<BR>
+ovalarmsrv-cmd           2954/tcp  # OV Alarm Server - Command<BR>
+csnotify                 2955/tcp  # CS Notify<BR>
+ovrimosdbman             2956/tcp  # OVRIMOSDBMAN<BR>
+jmact5                   2957/tcp  # JMACT5<BR>
+jmact6                   2958/tcp  # JMACT6<BR>
+rmopagt                  2959/tcp  # RMOPAGT<BR>
+boldsoft-lm              2961/tcp  # BoldSoft License Manager<BR>
+iph-policy-cli           2962/tcp  # IPH-Policy-CLI<BR>
+iph-policy-adm           2963/tcp  # IPH-Policy-Admin<BR>
+bullant-srap             2964/tcp  # Bullant SRP<BR>
+bullant-rap              2965/tcp  # Bullant RAP<BR>
+idp-infotriev/idp-infotrieve     2966/tcp  # IDP-INFOTRIEVE<BR>, idp-infotrieve<br><br>idp-infotrieve<br>
+ssc-agent                2967/tcp  # SSC Agent<BR>
+enpp                     2968/tcp  # ENPP<BR>
+ESSP                     2969/tcp  # ESSP<BR>
+index-net                2970/tcp  # INDEX-NET<BR>
+netclip                  2971/tcp  # Net Clip<BR>
+pmsm-webrctl             2972/tcp  # PMSM Webrctl<BR>
+svnetworks               2973/tcp  # SV Networks<BR>
+signal                   2974/tcp  # Signal<BR>
+fjmpcm                   2975/tcp  # Fujitsu Configuration Mgmt Service<BR>
+cns-srv-port             2976/tcp  # CNS Server Port<BR>
+ttc-etap-ns              2977/tcp  # TTCs Enterprise Test Access Protocol - NS<BR>
+ttc-etap-ds              2978/tcp  # TTCs Enterprise Test Access Protocol - DS<BR>
+h263-video               2979/tcp  # H.263 Video Streaming<BR>
+wimd                     2980/tcp  # Instant Messaging Service<BR>
+mylxamport               2981/tcp  # MYLXAMPORT<BR>
+iwb-whiteboard           2982/tcp  # IWB Whiteboard<BR>
+netplan                  2983/tcp  # NetPlan<BR>
+hpidsadmin               2984/tcp  # HP IDS Admin<BR>
+hpidsagent               2985/tcp  # HP IDS Agent<BR>
+stonefalls               2986/tcp  # StoneFalls<BR>
+identify                 2987/tcp  # Identify<BR>
+classify                 2988/tcp  # Classify<BR>
+zarkov                   2989/tcp  # Zarkov<BR>
+boscap                   2990/tcp  # BOSCAP<BR>
+wkstn-mon                2991/tcp  # WKSTN-MON<BR>
+itb301                   2992/tcp  # ITB301<BR>
+veritas-vis1             2993/tcp  # Veritas Vis1<BR>
+veritas-vis2             2994/tcp  # Veritas Vis2<BR>
+idrs                     2995/tcp  # IDRS<BR>
+vsixml                   2996/tcp  # vsixml<BR>
+rebol                    2997/tcp  # REBOL<BR>
+realsecure               2998/tcp  # Real Secure<BR>
+remoteware-un            2999/tcp  # RemoteWare Unassigned<BR>
+ntop/remoteware-cl/hbci     3000/tcp  # ntop<BR><br> Web port for ntop, which grabs/stores/analyzes network transfer info and protocol stat's. Defaults to port 3000 with no auth, can be configured to only allow connects from specific IPs. Is also its own web server. <BR> , RemoteWare Client<BR>, HBCI<BR>
+nessus-server/redwood-broker     3001/tcp  # Nessus Server<BR>, Redwood Broker<BR>
+exlm-agent/remoteware-srv     3002/tcp  # EXLM Agent<BR>, RemoteWare Server<BR>
+cgms                     3003/tcp  # CGMS<BR>
+csoftragent              3004/tcp  # Csoft Agent<BR>
+geniuslm                 3005/tcp  # Genius License Manager<BR>
+ii-admin                 3006/tcp  # Instant Internet Admin<BR>
+lotusmtap                3007/tcp  # LotusMail Tracking Agent Protocol<BR>
+midnight-tech            3008/tcp  # Midnight Technologies<BR>
+pxc-ntfy                 3009/tcp  # PXC-NTFY<BR>
+gw                       3010/tcp  # Telerate Workstation<BR>
+trusted-web              3011/tcp  # Trusted Web<BR>
+twsdss                   3012/tcp  # Trusted Web Client<BR>
+gilatskysurfer           3013/tcp  # Gilat Sky Surfer<BR>
+broker_service           3014/tcp  # Broker Service<BR>
+nati-dstp                3015/tcp  # NATI DSTP<BR>
+notify_srvr              3016/tcp  # Notify Server<BR>
+event_listener           3017/tcp  # Event Listener<BR>
+srvc_registry            3018/tcp  # Service Registry<BR>
+resource_mgr             3019/tcp  # Resource Manager<BR>
+cifs                     3020/tcp  # CIFS<BR>
+agriserver               3021/tcp  # AGRI Server<BR>
+csregagent               3022/tcp  # CSREGAGENT<BR>
+magicnotes               3023/tcp  # magicnotes<BR>
+nds_sso                  3024/tcp  # NDS_SSO<BR>
+arepa-raft               3025/tcp  # Arepa Raft<BR>
+agri-gateway             3026/tcp  # AGRI Gateway<BR>
+liebdevmgmt_c            3027/tcp  # LiebDevMgmt_C<BR>
+liebdevmgmt_dm           3028/tcp  # liebdevmgmt_dm<BR>
+liebdevmgmt_a            3029/tcp  # liebdevmgmt_a<BR>
+arepa-cas                3030/tcp  # Arepa Cas<BR>
+agentvu                  3031/tcp  # Agent VU<BR>
+redwood-chat             3032/tcp  # Redwood Chat<BR>
+pdb                      3033/tcp  # PDB<BR>
+osmosis-aeea             3034/tcp  # Osmosis AEEA<BR>
+fjsv-gssagt              3035/tcp  # FJSV gssagt<BR>
+hagel-dump               3036/tcp  # Hagel Dump<BR>
+hp-san-mgmt              3037/tcp  # HP SAN Mgmt<BR>
+santak-ups               3038/tcp  # Santak UPS<BR>
+cogitate                 3039/tcp  # Cogitate, Inc.<BR>
+tomato-springs           3040/tcp  # Tomato Springs<BR>
+di-traceware             3041/tcp  # DI Traceware<BR>
+journee                  3042/tcp  # journee<BR>
+brp                      3043/tcp  # BRP<BR>
+responsenet              3045/tcp  # ResponseNet<BR>
+di-ase                   3046/tcp  # di-ase<BR>
+hlserver                 3047/tcp  # Fast Security HL Server<BR>
+pctrader                 3048/tcp  # Sierra Net PC Trader<BR>
+NSWS                     3049/tcp  # NSWS<BR>
+gds_db                   3050/tcp  # gds)db<BR>
+galaxy-server            3051/tcp  # Galaxy Server<BR>
+apcpcns                  3052/tcp  # APCPCNS<BR>
+dsom-server              3053/tcp  # DSOM Server<BR>
+amt-cnf-prot             3054/tcp  # AMT CNF PROT<BR>
+policyserver             3055/tcp  # Policy Server<BR>
+cdl-server               3056/tcp  # CDL Server<BR>
+goahead-fldup            3057/tcp  # GoAhead FldUp<BR>
+videobeans               3058/tcp  # VideoBeans<BR>
+qsoft/qsoft              3059/tcp  # QSoft<BR>, qsoft<br><br>qsoft<br>
+interserver              3060/tcp  # interserver<BR>
+cautcpd                  3061/tcp  # cautcpd<BR>
+ncacn-ip-tcp/ncacn-ip-tcp     3062/tcp  # NCACN-IP-TCP<BR>, ncacn-ip-tcp<br><br>ncacn-ip-tcp<br>
+ncadg-ip-udp             3063/tcp  # ncadg-ip-udp<br><br>ncadg-ip-udp<br>
+slinterbase              3065/tcp  # SlinterBase<BR>
+netattachsdmp            3066/tcp  # NETATTACHSDMP<BR>
+fjhpjp                   3067/tcp  # FJHPJP<BR>
+ls3bcast                 3068/tcp  # ls3 Broadcast<BR>
+ls3                      3069/tcp  # ls3<BR>
+mgxswitch                3070/tcp  # MGXSwitch<BR>
+opsec-sam                3071/tcp  # OPSEC SAM<BR>
+opsec-lea                3072/tcp  # OPSEC LEA<BR>
+opsec-ela                3073/tcp  # OPSEC ELA<BR>
+opsec-omi                3074/tcp  # OPSEC OMI<BR>
+orbix-locator            3075/tcp  # Orbix 2000 Locator<BR>
+orbix-config             3076/tcp  # Orbix 2000 Config<BR>
+orbix-loc-ssl            3077/tcp  # Orbix 2000 Locator SSL<BR>
+orbix-cfg-ssl            3078/tcp  # Orbix-2000 Locator SSL<BR>
+stm_pproc                3080/tcp  # stm_proc<BR>
+tl1-lv                   3081/tcp  # TL1-LC<BR>
+tl1-raw                  3082/tcp  # TL1-RAW<BR>
+tl1-telnet               3083/tcp  # TL1 Telnet<BR>
+cardbox                  3105/tcp  # Cardbox<BR>
+cardbox-http             3106/tcp  # Cardbox HTTP<BR>
+squid-proxy              3128/tcp  # Squid (Squid Web Proxy Cache)
+icpv2                    3130/tcp  # ICPv2<BR>
+netbookmark              3131/tcp  # Net Book Mark<BR>
+vmodem                   3141/tcp  # VMODEM<BR>
+rdc-wh-eos               3142/tcp  # RDC WH EOS<BR>
+seaview                  3143/tcp  # Sea View<BR>
+tarantella               3144/tcp  # Tarantella<BR>
+csi-lfap                 3145/tcp  # CSI-LFAP<BR>
+rfio                     3147/tcp  # RFIO<BR>
+nm-game-admin            3148/tcp  # NetMike Game Administrator<BR>
+nm-game-server           3149/tcp  # NetMike Game Server<BR>
+nm-asses-admin           3150/tcp  # NetMike Assessor Administrator<BR>
+nm-assessor              3151/tcp  # NetMike Assessor<BR>
+mc-brk-srv               3180/tcp  # Millicent Broker Server<BR>
+bmcpatrolagent           3181/tcp  # BMC Patrol Agent<BR>
+bmcpatrolrnvu            3182/tcp  # BMC Patrol Rendezvous<BR>
+necp                     3262/tcp  # NECP<BR>
+ccmail                   3264/tcp  # cc:mail/lotus<BR>
+altav-tunnel             3265/tcp  # Altav Tunnel<BR>
+ns-cfg-server            3266/tcp  # NS CFG Server<BR>
+ibm-dial-out             3267/tcp  # IBM Dial Out<BR>
+msft-gc                  3268/tcp  # Microsoft Global Catalog<BR>
+msft-gc-ssl              3269/tcp  # Microsoft Global Catalog w/ LDAP/SSL<BR>
+verismart                3270/tcp  # Verismart<BR>
+csoft-prev               3271/tcp  # CSoft Prev Port<BR>
+user-manager             3272/tcp  # Fujitsu User Manager<BR>
+sxmp                     3273/tcp  # Simple Experimental Multiplexed Protocol<BR>
+ordinox-server           3274/tcp  # Ordinox Server<BR>
+samd                     3275/tcp  # SAMD<BR>
+maxim-asics              3276/tcp  # Maxim ASICs<BR>
+awg-proxy                3277/tcp  # AWG Proxy<BR>
+lkcmserver               3278/tcp  # LKCM Server<BR>
+admind                   3279/tcp  # admind<BR>
+vs-server                3280/tcp  # VS Server<BR>
+sysopt                   3281/tcp  # SYSOPT<BR>
+datusorb                 3282/tcp  # Datusorb<BR>
+net-assistant            3283/tcp  # Net Assistant<BR>
+4talk                    3284/tcp  # 4Talk<BR>
+plato                    3285/tcp  # Plato<BR>
+e-net                    3286/tcp  # E-Net<BR>
+directvdata              3287/tcp  # DIRECTVDATA<BR>
+cops                     3288/tcp  # COPS<BR>
+enpc                     3289/tcp  # ENPC<BR>
+caps-lm                  3290/tcp  # CAPS-LOGISTICS TOOLKIT - LM<BR>
+sah-lm                   3291/tcp  # S A Holditch &amp; Associates - LM<BR>
+cart-o-rama              3292/tcp  # Cart O Rama<BR>
+fg-fps                   3293/tcp  # fg-fps<BR>
+fg-gip                   3294/tcp  # fg-gip<BR>
+dyniplookup              3295/tcp  # Dynamic IP Lookup<BR>
+rib-slm                  3296/tcp  # Rib License Manager<BR>
+cytel-lm                 3297/tcp  # Cytel License Manager<BR>
+transview                3298/tcp  # Transview<BR>
+pdrncs                   3299/tcp  # pdrncs<BR>
+bmcpatrolagent           3300/tcp  # BMC Patrol Agent<BR>
+bmcpatrolrnvu            3301/tcp  # BMC Patrol Rendezvous<BR>
+mcs-fastmail             3302/tcp  # MCS Fastmail<BR>
+opsession-clnt           3303/tcp  # OP Session Client<BR>
+opsession-srvr           3304/tcp  # OP Session Server<BR>
+odette-ftp               3305/tcp  # ODETTE-FTP<BR>
+mysq1/mysql              3306/tcp  # MySQL<BR>, mysql<br><br>mysql<br>
+opsession-prxy           3307/tcp  # OP Session Proxy<BR>
+tns-server               3308/tcp  # TNS Server<BR>
+tns-adv                  3309/tcp  # TNS ADV<BR>
+dyna-access              3310/tcp  # Dyna Access<BR>
+mcns-tel-ret             3311/tcp  # MCNS Tel Ret<BR>
+appman-server            3312/tcp  # Application Management Server<BR>
+uorb                     3313/tcp  # Unify Object Broker<BR>
+uohost                   3314/tcp  # Unify Object Host<BR>
+cdid                     3315/tcp  # CDID<BR>
+aicc-cmi                 3316/tcp  # AICC/CMI<BR>
+vsaiport                 3317/tcp  # VSAI PORT<BR>
+ssrip                    3318/tcp  # Switch to Switch Routing Info Protocol<BR>
+sdt-lmd                  3319/tcp  # SDT License Manager<BR>
+officelink2000           3320/tcp  # Office Link 2000<BR>
+vnsstr                   3321/tcp  # VNSSTR<BR>
+active-net/active-net     3322/tcp  # Active Networks<BR>, active-net<br><br>active networks<br>
+active-net/active-net     3323/tcp  # Active Networks<BR>, active-net<br><br>active networks<br>
+active-net/active-net     3324/tcp  # Active Networks<BR>, active-net<br><br>active networks<br>
+active-net/active-net     3325/tcp  # Active Networks<BR>, active-net<br><br>active networks<br>
+sftu                     3326/tcp  # SFTU<BR>
+bbars                    3327/tcp  # BBARS<BR>
+egptlm                   3328/tcp  # Eaglepoint License Manager<BR>
+hp-device-disc           3329/tcp  # HP Device Disc<BR>
+mcs-calypsoicf           3330/tcp  # MCS Calypso ICF<BR>
+mcs-messaging            3331/tcp  # MCS Messaging<BR>
+mcs-mailsvr              3332/tcp  # MCS Mail Server<BR>
+dec-notes/eggdrop        3333/tcp  # DEC Notes<BR>, Eggdrop bot<BR>
+directv-web              3334/tcp  # Direct TV Webcasting<BR>
+directv-soft             3335/tcp  # Direct TV Software Updates<BR>
+directv-tick             3336/tcp  # Direct TV Tickers<BR>
+directv-catlog/directv-catlg     3337/tcp  # Direct TV Data Catelog<BR>, directv-catlg<br><br>direct tv data catalog<br>
+anet-b                   3338/tcp  # OMF data b<BR>
+anet-l                   3339/tcp  # OMF data l<BR>
+anet-m                   3340/tcp  # OMF data m<BR>
+anet-h                   3341/tcp  # OMF data h<BR>
+webtie                   3342/tcp  # WebTIE<BR>
+ms-cluster-net           3343/tcp  # MS Cluster Net<BR>
+bnt-manager              3344/tcp  # BNT Manager<BR>
+influence                3345/tcp  # Influence<BR>
+trnsprntproxy            3346/tcp  # Trnsprnt Proxy<BR>
+phoenix-rpc              3347/tcp  # Phoenix RPC<BR>
+pangolin-laser           3348/tcp  # Pangolin Laser<BR>
+chevinservices           3349/tcp  # Chevin Services<BR>
+findviatv                3350/tcp  # FINDVIATV<BR>
+btrieve                  3351/tcp  # BTRIEVE<BR>
+ssq1/ssql                3352/tcp  # SSQL<BR>, ssql<br><br>ssql<br>
+fatpipe                  3353/tcp  # FATPIPE<BR>
+suitjd                   3354/tcp  # SUITJD<BR>
+ordinox-dbase            3355/tcp  # Ordinox Dbase<BR>
+upnotifyps               3356/tcp  # UPNOTIFYPS<BR>
+adtech-test              3357/tcp  # Adtech Test IP<BR>
+mpsysrmsvr               3358/tcp  # Mp Sys Rmsvr<BR>
+wg-netforce              3359/tcp  # WG NetForce<BR>
+kv-server                3360/tcp  # KV Server<BR>
+kv-agent                 3361/tcp  # KV Agent<BR>
+dj-ilm                   3362/tcp  # DJ ILM<BR>
+nati-vi-server           3363/tcp  # NATI Vi Server<BR>
+creativeserver           3364/tcp  # Creative Server<BR>
+contentserver            3365/tcp  # Content Server<BR>
+creativepartnr           3366/tcp  # Creative Partner<BR>
+satvid-datalnk/satvid-datalnk     3367/tcp  # Satellite Video Data Link<BR>, satvid-datalnk<br><br>satellite video data link<br>
+satvid-datalnk/satvid-datalnk     3368/tcp  # Satellite Video Data Link<BR>, satvid-datalnk<br><br>satellite video data link<br>
+satvid-datalnk/satvid-datalnk     3369/tcp  # Satellite Video Data Link<BR>, satvid-datalnk<br><br>satellite video data link<br>
+satvid-datalnk/satvid-datalnk     3370/tcp  # Satellite Video Data Link<BR>, satvid-datalnk<br><br>satellite video data link<br>
+satvid-datalnk/satvid-datalnk     3371/tcp  # Satellite Video Data Link<BR>, satvid-datalnk<br><br>satellite video data link<br>
+tip2l/tip2               3372/tcp  # TIP 2<BR>, tip2<br><br>tip 2<br>
+lavenir-lm               3373/tcp  # Lavenir License Manager<BR>
+cluster-disc             3374/tcp  # Cluster Disc<BR>
+vsnm-agent               3375/tcp  # VSNM Agent<BR>
+cdbroker                 3376/tcp  # CD Broker<BR>
+cogsys-lm                3377/tcp  # Cogsys Network License Manager<BR>
+wsicopy                  3378/tcp  # WSICOPY<BR>
+socorfs                  3379/tcp  # SOCORFS<BR>
+sns-channels             3380/tcp  # SNS Channels<BR>
+geneous                  3381/tcp  # Geneous<BR>
+fujitsu-neat             3382/tcp  # Fujitsu Net Enhanced Antitheft<BR>
+esp-lm                   3383/tcp  # Enterprise Software Products LM<BR>
+hp-clic                  3384/tcp  # Cluster Management Services<BR>
+qnxnetman                3385/tcp  # qnxnetman<BR>
+gprs-data                3386/tcp  # GPRS Data<BR>
+backroomnet              3387/tcp  # Back Room Net<BR>
+cbserver                 3388/tcp  # CB Server<BR>
+ms-wbt-server            3389/tcp  # MS Terminal Server RDP Client<BR>
+dsc                      3390/tcp  # Distributed Service Coordinator<BR>
+savant                   3391/tcp  # SAVANT<BR>
+efi-lm                   3392/tcp  # EFI License Management<BR>
+d2k-tapestry1            3393/tcp  # D2K Tapestry Client to Server<BR>
+d2k-tapestry2            3394/tcp  # D2K Tapestry Server to Client<BR>
+dyna-lm                  3395/tcp  # Dyna License Manager (Elam)<BR>
+printer_agent            3396/tcp  # Printer Agent<BR>
+cloanto-lm               3397/tcp  # Cloanto License Manager<BR>
+merchantile/mercantile     3398/tcp  # Mercantile<BR>, mercantile<br><br>mercantile<br>
+csms                     3399/tcp  # CSMS<BR>
+csms2                    3400/tcp  # CSMC2<BR>
+filecast                 3401/tcp  # FileCast<BR>
+bmap                     3421/tcp  # Bull Apprise portmapper<BR>
+mira                     3454/tcp  # Apple Remote Access Protocol<BR>
+prsvp                    3455/tcp  # RSVP Port<BR>
+vat                      3456/tcp  # VAT default data<BR>
+vat-control              3457/tcp  # VAT default control<BR>
+d3winosfi                3458/tcp  # D3WinOsfi<BR>
+integral                 3459/tcp  # Integral<BR>
+edm-manager              3460/tcp  # EDM Manager<BR>
+edm-stager               3461/tcp  # EDM Stager<BR>
+edm-std-notify           3462/tcp  # EDM STD Notify<BR>
+edm-adm-notify           3463/tcp  # EDM ADM Notify<BR>
+edm-mgr-sync             3464/tcp  # EDM MGR Sync<BR>
+edm-mgr-cntrl            3465/tcp  # EDM MGR Control<BR>
+workflow                 3466/tcp  # WORKFLOW<BR>
+rcst                     3467/tcp  # RCST<BR>
+ttcmremotectrl           3468/tcp  # TTCM Remote Control<BR>
+pluribus                 3469/tcp  # Pluribus<BR>
+jt400                    3470/tcp  # jt400<BR>
+jt400-ssl                3471/tcp  # jt400 SSL<BR>
+watcomdebug              3472/tcp  # Watcom Debug<BR>
+harlequinorb             3473/tcp  # harlequinorb<BR>
+ms-la                    3535/tcp  # MS-LA<BR>
+vhd                      3802/tcp  # VHD<BR>
+v-one-spp                3845/tcp  # V-ONE Single Port Proxy<BR>
+udt_os                   3900/tcp  # Unidata UDT OS<BR>
+mapper-nodemgr           3984/tcp  # MAPPER network node manager<BR>
+mapper-mapethd           3985/tcp  # MAPPER TCP/IP server<BR>
+mapper-ws_ethd           3986/tcp  # MAPPER workstation server<BR>
+centerline               3987/tcp  # Centerline<BR>
+terabase/icq-tcp         4000/tcp  # Terabase<BR>, ICQ Control Port<BR><br> Used to negotiate random-high udp ports for ICQ data tx. <BR> 
+newoak                   4001/tcp  # NewOak<BR>
+pxc-spvr-ft              4002/tcp  # pxc-spvr-ft<BR>
+pxc-splr-ft              4003/tcp  # pxc-splr-ft<BR>
+pxc-roid                 4004/tcp  # pxc-roid<BR>
+pxc-pin                  4005/tcp  # pxc-pin<BR>
+pxc-spvr                 4006/tcp  # pxc-spvr<BR>
+pxc-splr                 4007/tcp  # pxc-splr<BR>
+netcheque                4008/tcp  # NetCheque accounting<BR>
+chimera-hwm              4009/tcp  # Chimera HWM<BR>
+samsung-unidex           4010/tcp  # Samsung Unidex<BR>
+altserviceboot           4011/tcp  # Alternate Service Boot<BR>
+pda-gate                 4012/tcp  # PDA Gate<BR>
+acl-manager              4013/tcp  # ACL Manager<BR>
+taiclock                 4014/tcp  # TAICLOCK<BR>
+talarian-mcast1          4015/tcp  # Talarian Mcast<BR>
+talarian-mcast2          4016/tcp  # Talarian Mcast<BR>
+talarian-mcast3          4017/tcp  # Talarian Mcast<BR>
+talarian-mcast4          4018/tcp  # Talarian Mcast<BR>
+talarian-mcast5          4019/tcp  # Talarian Mcast<BR>
+ichat                    4020/tcp  # IChat Chat Room<BR>
+lockd                    4045/tcp  # NFS lock daemon (alt port)<BR><br> Supports record locking on NFS files. On some OS's (eg: Solaris), lockd tracks NFS requests to tcp 2049. Attackers know this and will probe NFS via tcp 4045 instead, hoping probe escapes detection. <BR> 
+bre                      4096/tcp  # Bridge Relay Element<BR>
+patrolview               4097/tcp  # Patrol View<BR>
+drmsfsd                  4098/tcp  # drmsfsd<BR>
+dpcp                     4099/tcp  # DPCD<BR>
+nuts_dem                 4132/tcp  # NUTS Daemon<BR>
+nuts_bootp               4133/tcp  # NUTS Bootp Server<BR>
+nifty-hmi                4134/tcp  # NIFTY-Serve HMI protocol<BR>
+oirtgsvc                 4141/tcp  # Workflow Server<BR>
+oidocsvc                 4142/tcp  # Document Server<BR>
+oidsr                    4143/tcp  # Document Replication<BR>
+CIM/wincim               4144/tcp  # Compuserve server port<BR>, wincim<br><br>pc windows compuserve.com protocol<br>
+jini-discovery           4160/tcp  # Jini Discovery<BR>
+eims=admin/eims-admin     4199/tcp  # EIMS Admin<BR>, eims-admin<br><br>eims admin<br>
+vrml-multi-use/vrml-multi-use     4200/tcp  # VRML Multi User Systems<BR>, vrml-multi-use<br><br>vrml multi user systems<br>
+corelccam                4300/tcp  # Corel Ccam<BR>
+rwhois                   4321/tcp  # Remote Who Is<BR>
+unicall                  4343/tcp  # UNICALL<BR>
+vinainstall              4344/tcp  # VinaInstall<BR>
+m4-network-as            4345/tcp  # Macro 4 Network AS<BR>
+elanlm                   4346/tcp  # ELAN LM<BR>
+lansurveyor              4347/tcp  # LAN Surveyor<BR>
+itose                    4348/tcp  # ITOSE<BR>
+fsportmap                4349/tcp  # File System Port Map<BR>
+net-device               4350/tcp  # Net Device<BR>
+plcy-net-svcs            4351/tcp  # PLCY Net Services<BR>
+f5-iquery                4353/tcp  # F5iQuery<BR>
+saris                    4442/tcp  # Saris<BR>
+pharos                   4443/tcp  # Pharos<BR>
+krb524/nv-video/eggdrop     4444/tcp  # KRB524<BR>, NV Video default<BR>, Common for eggdrop bot<BR>
+upnotifyp                4445/tcp  # UPNOTIFYP<BR>
+n1-fwp                   4446/tcp  # N1-FWP<BR>
+n1-rmgmt                 4447/tcp  # N1-RMGMT<BR>
+asc-slmd                 4448/tcp  # ASC Licence Manager<BR>
+arcryptoip/privatewire     4449/tcp  # ARCrypto IP<BR>, PrivateWire<BR>
+camp                     4450/tcp  # Camp<BR>
+ctisystemmsg             4451/tcp  # CTI System Msg<BR>
+ctiprogramload           4452/tcp  # CTI Program Load<BR>
+nssalertmgr              4453/tcp  # NSS Alert Manager<BR>
+nssagentmgr              4454/tcp  # NSS Agent Manager<BR>
+prchat-user              4455/tcp  # PR Chat User<BR>
+prchat-server            4456/tcp  # PR Chat Server<BR>
+prRegister               4457/tcp  # PR Register<BR>
+sae-urn                  4500/tcp  # sae-urn<BR>
+urn-x-cdchoice           4501/tcp  # urn-x-cdchoice<BR>
+worldscores              4545/tcp  # WorldScores<BR>
+sf-lm                    4546/tcp  # SF License Manager (Sentinel)<BR>
+lanner-lm                4547/tcp  # Lanner License Manager<BR>
+tram                     4567/tcp  # TRAM<BR>
+bmc-reporting            4568/tcp  # BMC Reporting<BR>
+piranha1                 4600/tcp  # Piranha-1<BR>
+piranha2                 4601/tcp  # Piranha-2<BR>
+rfa                      4672/tcp  # remote file access server
+                         /tcp  # 
+iims                     4800/tcp  # Icona Instant Messenging System<BR>
+iwec                     4801/tcp  # Icona Web Embedded Chat<BR>
+ilss                     4802/tcp  # Icona License System Server<BR>
+htcp                     4827/tcp  # HTCP<BR>
+phrelay                  4868/tcp  # Photon Relay<BR>
+phrelaydbg               4869/tcp  # Photon Relay Debug<BR>
+abbs                     4885/tcp  # ABBS<BR>
+att-intercom             4983/tcp  # AT&amp;T Intercom<BR>
+sockets-de-troje/commplex-main/Sybase/nortel-voip/YahooMessenger     5000/tcp  # Sockets de Trojie Backdoor<BR><br> Also infects tcp/udp 5001, 30303, 50505. <BR> , Complex Main<BR>, , Nortel Networks i2050 Software Phone, Yahoo Messenger Voice Chat
+commplex-link/sockets-de-troje/YahooMessenger     5001/tcp  # Complex Link<BR>, Sockets de Trojie Backdoor<BR><br> Also infects tcp/udp 5000, 30303, 50505. <BR> , Yahoo Messenger Voice Chat
+rfe                      5002/tcp  # radio free ethernet<BR>
+claris-fmpro/fmpro-internal     5003/tcp  # Claris FileMaker Pro<BR>, FileMaker - Proprietary Transport<BR>
+avt-profile-1            5004/tcp  # avt-profile-1<BR>
+avt-profile-2            5005/tcp  # avt-profile-2<BR>
+wsm-server               5006/tcp  # WSM Server<BR>
+wsm-server-ssl           5007/tcp  # WSM Server SSL<BR>
+telelpathstart           5010/tcp  # TelepathStart<BR>
+telelpathattack          5011/tcp  # TelepathAttack<BR>
+zenginkyo-1              5020/tcp  # zenginkyo-1<BR>
+zenginkyo-2              5021/tcp  # zenginkyo-2<BR>
+asnaacceler8db           5042/tcp  # asnaacceler8db<BR>
+mmcc                     5050/tcp  # multimedia conference control tool<BR>
+ita-manager/ita-agent     5051/tcp  # ITA Manager<BR><br> Open on Axent ITA Manager, to receive comms from agents. <BR> , ita-agent<br><br>ita agent<br>
+ita-agent/ita-manager     5052/tcp  # ITA Agent<BR><br> Open on Axent ITA agents, to receive comms from manager. <BR> , ita-manager<br><br>ita manager<br>
+unot                     5055/tcp  # UNOT<BR>
+sip/hp-chorus            5060/tcp  # SIP<BR>, HP Motive Chorus (HTTP)
+I-net-2000-npr           5069/tcp  # I/Net 2000-NPR<BR>
+powerschool              5071/tcp  # PowerSchool<BR>
+rmonitor_secure          5145/tcp  # rmonitor secure<BR>
+atmp                     5150/tcp  # Ascend Tunnel Management Protocol<BR>
+esri_sde                 5151/tcp  # ESRI SDE Instance<BR>
+sde-discovery            5152/tcp  # ESRI SDE Instance Discovery<BR>
+ife_icorp                5165/tcp  # ife_1corp<BR>
+aol                      5190/tcp  # America-Online Server Port<BR><br> Primary AOL Internet-connect port; also used in Instant Messaging. Alternate ports: 5191, 5192, 5193. <BR> 
+aol-1                    5191/tcp  # America-Online1 Server Port<BR>
+aol-2                    5192/tcp  # America-Online2 Server Port<BR>
+aol-3                    5193/tcp  # America-Online3 Server Port<BR>
+targus-aib1              5200/tcp  # Targus AIB 1<BR>
+targus-aib2              5201/tcp  # Targus AIB 2<BR>
+targus-tnts1             5202/tcp  # Targus TNTS 1<BR>
+targus-tnts2             5203/tcp  # Targus TNTS 2<BR>
+padl2sim                 5236/tcp  # padl2sim<BR>
+pk                       5272/tcp  # 
+hacl-hb                  5300/tcp  # HA cluster heartbeat<BR>
+hacl-gs                  5301/tcp  # HA cluster general services<BR>
+hacl-cfg                 5302/tcp  # HA cluster configuration<BR>
+hacl-probe               5303/tcp  # HA cluster probing<BR>
+hacl-local               5304/tcp  # HA Cluster Commands<BR>
+hacl-test                5305/tcp  # HA Cluster Test<BR>
+sun-mc-grp               5306/tcp  # Sun MC Group<BR>
+sco-aip                  5307/tcp  # SCO AIP<BR>
+cfengine                 5308/tcp  # CFengine<BR>
+jprinter                 5309/tcp  # J Printer<BR>
+outlaws                  5310/tcp  # Outlaws<BR>
+tmlogin                  5311/tcp  # TM Login<BR>
+excerpt                  5400/tcp  # Excerpt Search<BR>
+excerpts                 5401/tcp  # Excerpt Search Secure<BR>
+mftp                     5402/tcp  # MFTP<BR>
+hpoms-ci-lstn            5403/tcp  # HPOMS-CI-LSTN<BR>
+hpoms-dps-lstn           5404/tcp  # HPOMS-DPS-LSTN<BR>
+netsupport               5405/tcp  # NetSupport<BR>
+systemics-sox            5406/tcp  # Systemics Sox<BR>
+foresyte-clear           5407/tcp  # Foresyte-Clear<BR>
+foresyte-sec             5408/tcp  # Foresyte-Sec<BR>
+salient-dtasrv           5409/tcp  # Salient Data Server<BR>
+salient-usrmgr           5410/tcp  # Salient User Manager<BR>
+actnet                   5411/tcp  # ActNet<BR>
+continuus                5412/tcp  # Continuus<BR>
+wwiotalk                 5413/tcp  # WWIOTALK<BR>
+statusd                  5414/tcp  # StatusD<BR>
+ns-server                5415/tcp  # NS Server<BR>
+sns-gateway              5416/tcp  # SNS Gateway<BR>
+sns-agent                5417/tcp  # SNS Agent<BR>
+mcntp                    5418/tcp  # MCNTP<BR>
+dj-ice                   5419/tcp  # DJ-ICE<BR>
+cylink-c                 5420/tcp  # Cylink-C<BR>
+netsupport2              5421/tcp  # Net Support 2<BR>
+salient-mux              5422/tcp  # Salient Multiplexor<BR>
+virtualuser              5423/tcp  # VirtualUser<BR>
+bmc-perf-ad              5424/tcp  # BMC-PERF-SD<BR>
+bmc-perf-agnt            5425/tcp  # BMC-PERF-Agent<BR>
+devbasic                 5426/tcp  # DevBasic<BR>
+sco-peer-tta             5427/tcp  # SCO Peer-TTA<BR>
+telaconsole              5428/tcp  # TelaConsole<BR>
+base                     5429/tcp  # Billing and Accounting System Exchange<BR>
+radec-corp               5430/tcp  # RADEC Corp<BR>
+park-agent               5431/tcp  # PARK Agent<BR>
+apc-tcp-udp-4            5454/tcp  # apc-tcp-udp-4<BR>
+apc-tcp-udp-5            5455/tcp  # apc-tcp-udp-5<BR>
+apc-tcp-udp-6            5456/tcp  # apc-tcp-udp-6<BR>
+silkmeter                5461/tcp  # SilkMeter<BR>
+fcp-addr-srvr1           5500/tcp  # fcp-addr-srvr1<BR>
+fcp-addr-srvr2           5501/tcp  # fcp-addr-srvr2<BR>
+fcp-addr-inst1/fcp-srvr-inst1     5502/tcp  # fcp-addr-inst2<BR>, fcp-srvr-inst1<br><br>fcp-srvr-inst1<br>
+fcp-addr-inst2/fcp-srvr-inst2     5503/tcp  # fcp-addr-inst2<BR>, fcp-srvr-inst2<br><br>fcp-srvr-inst2<br>
+fcp-cics-gw1             5504/tcp  # fcp-cics-gw1<BR>
+securidprop/secureidprop     5510/tcp  # SecurID Services<BR><br> SecurID Services use: <BR> - tcp 5510, 5520, 5530, 5540, 5550 <BR> - udp 5500, 5540 <BR> , secureidprop<br><br>ace/server services<br>
+sdlog                    5520/tcp  # SecurID Services<BR><br> SecurID Services use: <BR> - tcp 5510, 5520, 5530, 5540, 5550 <BR> - udp 5500, 5540 <BR> 
+sdserv                   5530/tcp  # SecurID Services<BR><br> SecurID Services use: <BR> - tcp 5510, 5520, 5530, 5540, 5550 <BR> - udp 5500, 5540 <BR> 
+sdreport                 5540/tcp  # SecurID Services<BR><br> SecurID Services use: <BR> - tcp 5510, 5520, 5530, 5540, 5550 <BR> - udp 5500, 5540 <BR> 
+sdadmin/sdadmind         5550/tcp  # SecurID Services<BR><br> SecurID Services use: <BR> - tcp 5510, 5520, 5530, 5540, 5550 <BR> - udp 5500, 5540 <BR> , sdadmind<br><br>ace/server services<br>
+sgi-esphttp              5554/tcp  # SGI ESP HTTP<BR>
+omni/rmt/personal-agent/eggdrop     5555/tcp  # OmniBack-II<BR>, Rmtd<BR>, Personal Agent<BR>, Common for eggdrop bot<BR>
+mtb                      5556/tcp  # Mtbd (mtb backup)<BR>
+esinstall                5599/tcp  # Enterprise Security Remote Install<BR>
+esm-agent/esmmanager     5600/tcp  # Enterprise Security Agent - Unix     Open on Axent ESM Unix agents, to receive comms from its manager.  Data is encrypted during transfer., esmmanager<br><br>enterprise security manager<br>
+esm-agent/esm-manager/esmagent     5601/tcp  # Enterprise Security Agent - NT<BR><br> Open on Axent ESM NT agents, to receive comms from its manager. <BR> , Enterprise Security Manager<BR><br> Open on Axent ESM manager, to receive comms from its agents. <BR> , esmagent<br><br>enterprise security agent<br>
+a1-msc                   5602/tcp  # A1-MSC<BR>
+a1-bs                    5603/tcp  # A1-BS<BR>
+a3-sdunode               5604/tcp  # A3-SDUNode<BR>
+a4-sdunode               5605/tcp  # A4-SDUNode<BR>
+pcanywheredata/pcanywheredata     5631/tcp  # pcAnywhere Data<BR><br> Default tcp port for v7.52 and above. v2.0 thru v7.51, plus CE version, use tcp 65301 &amp; udp 22. <BR> , pcanywheredata<br><br>pcanywheredata<br>
+pcanywherestat           5632/tcp  # pcanywherestat<br><br>pcanywherestat<br>
+rrac                     5678/tcp  # Remote Replication Agent Connection<BR>
+dccm                     5679/tcp  # Direct Cable Connect Manager<BR>
+proshareaudio            5713/tcp  # proshare conf audio<BR>
+prosharevideo            5714/tcp  # proshare conf video<BR>
+prosharedata             5715/tcp  # proshare conf data<BR>
+prosharerequest          5716/tcp  # proshare conf request<BR>
+prosharenotify           5717/tcp  # proshare conf notify<BR>
+openmail                 5729/tcp  # Openmail User Agent Layer<BR>
+ida-discover1            5741/tcp  # IDA Discover Port1<BR>
+ida-discover2            5742/tcp  # IDA Discover Port 2<BR>
+fcopy-server             5745/tcp  # fcopy-server<BR>
+fcopys-server            5746/tcp  # fcopys-server<BR>
+openmailg                5755/tcp  # OpenMail Desk Gateway server<BR>
+x500ms                   5757/tcp  # OpenMail X.500 Directory Server<BR>
+openmailns               5766/tcp  # OpenMail NewMail Server<BR>
+s-openmail               5767/tcp  # OpenMail Suer Agent Layer (Secure)<BR>
+openmailpxy              5768/tcp  # OpenMail CMTS Server<BR>
+netagent                 5771/tcp  # NetAgent<BR>
+mppolicy-v5              5968/tcp  # MM Policy v5<BR>
+mppolicy-mgr             5969/tcp  # MP Policy Manager<BR>
+x11                      6000/tcp  # X-Window System<BR><br> X11 ports to support remote x-windows sessions. Sessions are vulnerable to spoofing, session hijacking, capture of user screen data, keystroke monitoring, insertion of hostile keystrokes &amp; commands, data diddling, and DOS. <BR> <br> Review x-windows security techniques; do not run default x-windows server config's in production environment! <BR> 
+softcm                   6110/tcp  # HP SoftBench CM<BR>
+spc                      6111/tcp  # HP SoftBench Sub-Process Control<BR>
+dtspcd                   6112/tcp  # dtspcd<BR>
+backup-express           6123/tcp  # Backup Express<BR>
+meta-corp                6141/tcp  # Meta Corporation License Manager<BR>
+aspentec-lm              6142/tcp  # Aspen Technology License Manager<BR>
+watershed-lm             6143/tcp  # Watershed License Manager<BR>
+statsci1-lm              6144/tcp  # StatSci License Manager - 1<BR>
+statsci2-lm              6145/tcp  # StatSci License Manager - 2<BR>
+lonewolf-lm              6146/tcp  # Lone Wolf Systems License Manager<BR>
+montage-lm               6147/tcp  # Montage License Manager<BR>
+ricardo-lm               6148/tcp  # Ricardo North America License Manager<BR>
+tal-pod                  6149/tcp  # tal-pod<BR>
+crip                     6253/tcp  # CRIP<BR>
+                         /tcp  # 
+clariion-evr01           6389/tcp  # clariion-evr01<BR>
+info-aps/info-aps        6400/tcp  # Info - APS<BR>, info-aps<br><br><br>
+info-was/info-was        6401/tcp  # Info - WAS<BR>, info-was<br><br><br>
+info-eventsvr/info-eventsvr     6402/tcp  # Info - Event Server<BR>, info-eventsvr<br><br><br>
+info-filesvr/info-filesvr     6404/tcp  # Info - File Server<BR>, info-filesvr<br><br><br>
+info-pagesvr/info-pagesvr     6405/tcp  # Info - Page Server<BR>, info-pagesvr<br><br><br>
+info-processor/info-processvr     6406/tcp  # Info - Processor<BR>, info-processvr<br><br><br>
+skip-cert-recv           6455/tcp  # skip-cert-recv<br><br>skip certificate receive<br>
+skip-cert-send           6456/tcp  # SKIP Certificate Send<BR>
+lvision-lm               6471/tcp  # LVision License Manager<BR>
+netscape                 6498/tcp  # Netscape Audio-Conferencing<BR>Note: Also see tcp 6502 &amp; udp 2327 <BR> 
+cooltalk                 6499/tcp  # CoolTalk Voice Comm Protocol<BR>
+boks                     6500/tcp  # BoKS Master<BR>
+boks_servc               6501/tcp  # BoKS Servc<BR>
+netscape/boks_servm      6502/tcp  # Netscape Audio-Conferencing<BR>Note: Also see tcp 6498 &amp; udp 2327 <BR> , BoKS Servm<BR>
+boks_clntd               6503/tcp  # BoKS Clntd<BR>
+badm_priv                6505/tcp  # BoKS Admin Private Port<BR>
+badm_pub                 6506/tcp  # BoKS Admin Public Port<BR>
+bdir_priv                6507/tcp  # BoKS Dir Server, Private Port<BR>
+bdir_pub                 6508/tcp  # BoKS Dir Server, Public Port<BR>
+apc-tcp-udp-1            6547/tcp  # apc-tcp-udp-1<BR>
+apc-tcp-udp-2            6548/tcp  # apc-tcp-udp-2<BR>
+apc-tcp-udp-3            6549/tcp  # apc-tcp-udp-3<BR>
+fg-sysupdate             6550/tcp  # fg-sysupdate<BR>
+xdsxdm                   6558/tcp  # xdsxdm<BR>
+circ                     6660/tcp  # Common for IRCD<BR>
+ircu                     6665/tcp  # IRCU<BR>
+                         /tcp  # 
+circ                     6668/tcp  # Common for IRCD<BR>
+irc/vocaltec-gold        6670/tcp  # Internet Chat Relay<BR>, Vocaltec Global Online Directory<BR><br> Video-Teleconferencing. Also uses tcp 1490 &amp; 25793, tcp/udp 22555. <BR> 
+vision_server            6672/tcp  # vision_server<BR>
+vision_elmd              6673/tcp  # vision_elmd<BR>
+irc                      6680/tcp  # Internet Chat Relay<BR>
+winmx                    6699/tcp  # WinMx, Napster
+kti-icad-srvr            6701/tcp  # KTI/ICAD Nameserver<BR>
+subsevel-infection       6711/tcp  # SubSevel Infection Port<BR><br> One of the known SubSeven tcp control ports. Others include tcp 1243, 6712, 6713, 6776. Default is tcp 27374. <BR> 
+subsevel-infection       6712/tcp  # SubSevel Infection Port<BR><br> One of the known SubSeven tcp control ports. Others include tcp 1243, 6711, 6713, 6776. Default is tcp 27374. <BR> 
+subsevel-infection       6713/tcp  # SubSevel Infection Port<BR><br> One of the known SubSeven tcp control ports. Others include tcp 1243, 6711, 6712, 6776. Default is tcp 27374. <BR> 
+subsevel-infection       6776/tcp  # SubSevel Infection Port<BR><br> One of the known SubSeven tcp control ports. Others include tcp 1243, 6711, 6712, 6713. Default is tcp 27374. <BR> 
+hnmp                     6790/tcp  # HNMP<BR>
+ambit-lm                 6831/tcp  # ambit-lm<BR>
+netmo-default            6841/tcp  # Netmo Default<BR>
+netmo-http               6842/tcp  # Netmo HTTP<BR>
+iccrushmore              6850/tcp  # ICC RushMore<BR>
+jmact3                   6961/tcp  # JMACT3<BR>
+jmevt2                   6962/tcp  # JMACT2<BR>
+swismgr1                 6963/tcp  # SWIS Manager 1<BR>
+swismgr2                 6964/tcp  # SWIS Manager 2<BR>
+swistrap                 6965/tcp  # SWIS Trap<BR>
+swispol                  6966/tcp  # SWIS Poll<BR>
+acmsoda                  6969/tcp  # acmsoda<BR>
+                         /tcp  # 
+iatp-highpri             6998/tcp  # IATP-highPri<BR>
+iatp-normalpri           6999/tcp  # IATP-normalPri<BR>
+afs3-fileserver          7000/tcp  # file server itself<BR>
+afs3-callback            7001/tcp  # callbacks to cache managers, afs callback server
+afs3-prserver            7002/tcp  # users &amp; groups database<BR>
+afs3-vlserver            7003/tcp  # volume location database<BR>
+afs3-kaserver            7004/tcp  # AFS/Kerberos authentication service<BR>
+afs3-volser              7005/tcp  # volume managment server<BR>
+afs3-errors              7006/tcp  # error interpretation service<BR>
+afs3-bos                 7007/tcp  # basic overseer process<BR>
+afs3-update              7008/tcp  # server-to-server updater<BR>
+afs3-rmtsys              7009/tcp  # Remote Cache Manager Service<BR>
+ups-onlinet              7010/tcp  # Onlinet Uninterruptable Power Supplies<BR>
+talon-disc               7011/tcp  # Talon Discovery Port<BR>
+talon-engine             7012/tcp  # Talon Engine<BR>
+dpserve                  7020/tcp  # DP Serve<BR>
+dpserveadmin             7021/tcp  # DP Serve Admin<BR>
+arcp/real-audio-control     7070/tcp  # ARCP<BR>, RealAudio Contol Port<BR><br> Server control port for RealAudio. Client rqsts are answered with audio data stream on dynamic UDP ports in 6970-7170 range. <BR> 
+lazy-ptop                7099/tcp  # lazy-ptop<BR>
+fs                       7100/tcp  # X Font Service<BR><br> Required if host provids X-windows sessions to remote clients. May also be needed to support localhost GUI (depends on OS version). <BR> 
+virprot-lm               7121/tcp  # Virtual Prototypes License Manager<BR>
+clutild                  7174/tcp  # Clutild<BR>
+fodms                    7200/tcp  # FODMS FLIP<BR>
+dlip                     7201/tcp  # DLIP<BR>
+roadrunner               7283/tcp  # RoadRunner Cable Modem Logon<BR><br> RoadRunner cable modem logon port, uses Toshiba's Auth Service (TAS). <BR> 
+swx/swx                  7300/tcp  # Swiss Exchange<BR>, swx<br><br>the swiss exchange<br>
+winqedit                 7395/tcp  # winqedit<BR>
+pmdmgr                   7426/tcp  # OpenView DM Postmaster Manager<BR>
+oveadmgr                 7427/tcp  # OpenView DM Event Agent Manager<BR>
+ovladmgr                 7428/tcp  # OpenView DM Log Agent Manager<BR>
+opi-sock                 7429/tcp  # OpenView DM rqt communication<BR>
+xmpv7                    7430/tcp  # OpenView DM xmpv7 api pipe<BR>
+pmd                      7431/tcp  # OpenView DM ovc/xmpv3 api pipe<BR>
+faximum                  7437/tcp  # Faximum<BR>
+telops-lmd               7491/tcp  # telops-lmd<BR>
+pafec-lm                 7511/tcp  # pafec-lm<BR>
+nta-ds                   7544/tcp  # FlowAnalyzer DisplayServer<BR>
+nta-us                   7545/tcp  # FlowAnalyzer UtilityServer<BR>
+vsi-omega                7566/tcp  # VSI Omega<BR>
+aries-kfinder            7570/tcp  # Aries Kfinder<BR>
+sun-lm                   7588/tcp  # Sun License Manager<BR>
+CU-SeeMe-srv             7648/tcp  # CU-SeeMe Server Ports<BR><br> Server control port for CU-SeeMe. Client contact port is tcp 7649. Data stream is over udp ports 7648-7652, and 24032. <BR> 
+pmdfmgt                  7633/tcp  # PMDF Manager<BR>
+CU-SeeMe-clnt            7649/tcp  # CU-SeeMe Client Ports<BR><br> Client contact port for CU-SeeMe. Server port is tcp 7648. Data stream is over udp ports 7648-7652, and 24032. <BR> 
+                         /tcp  # 
+cbt/eggdrop              7777/tcp  # cbt<BR>, Common for eggdrop bot<BR>
+accu-lmgr                7781/tcp  # accu-lmgr<BR>
+t2-drm                   7932/tcp  # Tier 2 Data Resource Manager<BR>
+t2-brm                   7933/tcp  # Tier 2 Business Rules Manager<BR>
+supercell                7967/tcp  # Supercell<BR>
+quest-vista              7980/tcp  # Quest Vista<BR>
+irdmi2                   7999/tcp  # iRDMI2<BR>
+irdmi                    8000/tcp  # iRDMI<BR>
+vcom-tunnel              8001/tcp  # VCOM Tunnel<BR>
+rcgi/teradataordbms      8002/tcp  # Perl.nlm port<BR><br> Perl.nlm port on NetWare v4.1 web servers. If reachable, attacker can access and execute perl scripts on the server. <BR> , teradataordbms<br><br>teradata ordbms<br>
+http-alt                 8008/tcp  # HTTP Alternative<BR>
+wingate                  8010/tcp  # Wingate Logfile (Deerfield)<BR><br> Wingate Logfile on v2.1 Wingate servers. <BR> Security Concerns: Listens for HTTP connects on tcp 8080. Open HTTP session to this logfile port may provide dir listing of Wingate's drive. To block this, config GateKeeper's "LogFile Service Bindings" to not allow inbound connections. Also config WinGate server to deny all but trusted IPs. <BR> 
+pro-ed                   8032/tcp  # ProEd<BR>
+mindprint                8033/tcp  # MindPrint<BR>
+http-alt                 8080/tcp  # HTTP Alternative<BR>
+blackice-logon           8081/tcp  # BlackIce Login<BR><br> Network admin port for BlackIce's "Network Ice" host-based firewall/intrusion detection program. <BR> Security Concerns: <BR> - May have shipped with default logon of "iceman
+blackice-alerts          8082/tcp  # BlackIce Alerts<BR><br> Alerting port for BlackIce's "Network Ice" host-based firewall/intrusion detection program. See Security Concerns above (8081). <BR> 
+patrol                   8160/tcp  # 
+patrol-snmp              8161/tcp  # Patrol SNMP<BR>
+trivnet1                 8200/tcp  # TRIVNET<BR>
+trivnet2                 8201/tcp  # TRIVNET<BR>
+lm-perfworks             8204/tcp  # LM Perfworks<BR>
+lm-instmgr               8205/tcp  # LM Instmgr<BR>
+lm-dta                   8206/tcp  # LM Dta<BR>
+lm-sserver               8207/tcp  # LM Sserver<BR>
+lm-webwatcher            8208/tcp  # LM Webwatcher<BR>
+server-find              8351/tcp  # Server Find<BR>
+cruise-enum              8376/tcp  # Cruise ENUM<BR>
+cruise-swroute           8377/tcp  # Cruise SWROUTE<BR>
+cruise-config            8378/tcp  # Cruise CONFIG<BR>
+cruise-diags             8379/tcp  # Cruise DIAGS<BR>
+cruise-update            8380/tcp  # Cruise UPDATE<BR>
+cvd                      8400/tcp  # cvd<BR>
+sabarsd                  8401/tcp  # sabarsd<BR>
+abarsd                   8402/tcp  # abarsd<BR>
+admind                   8403/tcp  # admind<BR>
+npmp                     8450/tcp  # npmp<BR>
+vp2p                     8473/tcp  # Virtual Point-to-Point<BR>
+rtsp-alt                 8554/tcp  # RTSP Alternate (alt to port 554)<BR>
+netscape-adm             8649/tcp  # Netscape Web Server Admin Mgmt<BR>
+ibus                     8733/tcp  # iBus<BR>
+mc-appserver             8763/tcp  # MC App Server<BR>
+ultraseek-http           8765/tcp  # Ultraseek HTTP<BR>
+truecm                   8804/tcp  # truecm<BR>
+cddbp-alt                8880/tcp  # CDDBP<BR>
+ddi-tcp-1                8888/tcp  # NewsEDGE server TCP (TCP 1)<BR>
+ddi-tcp-2                8889/tcp  # Desktop Data TCP 1<BR>
+ddi-tcp-3                8890/tcp  # Desktop Data TCP 2<BR>
+ddi-tcp-4                8891/tcp  # Desktop Data TCP 3: NESS application<BR>
+ddi-tcp-5                8892/tcp  # Desktop Data TCP 4: FARM product<BR>
+ddi-tcp-6                8893/tcp  # Desktop Data TCP 5: NewsEDGE/Web App<BR>
+ddi-tcp-7                8894/tcp  # Desktop Data TCP 6: COAL application<BR>
+jmb-cds1                 8900/tcp  # JMB-CDS 1<BR>
+jmb-cds2                 8901/tcp  # JMB-CDS 2<BR>
+cslistener               9000/tcp  # Cslistener<BR>
+kastenxpipe              9001/tcp  # KastenX Pipe<BR>
+sctp                     9006/tcp  # SCTP<BR>
+websm/CiscoSecure        9090/tcp  # WebSM<BR>, CiscoSecure<BR><br> Web server frontend for CiscoSecure. <BR> 
+CiscoSecure              9091/tcp  # CiscoSecure<BR><br> Web server frontend for CiscoSecure. <BR> 
+netlock1                 9160/tcp  # NetLOCK1<BR>
+netlock2                 9161/tcp  # NetLOCK2<BR>
+netlock3                 9162/tcp  # NetLOCK3<BR>
+netlock4                 9163/tcp  # NetLock4<BR>
+netlock5                 9164/tcp  # NetLOCK5<BR>
+wap-wsp                  9200/tcp  # WAP Connectionless Session Service<BR>
+wap-wsp-wtp              9201/tcp  # WAP Session Service<BR>
+wap-wsp-s                9202/tcp  # WAP Secure Connectionless Session Service<BR>
+wap-wsp-wtp-s            9203/tcp  # WAP Secure Session Service<BR>
+wap-wsp-vcard/wap-vcard     9204/tcp  # WAP vCard<BR>, wap-vcard<br><br>wap vcard<br>
+wap-wsp-vcal/wap-vcal     9205/tcp  # WAP vCal<BR>, wap-vcal<br><br>wap vcal<br>
+wap-wsp-vcard-s/wap-vcard-s     9206/tcp  # WAP vCard Secure<BR>, wap-vcard-s<br><br>wap vcard secure<br>
+wap-wsp-vcal-s/wap-vcal-s     9207/tcp  # WAP vCal Secure<BR>, wap-vcal-s<br><br>wap vcal secure<br>
+quibase/guibase          9321/tcp  # quibase<BR>, guibase<br><br>guibase<br>
+mpidcmgr                 9343/tcp  # Mpidcmgr<BR>
+mphlpdmc                 9344/tcp  # Mphlpdmc<BR>
+fjdmimgr                 9374/tcp  # fjdmimgr<BR>
+fjinvmgr                 9396/tcp  # fjinvmgr<BR>
+mpidcagt                 9397/tcp  # mpidcagt<BR>
+ismserver                9500/tcp  # ismserver<BR>
+man                      9535/tcp  # man<BR>
+w                        9536/tcp  # w<BR>
+mantst                   9537/tcp  # Remote man server, testing<BR>
+msgsys                   9594/tcp  # Message System<BR>
+pds                      9595/tcp  # Ping Discovery Service<BR>
+rasadv                   9753/tcp  # rasadv<BR>
+sd                       9876/tcp  # Session Director<BR>
+cyborg-systems           9888/tcp  # CYBORG Systems<BR>
+monkeycom                9898/tcp  # MonkeyCom<BR>
+cisco-acs/iua            9900/tcp  # CiscoSecure Access Control Server (ACS)<BR><br> Cisco alert states unauth remote users can read/write to server's database. Block via ACS config, network blocking, or upgrade of ACS software. <BR> , iua<br><br>iua<br>
+CiscoSecureDB            9901/tcp  # CiscoSecureDB<BR>
+domaintime               9909/tcp  # domaintime<BR>
+                         /tcp  # 
+                         /tcp  # 
+palace                   9992/tcp  # Palace Chat<BR>
+cpalace/distinct32/pirc     9998/tcp  # Common Palace<BR>, Distinct32<BR>, Possible for IRCD<BR>
+Backdoor/distinct/onguard     9999/tcp  # Intruder Backdoor Port<BR><br> Internet-publicized hack to replace in.telnetd with modified version that starts up in debug mode. This makes it bind to tcp 9999 and execute /bin/sh instead of /bin/login. Also forks before executing shell, which means it will accept multiple simultaneous connects. <BR> , distinct<BR>, Lenel OnGuard HTTP License Administrator.
+ndmp/bnews/Webmin/Cisco-NAT-T     10000/tcp  # Network Data Management Protocol<BR><br> Used to centrally control data backups. <BR> , bnews<BR>, , Cisco proprietary encapsulations for NAT transparency
+queue                    10001/tcp  # queue<BR>
+poker/rusers             10002/tcp  # poker<BR>, rusers<BR><br> The ruser udp broadcast will return list of logged on users on local network, plus when they logged in, current duratino of logon, and idle time. Can also be used for single probes. <BR> Security Concerns: Provides valuable info to attackers, such as usernames, logged on users on key servers, and which sessions are idle (ripe for hijack). <BR> <br> Disable rusers on all hosts. <BR> 
+gateway                  10003/tcp  # gateway<BR>
+remp                     10004/tcp  # remp<BR>
+stel                     10005/tcp  # stel<br><br>secure telnet<br>
+                         /tcp  # 
+mvs-capacity             10007/tcp  # MVS Capacity<BR>
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+qmaster                  10012/tcp  # qmaster<BR>
+amanda                   10080/tcp  # Amanda<BR>
+ganymede-endpt           10115/tcp  # Ganymede Endpoint<BR>
+blocks                   10288/tcp  # Blocks<BR>
+irisa                    11000/tcp  # IRISA<BR>
+metasys                  11001/tcp  # Metasys<BR>
+vce                      11111/tcp  # Viral Computing Environment (VCE)<BR>
+atm-uhas                 11367/tcp  # ATM UHAS<BR>
+h323callsigalt           11720/tcp  # H.323 Call Signal Alternative<BR>
+entextxid/solaris-cluster     12000/tcp  # IBM Enterprise Extender SNA XID Exchange<BR>, Solaris Cluster v2.x opens this port. When enabled, remote attaker can read host's syslog and view cluster config info. If attacker has a local account, can create a symbolic link in /var/opt/SUNWcluster/fm/fmstatus/nfs/&lt;logicalhostname/status, then use "open hastat" command of the monitor daemon to view any file on the host.<BR>
+entextnetwk              12001/tcp  # IBM Enterprise Extender SNA COS Network Priority<BR>
+entexthigh               12002/tcp  # IBM Enterprise Extender SNA COS Hi-Priority<BR>
+entextmed                12003/tcp  # IBM Enterprise Extender SNA COS Med-Priority<BR>
+entextlow                12004/tcp  # IBM Enterprise Extender SNA COS Low-Priority<BR>
+hivep                    12172/tcp  # HiveP<BR>
+NetBus-Cmd/NetBus        12345/tcp  # NetBus Command Port<BR><br> Command Port on original NetBus infections. See below (12346). <BR> , NetBus<br><br>netbus backdoor trojan<br>
+NetBus-Data/NetBus       12346/tcp  # NetBus Data Transfer Port<BR>Note: Data transfer port on original NetBus infections (Win9x &amp; NT hosts). On original NetBus, Command &amp; Data Tx ports were fixed. In second version (c1999), it's configurable. <BR> , NetBus<br><br>netbus backdoor trojan<br>
+webtheater               12468/tcp  # Web Theater Control Port<BR><br> Server port for Web Theater client requests. Server responds with multimedia data stream via UDP port (NFI). <BR> 
+tsaf                     12753/tcp  # tsaf port<BR>
+i-zipqd                  13160/tcp  # I-ZIPQD<BR>
+bprd                     13720/tcp  # BPRD Protocol (Veritas NetBackup)<BR>
+bpbrm                    13721/tcp  # BPBRM Protocol (Veritas NetBackup)<BR>
+bpjava-msvc              13722/tcp  # BP Java MSVC Protocol<BR>
+bpcd                     13782/tcp  # Veritas NetBackup<BR>
+vopied                   13783/tcp  # VOPIED Protocol<BR>
+dsmcc-config             13818/tcp  # DSMCC Config<BR>
+dsmcc-session            13819/tcp  # DSMCC Session Messages<BR>
+dsmcc-passthru           13820/tcp  # DSMCC Pass-Thru Messages<BR>
+dsmcc-download           13821/tcp  # DSMCC Download Protocol<BR>
+dsmcc-ccp                13822/tcp  # DSMCC Channel Change Protocol<BR>
+itu-sccp-ss7             14001/tcp  # ITU SCCP (SS7)<BR>
+hotsync                  14237/tcp  # Palm Network Hotsync<BR>
+                         /tcp  # 
+netserialext1            16360/tcp  # netserialext1<BR>
+netserialext2            16361/tcp  # netserialext2<BR>
+netserialext3            16367/tcp  # netserialext3<BR>
+netserialext4            16368/tcp  # netserialext4<BR>
+connected-ob             16384/tcp  # Connected On-Line Backup<BR><br> Host "wake up" daemon. Controller connects to this port on "sleeping" host, powers it completely up, and instructs it to send backup data to server. Includes encryption. <BR> 
+deslogin                 16661/tcp  # DESlogon backdoor<BR><br> Default port for "deslogin". Upon connect and correct username/password, user receives a DES-encrypted secure shell. <BR> 
+isode-dua                17007/tcp  # isode-dua<BR>
+chipper                  17219/tcp  # Chipper<BR>
+biimenu                  18000/tcp  # Beckman Instruments, Inc.<BR>
+opsec-cvp                18181/tcp  # OPSEC CVP<BR>
+opsec-ufp                18182/tcp  # OPSEC UFP<BR>
+ac-cluster               18463/tcp  # AC Cluster<BR>
+apc-necmp/liquid-audio     18888/tcp  # APC NECMP<BR>, Liquid Audio Control<BR>
+                         /tcp  # 
+keysrv/keysrvr           19283/tcp  # Key Server for SASSAFRAS<BR>, keysrvr<br><br>key server for sassafras<br>
+keyshadow                19315/tcp  # Key Shadow for SASSAFRAS<BR>
+hp-sco                   19410/tcp  # hp-sco<BR>
+hp-sca                   19411/tcp  # hp-sca<BR>
+jcp                      19541/tcp  # JCP Client<BR>
+dnp/Usermin              20000/tcp  # DNP<BR>, 
+netbus-cmd               20034/tcp  # Default port for NetBus v2.0<BR><br> NetBus is a program used to remotely control Win95/98 and NT hosts. It is a popular program used by attackers to subvert Microsoft hosts. <BR> 
+track                    20670/tcp  # Track<BR>
+                         /tcp  # 
+vofr-gateway             21590/tcp  # VOFR Gateway<BR>
+webphone                 21845/tcp  # webphone<BR>
+netspeak-is              21846/tcp  # NetSpeak Corp. Directory Services<BR>
+netspeak-cs              21847/tcp  # NetSpeak Corp. Connection Services<BR>
+netspeak-acd             21848/tcp  # NetSpeak Corp. Automatic Call Distro<BR>
+netspeak-cps             21849/tcp  # NetSpeak Corp. Credit Processing System<BR>
+snapenetio               22000/tcp  # SNAPenet IO<BR>
+optocontrol              22001/tcp  # OptoControl<BR>
+wnn6                     22273/tcp  # wnn6<BR>
+vocaltec-wconf           22555/tcp  # Vocaltec Audio&amp;Doc Web Conferencing<BR><br> Video-Teleconferencing. Also uses tcp 1490, 6670, 25793; udp 22555. <BR> 
+aws-brf                  22800/tcp  # Telerate Info Platform LAN<BR>
+brf-gw                   22951/tcp  # Telerate Info Platform WAN<BR>
+med-ltp                  24000/tcp  # med-ltp<BR>
+med-fsp-rx               24001/tcp  # med-fsp-rx<BR>
+med-fsp-tx               24002/tcp  # med-fsp-tx<BR>
+med-supp                 24003/tcp  # med-supp<BR>
+med-ovw                  24004/tcp  # med-ovw<BR>
+med-ci                   24005/tcp  # med-ci<BR>
+med-net-svc              24006/tcp  # med-net-svc<BR>
+intel_rci                24386/tcp  # Intel RCI<BR>
+icl-twobase1             25000/tcp  # icl-twobase1<BR>
+icl-twobase2             25001/tcp  # icl-twobase2<BR>
+icl-twobase3             25002/tcp  # icl-twobase3<BR>
+icl-twobase4             25003/tcp  # icl-twobase4<BR>
+icl-twobase5             25004/tcp  # icl-twobase5<BR>
+icl-twobase6             25005/tcp  # icl-twobase6<BR>
+icl-twobase7             25006/tcp  # icl-twobase7<BR>
+icl-twobase8             25007/tcp  # icl-twobase8<BR>
+icl-twobase9             25008/tcp  # icl-twobase9<BR>
+icl-twobase10            25009/tcp  # icl-twobase10<BR>
+telalert                 25378/tcp  # Telalert<BR>
+vocaltec-hos/vocaltec-hos     25793/tcp  # Vocaltec Address Server<BR><br> Video-Teleconferencing. Also uses tcp 1490, 6670, 22555; udp 22555. <BR> , vocaltec-hos<br><br>vocaltec address server<br>
+webcam32                 25867/tcp  # Webcam32 (Kolban Webcam Software)<BR><br> v4.8.3 and below have buffer overflow that allows attacker to execute arbitrary commands on user's Win95/98 host. <BR> 
+quake                    26000/tcp  # quake<BR>
+wnn6-ds                  26208/tcp  # wnn6-ds<BR>
+flex-lm/flex-lm          27000/tcp  # Flex License Manager (1-10)<BR>, flex-lm<br><br>flex lm (1-10)<br>
+subsevel-infection       27374/tcp  # SubSevel Infection Port<BR><br> Default SubSeven tcp control ports. Others can include tcp 1243, 6711, 6712, 6713, &amp; 6776. <BR> 
+tw-auth-key              27999/tcp  # TW Auth/Key Distribution &amp; Attribute Cert Services<BR>
+sockets-de-troje         30303/tcp  # Sockets de Trojie Backdoor<BR><br> Also infects tcp/udp 5000, 5001, 50505. <BR> 
+pirc/eleet               31337/tcp  # Possible for IRCD<BR>, Intruder Programs!<BR><br> Port 31337 has long been popular for intruder programs. Consider any connection attempts to it highly suspicious! Common programs using it include: original Back Orifice (Win9x, NT) and socdmini (Unix). <BR> <br> "ELEET" is hackereze for "31337". <BR> 
+                         /tcp  # 
+filenet-tms              32768/tcp  # Filenet TMS<BR>
+filenet-rpc              32769/tcp  # Filenet RPC<BR>
+filenet-nch              32770/tcp  # Filenet NCH<BR>
+traceroute               33434/tcp  # traceroute use<BR>
+kastenxpipe              36865/tcp  # KastenX Pipe<BR>
+reachout                 43188/tcp  # reachout<BR>
+rockwell-encap           44818/tcp  # Rockwell Encapsulation<BR>
+eba                      45678/tcp  # EBA PRISE<BR>
+netranger                45000/tcp  # NetRanger's Alert Traffic<BR><br> Used by NetRanger <BR> 
+dbbrowse                 47557/tcp  # Databeam Corporation<BR>
+directplaysrvr           47624/tcp  # Direct Play Server<BR>
+ap                       47806/tcp  # ALC Protocol<BR>
+bacnet                   47808/tcp  # Building Automation &amp; Control Networks<BR>
+nimcontroller            48000/tcp  # Nimbus Controller<BR>
+nimspooler               48001/tcp  # Nimbus Spooler<BR>
+nimhub                   48002/tcp  # Nimbus Hub<BR>
+nimgtw                   48003/tcp  # Nimbus Gateway<BR>
+sockets-de-troje         50505/tcp  # Sockets de Trojie Backdoor<BR><br> Also infects tcp/udp 5000, 5001, 30303. <BR> 
+dialpad                  51210/tcp  # Dialpad Telephony<BR><br> Also uses udp 51200 &amp; 51201. <BR> 
+                         /tcp  # 
+pcanywheredata/pcanywhere     65301/tcp  # pcAnywhere Data<BR><br> Default tcp port for v2.0 thru v7.51, plus CE. Versions v8+ on use tcp 5631 &amp; udp 5632. <BR> , pcanywhere<br><br><br>
+backdoor-port            65534/tcp  # Reported Backdoor<BR><br> Reported found on Linux hosts as a hacked backdoor, along with tcp 1049 (both open on same host). Little else known. <BR> 
+                         /tcp  # 
+amandaidx                10082/tcp  # amandaidx<br><br>amanda indexing<br>
+amidxtape                10083/tcp  # amidxtape<br><br>amanda tape indexing<br>
+                         /tcp  # 
+nterm                    1026/tcp  # nterm<br><br>remote_login network_terminal<br>
+vfo                      1056/tcp  # vfo<br><br>vfo<br>
+xaudio                   1103/tcp  # xaudio<br><br>x audio server, xaserver	<br>
+msql                     1112/tcp  # msql<br><br>mini-sql server<br>
+supfiledbg               1127/tcp  # supfiledbg<br><br>sup debugging, for sup<br>
+tripwire                 1169/tcp  # tripwire<br><br>tripwire<br>
+skkserv                  1178/tcp  # skkserv<br><br>skk (kanji input)<br>
+hp-webadmin              1188/tcp  # hp-webadmin<br><br>hp web admin<br>
+msg                      1241/tcp  # msg<br><br>remote message server<br>
+intuitive-edge           1355/tcp  # intuitive-edge<br><br>intuitive edge<br>
+intel-rci-mp             16991/tcp  # intel-rci-mp<br><br>intel-rci-mp<br>
+opsec-sam                18183/tcp  # opsec-sam<br><br>opsec sam<br>
+opsec-lea                18184/tcp  # opsec-lea<br><br>opsec lea<br>
+opsec-omi                18185/tcp  # opsec-omi<br><br>opsec omi<br>
+opsec-ela                18187/tcp  # opsec-ela<br><br>opsec ela<br>
+ardusmul                 1835/tcp  # ardusmul<br><br>ardus multicast<br>
+mc2studios               1899/tcp  # mc2studios<br><br>mc2studios<br>
+hp-sessmon               19412/tcp  # hp-sessmon<br><br>hp-sessmon<br>
+btx                      20005/tcp  # btx<br><br>xcept4 (interacts with german telekom's cept videotext service)<br>
+cfingerd                 2003/tcp  # cfingerd<br><br>gnu finger<br>
+ergolight                2109/tcp  # ergolight<br><br>ergolight<br>
+umsp                     2110/tcp  # umsp<br><br>umsp<br>
+                         /tcp  # 
+                         /tcp  # 
+hsl-storm                2113/tcp  # hsl-storm<br><br>hsl storm<br>
+newheights               2114/tcp  # newheights<br><br>newheights<br>
+kdm                      2115/tcp  # kdm<br><br>kdm<br>
+ccowcmr                  2116/tcp  # ccowcmr<br><br>ccowcmr<br>
+mentaclient              2117/tcp  # mentaclient<br><br>mentaclient<br>
+mentaserver              2118/tcp  # mentaserver<br><br>mentaserver<br>
+gsigatekeeper            2119/tcp  # gsigatekeeper<br><br>gsigatekeeper<br>
+                         /tcp  # 
+scientia-ssdb            2121/tcp  # scientia-ssdb<br><br>scientia-ssdb<br>
+caupc-remote             2122/tcp  # caupc-remote<br><br>caupc remote control<br>
+gtp-control              2123/tcp  # gtp-control<br><br>gtp-control plane (3gpp)<br>
+elatelink                2124/tcp  # elatelink<br><br>elatelink<br>
+lockstep                 2125/tcp  # lockstep<br><br>lockstep<br>
+pktcable-cops            2126/tcp  # pktcable-cops<br><br>pktcable-cops<br>
+index-pc-wb              2127/tcp  # index-pc-wb<br><br>index-pc-wb<br>
+net-steward              2128/tcp  # net-steward<br><br>net steward control<br>
+cs-live                  2129/tcp  # cs-live<br><br>cs-live.com<br>
+swc-xds                  2130/tcp  # swc-xds<br><br>swc-xds<br>
+avantageb2b              2131/tcp  # avantageb2b<br><br>avantageb2b<br>
+avail-epmap              2132/tcp  # avail-epmap<br><br>avail-epmap<br>
+zymed-zpp                2133/tcp  # zymed-zpp<br><br>zymed-zpp<br>
+avenue                   2134/tcp  # avenue<br><br>avenue<br>
+iwserver                 2166/tcp  # iwserver<br><br>iwserver<br>
+wnn4_Cn                  22289/tcp  # wnn4_Cn<br><br>wnn6 (chinese input), wnn4 (chinese input)<br>
+wnn4_Kr                  22305/tcp  # wnn4_Kr<br><br>wnn4 (korean input), wnn6 (korean input)<br>
+wnn4_Tw                  22321/tcp  # wnn4_Tw<br><br>wnn4 (taiwanse input), wnn6 (taiwanse input)<br>
+sd-request               2384/tcp  # sd-request<br><br>sd-request<br>
+priv-mail                24/tcp  # priv-mail<br><br>any private mail system<br>
+cp-svn                   18264/tcp  # Check Point SVN foundation (HTTP)
+                         /tcp  # 
+flex-lm                  27001/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27002/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27003/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27004/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27005/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27006/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27007/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27008/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+flex-lm                  27009/tcp  # flex-lm<br><br>flex lm (1-10)<br>
+                         /tcp  # 
+Trinoo_Master            27665/tcp  # Trinoo_Master<br><br>trinoo distributed attack tool master server control port<br>
+gtp-user                 285/tcp  # gtp-user<br><br>gtp-user plane (3gpp)<br>
+fxp-1                    286/tcp  # fxp-1<br><br>fxp-1<br>
+k-block                  287/tcp  # k-block<br><br>k-block<br>
+dfoxserver               2960/tcp  # dfoxserver<br><br>dfoxserver<br>
+distrib-net-proxy        3064/tcp  # distrib-net-proxy<br><br>stupid closed source distributed.net project proxy port<br>
+lv-frontpanel            3079/tcp  # lv-frontpanel<br><br>lv front panel<br>
+itm-mccs                 3084/tcp  # itm-mccs<br><br>itm-mccs<br>
+pcihreq                  3085/tcp  # pcihreq<br><br>pcihreq<br>
+                         /tcp  # 
+ca-licmgr                10203/tcp  # Computer Associates License Manager
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+watcomdebug              3563/tcp  # watcomdebug<br><br>watcom debug<br>
+harlequinorb             3672/tcp  # harlequinorb<br><br>harlequinorb<br>
+cscp                     40841/tcp  # cscp<br><br>cscp<br>
+vrml-multi-use           4201/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4202/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4203/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4204/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4205/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4206/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4207/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4208/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4209/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4210/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4211/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4212/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4213/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4214/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4215/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4216/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4217/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4218/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4219/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4220/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4221/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4222/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4223/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4224/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4225/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4226/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4227/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4228/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4229/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4230/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4231/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4232/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4233/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4234/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4235/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4236/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4237/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4238/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4239/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4240/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4241/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4242/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4243/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4244/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4245/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4246/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4247/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4248/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4249/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4250/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4251/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4252/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4253/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4254/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4255/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4256/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4257/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4258/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4259/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4260/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4261/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4262/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4263/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4264/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4265/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4266/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4267/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4268/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4269/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4270/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4271/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4272/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4273/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4274/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4275/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4276/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4277/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4278/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4279/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4280/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4281/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4282/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4283/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4284/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4285/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4286/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4287/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4288/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4289/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4290/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4291/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4292/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4293/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4294/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4295/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4296/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4297/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4298/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+vrml-multi-use           4299/tcp  # vrml-multi-use<br><br>vrml multi user systems<br>
+reachout                 43118/tcp  # reachout<br><br><br>
+msql                     4333/tcp  # msql<br><br>mini-sql server<br>
+fax                      4557/tcp  # fax<br><br>flexfax fax transmission service, fax transmission service<br>
+hylafax                  4559/tcp  # hylafax<br><br>hylafax client-server protocol<br>
+ssr-servermgr            45966/tcp  # ssr-servermgr<br><br>ssrservermgr<br>
+sgi-dgl                  5232/tcp  # sgi-dgl<br><br>sgi distributed graphics<br>
+postgres                 5432/tcp  # postgres<br><br>postgres database server<br>
+netops-broker            5465/tcp  # netops-broker<br><br>netops-broker<br>
+canna                    5680/tcp  # canna<br><br>canna (japanese input), kana->kanji server<br>
+unieng                   5730/tcp  # unieng<br><br>netscape suiteware<br>
+unisnc                   5731/tcp  # unisnc<br><br>netscape suiteware<br>
+unidas                   5732/tcp  # unidas<br><br>netscape suiteware<br>
+vnc                      5800/tcp  # vnc<br><br><br>
+vnc                      5801/tcp  # vnc<br><br><br>
+vnc                      5900/tcp  # vnc<br><br>virtual network computer, orl virtual network client<br>
+vnc-1                    5901/tcp  # vnc-1<br><br>virtual network computer display :1<br>
+vnc-2                    5902/tcp  # vnc-2<br><br>virtual network computer display :2<br>
+ncd-pref-tcp             5977/tcp  # ncd-pref-tcp<br><br>ncd preferences tcp port<br>
+ncd-diag-tcp             5978/tcp  # ncd-diag-tcp<br><br>ncd diagnostic tcp port<br>
+ncd-conf-tcp             5979/tcp  # ncd-conf-tcp<br><br>ncd configuration tcp port<br>
+ncd-pref                 5997/tcp  # ncd-pref<br><br>ncd preferences telnet port<br>
+ncd-diag                 5998/tcp  # ncd-diag<br><br>ncd diagnostic telnet port<br>
+cvsup                    5999/tcp  # cvsup<br><br>cvsup file transfer/john polstra/freebsd, ncd configuration telnet port<br>
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+                         /tcp  # 
+x11                      6010/tcp  # x11<br><br>x window system<br>
+x11                      6011/tcp  # x11<br><br>x window system<br>
+x11                      6012/tcp  # x11<br><br>x window system<br>
+x11                      6013/tcp  # x11<br><br>x window system<br>
+x11                      6014/tcp  # x11<br><br>x window system<br>
+x11                      6015/tcp  # x11<br><br>x window system<br>
+x11                      6016/tcp  # x11<br><br>x window system<br>
+x11                      6017/tcp  # x11<br><br>x window system<br>
+x11                      6018/tcp  # x11<br><br>x window system<br>
+x11                      6019/tcp  # x11<br><br>x window system<br>
+x11                      6020/tcp  # x11<br><br>x window system<br>
+x11                      6021/tcp  # x11<br><br>x window system<br>
+x11                      6022/tcp  # x11<br><br>x window system<br>
+x11                      6023/tcp  # x11<br><br>x window system<br>
+x11                      6024/tcp  # x11<br><br>x window system<br>
+x11                      6025/tcp  # x11<br><br>x window system<br>
+x11                      6026/tcp  # x11<br><br>x window system<br>
+x11                      6027/tcp  # x11<br><br>x window system<br>
+x11                      6028/tcp  # x11<br><br>x window system<br>
+x11                      6029/tcp  # x11<br><br>x window system<br>
+x11                      6030/tcp  # x11<br><br>x window system<br>
+x11                      6031/tcp  # x11<br><br>x window system<br>
+x11                      6032/tcp  # x11<br><br>x window system<br>
+x11                      6033/tcp  # x11<br><br>x window system<br>
+x11                      6034/tcp  # x11<br><br>x window system<br>
+x11                      6035/tcp  # x11<br><br>x window system<br>
+x11                      6036/tcp  # x11<br><br>x window system<br>
+x11                      6037/tcp  # x11<br><br>x window system<br>
+x11                      6038/tcp  # x11<br><br>x window system<br>
+x11                      6039/tcp  # x11<br><br>x window system<br>
+x11                      6040/tcp  # x11<br><br>x window system<br>
+x11                      6041/tcp  # x11<br><br>x window system<br>
+x11                      6042/tcp  # x11<br><br>x window system<br>
+x11                      6043/tcp  # x11<br><br>x window system<br>
+x11                      6044/tcp  # x11<br><br>x window system<br>
+x11                      6045/tcp  # x11<br><br>x window system<br>
+x11                      6046/tcp  # x11<br><br>x window system<br>
+x11                      6047/tcp  # x11<br><br>x window system<br>
+x11                      6048/tcp  # x11<br><br>x window system<br>
+x11                      6049/tcp  # x11<br><br>x window system<br>
+x11                      6050/tcp  # x11<br><br>x window system<br>
+x11/AVG-Server           6051/tcp  # x11<br><br>x window system<br>, AVG anti-virus client connection to DataCenter
+x11                      6052/tcp  # x11<br><br>x window system<br>
+x11                      6053/tcp  # x11<br><br>x window system<br>
+x11                      6054/tcp  # x11<br><br>x window system<br>
+x11                      6055/tcp  # x11<br><br>x window system<br>
+x11                      6056/tcp  # x11<br><br>x window system<br>
+x11                      6057/tcp  # x11<br><br>x window system<br>
+x11                      6058/tcp  # x11<br><br>x window system<br>
+x11                      6059/tcp  # x11<br><br>x window system<br>
+x11                      6060/tcp  # x11<br><br>x window system<br>
+x11                      6061/tcp  # x11<br><br>x window system<br>
+x11                      6062/tcp  # x11<br><br>x window system<br>
+x11                      6063/tcp  # x11<br><br>x window system<br>
+ndl-ahp-svc              6064/tcp  # ndl-ahp-svc<br><br>ndl-ahp-svc<br>
+winpharaoh               6065/tcp  # winpharaoh<br><br>winpharaoh<br>
+ewctsp                   6066/tcp  # ewctsp<br><br>ewctsp<br>
+srb                      6067/tcp  # srb<br><br>srb<br>
+gsmp                     6068/tcp  # gsmp<br><br>gsmp<br>
+trip                     6069/tcp  # trip<br><br>trip<br>
+messageasap              6070/tcp  # messageasap<br><br>messageasap<br>
+ssdtp                    6071/tcp  # ssdtp<br><br>ssdtp<br>
+                         /tcp  # 
+directplay8              6073/tcp  # directplay8<br><br>directplay8<br>
+synchronet-db            6100/tcp  # synchronet-db<br><br>synchronet-db<br>
+synchronet-rtc           6101/tcp  # synchronet-rtc<br><br>synchronet-rtc<br>
+synchronet-upd           6102/tcp  # synchronet-upd<br><br>synchronet-upd<br>
+rets                     6103/tcp  # rets<br><br>rets<br>
+dbdb                     6104/tcp  # dbdb<br><br>dbdb<br>
+primaserver              6105/tcp  # primaserver<br><br>prima server<br>
+mpsserver                6106/tcp  # mpsserver<br><br>mps server<br>
+etc-control              6107/tcp  # etc-control<br><br>etc control<br>
+sercomm-scadmin          6108/tcp  # sercomm-scadmin<br><br>sercomm-scadmin<br>
+globecast-id             6109/tcp  # globecast-id<br><br>globecast-id<br>
+gnutella/gnutella        6346/tcp  # gnutella<br><br>gnutella, the gnu napster<br>, Gnutella, Limewire, Morpheus, BearShare
+info-cachesvr            6403/tcp  # Info - Cache Server<BR>
+reserved1                6407/tcp  # reserved1<br><br><br>
+reserved2                6408/tcp  # reserved2<br><br><br>
+reserved3                6409/tcp  # reserved3<br><br><br>
+reserved4                6410/tcp  # reserved4<br><br><br>
+dhcp-failover            647/tcp  # dhcp-failover<br><br>dhcp failover<br>
+                         /tcp  # 
+ircu                     6669/tcp  # ircu<br><br>ircu<br>
+swx                      7301/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7302/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7303/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7304/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7305/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7306/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7307/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7308/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7309/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7310/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7311/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7312/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7313/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7314/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7315/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7316/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7317/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7318/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7319/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7320/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7321/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7322/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7323/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7324/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7325/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7326/tcp  # swx<br><br>the swiss exchange, internet citizen's band<br>
+swx                      7327/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7328/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7329/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7330/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7331/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7332/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7333/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7334/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7335/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7336/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7337/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7338/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7339/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7340/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7341/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7342/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7343/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7344/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7345/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7346/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7347/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7348/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7349/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7350/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7351/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7352/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7353/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7354/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7355/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7356/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7357/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7358/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7359/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7360/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7361/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7362/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7363/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7364/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7365/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7366/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7367/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7368/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7369/tcp  # swx<br><br>the swiss exchange<br>
+                         /tcp  # 
+swx                      7370/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7371/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7372/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7373/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7374/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7375/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7376/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7377/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7378/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7379/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7380/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7381/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7382/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7383/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7384/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7385/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7386/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7387/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7388/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7389/tcp  # swx<br><br>the swiss exchange<br>
+swx                      7390/tcp  # swx<br><br>the swiss exchange<br>
+netcp                    740/tcp  # netcp<br><br>netscout control protocol<br>
+priv-dial                75/tcp  # priv-dial<br><br>any private dial out service<br>
+                         /tcp  # 
+                         /tcp  # 
+minivend                 7786/tcp  # minivend<br><br>minivend<br>
+hp-collector             781/tcp  # hp-collector<br><br>hp performance data collector<br>
+hp-managed-node          782/tcp  # hp-managed-node<br><br>hp performance data managed node<br>
+hp-alarm-mgr             783/tcp  # hp-alarm-mgr<br><br>hp performance data alarm manager<br>
+controlit                799/tcp  # controlit<br><br><br>
+supfilesrv               871/tcp  # supfilesrv<br><br>sup server, for sup<br>
+openqueue                8764/tcp  # openqueue<br><br>openqueue<br>
+jetdirect                9100/tcp  # jetdirect<br><br>hp jetdirect card<br>
+sctp-tunneling           9899/tcp  # sctp-tunneling<br><br>sctp tunneling<br>
+apcpcpluswin1            9950/tcp  # apcpcpluswin1<br><br>apcpcpluswin1<br>
+apcpcpluswin2            9951/tcp  # apcpcpluswin2<br><br>apcpcpluswin2<br>
+apcpcpluswin3            9952/tcp  # apcpcpluswin3<br><br>apcpcpluswin3<br>
+palace                   9993/tcp  # palace<br><br>palace<br>
+palace                   9994/tcp  # palace<br><br>palace<br>
+palace                   9995/tcp  # palace<br><br>palace<br>
+palace                   9996/tcp  # palace<br><br>palace<br>
+palace                   9997/tcp  # palace<br><br>palace<br>
+waste                    1337/tcp  # p2p file sharing: http://www.sourceforget.net/projects/waste/
+power-broker/pbmaster     24345/tcp  # Symark Power-Broker, PowerBroker Master Daemon
+power-broker/pblocald     24346/tcp  # Symark Power-Broker, PowerBroker local daemon
+power-broker             24347/tcp  # Symark Power-Broker
+Google-desktop           4664/tcp  # Google Desktop search agent port, HTTP. Localhost only.
+tftpn                    5452/tcp  # Sequoia failover xport (Nokia)
+DB2                      50000/tcp  # IBM DB2
+webmail2                 3511/tcp  # 
+sadmin                   698/tcp  # Solaris sadmin
+ca-licmgr                10204/tcp  # Computer Associates License Manager
+hddtemp                  7634/tcp  # 
+bf2/battlefield2         16567/tcp  # Battlefield II, 
+LCDproc                  13666/tcp  # 
+famatech -admin          4899/tcp  # famatech remote administrator 
+limewire                 6347/tcp  # Limewire, Morpheus
+Emule-Edonkey            4662/tcp  # P2P
+BitTorrent               6881/tcp  # P2P
+BitTorrent               6882/tcp  # P2P
+BitTorrent               6883/tcp  # P2P
+BitTorrent               6884/tcp  # P2P
+BitTorrent               6885/tcp  # P2P
+BitTorrent               6886/tcp  # P2P
+BitTorrent               6887/tcp  # P2P
+BitTorrent               6888/tcp  # P2P
+BitTorrent               6889/tcp  # P2P
+                         /tcp  # 
+AVG-Server               4156/tcp  # AVG TCP Server connection 
+AVG-Agent                6150/tcp  # AVG Agent port (for remote installation)
+Interwoven-CMS           3434/tcp  # Interwoven Content Management System
+db2                      6789/tcp  # IBM DB2
+OperaBT                  18768/tcp  # Opera browser's Bittorrent client
+DMRC                     6129/tcp  # DMRC Client Agent Service, http://www.dameware.com/
+MikroTik Router OS Winbox Configuration Interface     8291/tcp  # 
+MikroTik Router OS API Custom Management Inferface     8278/tcp  # 
+VxWorks-debug            17185/tcp  # 
+```
