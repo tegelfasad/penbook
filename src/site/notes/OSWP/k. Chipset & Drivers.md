@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/OSWP/k. Chipset & Drivers/"}
+{"dg-publish":true,"permalink":"/oswp/k-chipset-and-drivers/"}
 ---
 
 ---------------
