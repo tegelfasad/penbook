@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/l-network-connection/","updated":"2024-01-05T11:37:27.906+01:00"}
+{"dg-publish":true,"permalink":"/OSWP/l. Network Connection/"}
 ---
 
 -------

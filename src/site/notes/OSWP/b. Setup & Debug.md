@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/b-setup-and-debug/","updated":"2024-01-05T11:37:16.066+01:00"}
+{"dg-publish":true,"permalink":"/OSWP/b. Setup & Debug/"}
 ---
 
 

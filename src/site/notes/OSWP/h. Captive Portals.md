@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/h-captive-portals/","updated":"2024-01-05T11:37:23.226+01:00"}
+{"dg-publish":true,"permalink":"/OSWP/h. Captive Portals/"}
 ---
 
 -----------
