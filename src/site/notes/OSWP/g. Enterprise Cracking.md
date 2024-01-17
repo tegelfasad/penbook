@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/g-enterprise-cracking/"}
+{"dg-publish":true,"permalink":"/OSWP/g. Enterprise Cracking/"}
 ---
 
 -------------
