@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/a-wireless-theory/"}
+{"dg-publish":true,"permalink":"/OSWP/a. Wireless Theory/"}
 ---
 
 -------------------
