@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/j-kismet/"}
+{"dg-publish":true,"permalink":"/OSWP/j. Kismet/"}
 ---
 
 -----
