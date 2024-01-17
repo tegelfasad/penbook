@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/OSWP/l. Network Connection/"}
+{"dg-publish":true,"permalink":"/oswp/l-network-connection/"}
 ---
 
 -------
