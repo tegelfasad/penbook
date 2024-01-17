@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/d-psk-cracking/"}
+{"dg-publish":true,"permalink":"/OSWP/d. PSK Cracking/"}
 ---
 
 ------------
