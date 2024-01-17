@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/OSWP/e. WPS Cracking/"}
+{"dg-publish":true,"permalink":"/oswp/e-wps-cracking/"}
 ---
 
 ----------------
