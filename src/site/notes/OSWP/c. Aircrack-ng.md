@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/OSWP/c. Aircrack-ng/"}
+{"dg-publish":true,"permalink":"/oswp/c-aircrack-ng/"}
 ---
 
 -------------------------
