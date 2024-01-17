@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/OSWP/i. Bettercap/"}
+{"dg-publish":true,"permalink":"/oswp/i-bettercap/"}
 ---
 
 ----------------------
