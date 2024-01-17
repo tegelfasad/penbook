@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/oswp/k-chipset-and-drivers/","updated":"2024-01-05T11:37:26.725+01:00"}
+{"dg-publish":true,"permalink":"/oswp/k-chipset-and-drivers/"}
 ---
 
 ---------------
