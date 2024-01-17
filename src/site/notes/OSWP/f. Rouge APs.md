@@ -1,5 +1,5 @@
 ---
-{"dg-publish":true,"permalink":"/OSWP/f. Rouge APs/"}
+{"dg-publish":true,"permalink":"/oswp/f-rouge-a-ps/"}
 ---
 
 ---------
